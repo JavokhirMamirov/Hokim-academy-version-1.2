@@ -5,7 +5,8 @@ from home.viewset.organization_vew import organ_dashboard_view
 from home.viewset.school_view import *
 
 organization_url = [
-    path('dashboard/', organ_dashboard_view, name='organ-dashboard')
+    path('dashboardd/', organ_dashboard_view, name='organ-dashboard')
+
 ]
 
 school_url = [
