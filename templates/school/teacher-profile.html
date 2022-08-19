@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block sidebar_header %}
+    {% include 'school/sidebar.html' %}
+{% endblock sidebar_header %}
+{% block style %}
+    <link href="{% static 'plugins/vectormap/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet"/>
+{% endblock style %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">O'qituvchi Sahifasi</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="{% url 'school-dashboard' %}"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">O'qituvchi Sahifasi</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end breadcrumb-->
+				<div class="container">
+					<div class="main-body">
+						<div class="row">
+							<div class="col-lg-4">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex flex-column align-items-center text-center">
+											{% if teacher.image %}
+                                            <img src="{{ teacher.image.url }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+											{% else %}
+                                            <img src="" alt="Rasm kiritilmagan" class="rounded-circle p-1 bg-primary" width="110">
+                                            {% endif %}
+                                            <div class="mt-3">
+												<h4>{{ teacher.full_name }}</h4>
+												<p class="text-secondary mb-1">{{ teacher.subject.name }}</p>
+												<p class="text-muted font-size-sm">{{ teacher.address }}</p>
+												<button class="btn btn-primary">Follow</button>
+												<button class="btn btn-outline-primary">Message</button>
+											</div>
+										</div>
+										<hr class="my-4" />
+										<ul class="list-group list-group-flush">
+											<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+												<h6 class="mb-0">Foydalanuvchi</h6>
+												<span class="text-secondary">{{ teacher.username }}</span>
+											</li>
+											<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+												<h6 class="mb-0">Tugilgan kun</h6>
+												<span class="text-secondary">{{ teacher.birth_date|date:'Y-m-d' }}</span>
+											</li>
+											<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+												<h6 class="mb-0">Boshlagan yil</h6>
+												<span class="text-secondary">{{ teacher.start_study_year }}</span>
+											</li>
+											<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+												<h6 class="mb-0">Telefon</h6>
+												<span class="text-secondary">{{ teacher.phone }}</span>
+											</li>
+											<li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+												<h6 class="mb-0">Fan</h6>
+												<span class="text-secondary">{{ teacher.subject.name }}</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-8">
+								<div class="card">
+									<div class="card-body">
+                                        <form action="{% url 'change-teacher' teacher.id %}" method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Full Name</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="text" class="form-control" value="{{ teacher.full_name}}" name="full_name" />
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Tugilgan kun</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="date" class="form-control" name="birth_date" />
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Telefon</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="text" class="form-control" value="{{ teacher.phone }}" name="phone"/>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Oqish Boshlagan yil</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="number" class="form-control" name="start_study_year" value="{{ teacher.start_study_year }}" />
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Address</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="text" name="address" class="form-control" value="{{ teacher.address }}" />
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Rasm</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="file" name="image" class="form-control-file" />
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-4">
+                                                    <h6 class="mb-0">Fan</h6>
+                                                </div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <select name="subject" class="form-control" id="">
+                                                        {% for s in subject %}
+                                                            {% if teacher.subject.id == s.id %}
+                                                                <option value="{{ s.id }}" selected>{{ s.name }}</option>
+                                                            {% else %}
+                                                                <option value="{{ s.id }}">{{ s.name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4"></div>
+                                                <div class="col-sm-8 text-secondary">
+                                                    <input type="submit" class="btn btn-primary px-4" value="Save Changes" />
+                                                </div>
+                                            </div>
+                                        </form>
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="card">
+											<div class="card-body">
+												<h5 class="d-flex align-items-center mb-3">Project Status</h5>
+												<p>Web Design</p>
+												<div class="progress mb-3" style="height: 5px">
+													<div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+												<p>Website Markup</p>
+												<div class="progress mb-3" style="height: 5px">
+													<div class="progress-bar bg-danger" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+												<p>One Page</p>
+												<div class="progress mb-3" style="height: 5px">
+													<div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+												<p>Mobile Template</p>
+												<div class="progress mb-3" style="height: 5px">
+													<div class="progress-bar bg-warning" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+												<p>Backend API</p>
+												<div class="progress" style="height: 5px">
+													<div class="progress-bar bg-info" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--end page wrapper -->
+
+{% endblock %}

@@ -70,7 +70,7 @@ class Student(models.Model):
             self.password = make_password('ha-2022')
             while True:
                 username = f'student-{randint(1, 9999999)}'
-                query = self.objects.filter(username=username)
+                query = Student.objects.filter(username=username)
                 if query.count() == 0:
                     self.username = username
                     break
