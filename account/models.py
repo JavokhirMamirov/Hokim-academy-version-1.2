@@ -61,6 +61,7 @@ class Student(models.Model):
     address = models.CharField(max_length=255, null=True, blank=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.SmallIntegerField(default=1, choices=STUDENT_TYPES)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
 
