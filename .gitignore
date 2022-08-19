@@ -1,0 +1,13 @@
+skvenv
+.idea
+account/migrations/*
+!account/migrations/__init__.py
+__pycache__/
+**/__pycache__/**
+.vscode
+venv
+home/migrations/*
+!home/migrations/__init__.py
+agent/migrations/*
+!agent/migrations/__init__.py
+db.sqlite3
