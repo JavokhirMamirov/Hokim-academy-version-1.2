@@ -34,3 +34,6 @@ def admin_login(request):
 def admin_logout(request):
     logout(request)
     return redirect('admin-login')
+
+def page_404(request):
+    return render(request, 'auth/page_404.html')

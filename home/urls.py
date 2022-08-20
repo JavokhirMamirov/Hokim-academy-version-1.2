@@ -1,12 +1,12 @@
 from django.urls import path, include
 
-from home.viewset.auth_view import admin_login, admin_logout
+from home.viewset.auth_view import admin_login, admin_logout, page_404
 from home.viewset.organization_vew import organ_dashboard_view
 from home.viewset.school_view import *
 
 organization_url = [
 
-    path('dashboardd/', organ_dashboard_view, name='organ-dashboard')
+    path('dashboard/', organ_dashboard_view, name='organ-dashboard')
 
 ]
 
@@ -19,12 +19,12 @@ school_url = [
 ]
 
 student_url = [
-    path()
 ]
 
 auth_url = [
     path('login/', admin_login, name='admin-login'),
-    path('logout/', admin_logout, name='admin-logout')
+    path('logout/', admin_logout, name='admin-logout'),
+    path('404/', page_404, name='page-404')
 ]
 
 urlpatterns = [
