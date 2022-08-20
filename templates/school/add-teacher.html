@@ -13,13 +13,13 @@
 			<div class="page-content">
 				<!--breadcrumb-->
 				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-					<div class="breadcrumb-title pe-3">O'qituvchi Qo'shish</div>
+					<div class="breadcrumb-title pe-3">O'quvchi Qo'shish</div>
 					<div class="ps-3">
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb mb-0 p-0">
 								<li class="breadcrumb-item"><a href="{% url 'school-dashboard' %}"><i class="bx bx-home-alt"></i></a>
 								</li>
-                                <li class="breadcrumb-item active" aria-current="page">O'qituvchi Qo'shish</li>
+                                <li class="breadcrumb-item active" aria-current="page">O'quvchi Qo'shish</li>
                             </ol>
                         </nav>
 					</div>
@@ -38,6 +38,17 @@
 									</div>
 									<hr/>
 									<div class="row mb-3">
+										<label for="" class="col-sm-3 col-form-label">O'quvchi turi</label>
+										<div class="col-sm-9">
+                                            <select name="status" class="form-control" id="">
+                                                <option value="1">Prezident Maktabiga</option>
+                                                <option value="2">Abuturient</option>
+                                                <option value="3">Xorijiy til o'rganuvchi</option>
+                                                <option value="4">O'qituvchi</option>
+                                            </select>
+										</div>
+									</div>
+                                    <div class="row mb-3">
 										<label for="" class="col-sm-3 col-form-label">FIO</label>
 										<div class="col-sm-9">
 											<input type="text" class="form-control" name="full_name" id="" placeholder="FIO" required>

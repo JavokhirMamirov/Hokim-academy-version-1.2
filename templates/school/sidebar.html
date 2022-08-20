@@ -29,6 +29,23 @@
                 </a>
             </li>
             {% endif %}
+            {% if request.path == '/school/add-teacher/'%}
+            <li class="active">
+                <a href="{% url 'add-teacher' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">O'quvchi qo'shish</div>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'add-teacher' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">O'quvchi qo'shish</div>
+                </a>
+            </li>
+            {% endif %}
             {% if request.path == '/school/teachers/'%}
             <li class="active">
                 <a href="{% url 'teachers' %}">
@@ -46,20 +63,55 @@
                 </a>
             </li>
             {% endif %}
-            {% if request.path == '/school/add-teacher/'%}
+            {% if request.path == '/school/abuturient/'%}
             <li class="active">
-                <a href="{% url 'add-teacher' %}">
+                <a href="{% url 'abuturient' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
                     </div>
-                    <div class="menu-title">O'qituvchi qo'shish</div>
+                    <div class="menu-title">Abuturient</div>
                 </a>
             </li>
             {% else %}
             <li>
-                <a href="{% url 'add-teacher' %}">
+                <a href="{% url 'abuturient' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
                     </div>
-                    <div class="menu-title">O'qituvchi qo'shish</div>
+                    <div class="menu-title">Abuturient</div>
+                </a>
+            </li>
+            {% endif %}
+            {% if request.path == '/school/president-student/'%}
+            <li class="active">
+                <a href="{% url 'president-student' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Prezident Maktabiga</div>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'president-student' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Prezident Maktabiga</div>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if request.path == '/school/foreign-student/'%}
+            <li class="active">
+                <a href="{% url 'foreign-student' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Horijiy til o'rganuvchilari</div>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'foreign-student' %}">
+                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    </div>
+                    <div class="menu-title">Horijiy til o'rganuvchilari</div>
                 </a>
             </li>
             {% endif %}
@@ -74,12 +126,12 @@
         <nav class="navbar navbar-expand">
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
-            <div class="search-bar flex-grow-1">
-                <div class="position-relative search-bar-box">
-                    <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>
-                    <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span>
-                </div>
-            </div>
+{#            <div class="search-bar flex-grow-1">#}
+{#                <div class="position-relative search-bar-box">#}
+{#                    <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>#}
+{#                    <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span>#}
+{#                </div>#}
+{#            </div>#}
             <div class="top-menu ms-auto">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item mobile-search-icon">
@@ -189,8 +241,8 @@
                 <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{% static 'images/avatars/avatar-2.png' %}" class="user-img" alt="user avatar">
                     <div class="user-info ps-3">
-                        <p class="user-name mb-0">Pauline Seitz</p>
-                        <p class="designattion mb-0">Web Designer</p>
+                        <p class="user-name mb-0 text-center">{{ user.school.name }}</p>
+                        <p class="designattion mb-0">{{ user.school.city }}</p>
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

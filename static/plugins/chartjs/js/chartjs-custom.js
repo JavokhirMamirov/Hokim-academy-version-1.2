@@ -151,7 +151,6 @@ $(function () {
 				borderColor: "rgba(255,99,132,1)",
 				pointBorderColor: "#fff",
 				pointBackgroundColor: "rgba(255,99,132,1)",
-				pointBorderColor: "#fff",
 				data: [25.48, 54.16, 7.61, 8.06, 4.45]
 			}]
 		},
