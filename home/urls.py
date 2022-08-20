@@ -1,8 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+
+from home.viewset.auth_view import admin_login, admin_logout
+from home.viewset.organization_vew import organ_dashboard_view
 from home.viewset.school_view import *
 
 organization_url = [
-
+    path('dashboard/', organ_dashboard_view, name='organ-dashboard')
 ]
 
 school_url = [
@@ -18,9 +21,14 @@ student_url = [
 ]
 
 auth_url = [
-
+    path('login/', admin_login, name='admin-login'),
+    path('logout/', admin_logout, name='admin-logout')
 ]
 
 urlpatterns = [
+    path('school/', include(school_url)),
+    path('organ/', include(organization_url)),
+    path('student/', include(student_url)),
+    path('auth/', include(auth_url))
 
-              ] + organization_url + student_url + school_url + auth_url
+  ]
