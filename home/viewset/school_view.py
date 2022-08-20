@@ -1,50 +1,26 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models import *
+from django.contrib.auth.decorators import login_required
+from home.decarators import school_required
 
 
-class Dashboard(TemplateView):
-    # login_url = '/login'
-    template_name = 'school/index.html'
-
-    def dispatch(self, *args, **kwargs):
-        # if self.request.user.is_authenticated:
-        #     pass
-        #     # if self.request.user.type == 3:
-        #     #     pass
-        #     # else:
-        #     #     return redirect('logout')
-        # else:
-        #     return redirect('login')
-        return super(Dashboard, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = {}
-        return context
+@login_required(login_url='admin-login')
+@school_required
+def Dashboard(request):
+    return render(request, 'school/index.html')
 
 
-class TeacherProfile(TemplateView):
-    # login_url = '/login'
-    template_name = 'school/teacher-profile.html'
 
-    def dispatch(self, *args, **kwargs):
-        # if self.request.user.is_authenticated:
-        #     pass
-        #     # if self.request.user.type == 3:
-        #     #     pass
-        #     # else:
-        #     #     return redirect('logout')
-        # else:
-        #     return redirect('login')
-        return super(TeacherProfile, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, pk, **kwargs):
-        context = {
-            'teacher': Student.objects.get(id=pk),
-            'subject': Subject.objects.all()
-        }
-        return context
+@login_required(login_url='admin-login')
+@school_required
+def TeacherProfile(request, pk):
+    context = {
+        'teacher': Student.objects.get(id=pk),
+        'subject': Subject.objects.all()
+    }
+    return render(request, 'school/teacher-profile.html', context)
 
 
 class TeachersView(TemplateView):
