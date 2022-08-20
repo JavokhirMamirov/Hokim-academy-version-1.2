@@ -50,7 +50,7 @@ def teachers_view(request):
     else:
         teacher = Student.objects.filter(status=4, school=request.user.school, full_name__icontains=search)
     context = {
-        'teachers': PagenatorPage(teacher, 1, request)
+        'teachers': PagenatorPage(teacher, 50, request)
     }
     return render(request, 'school/teachers.html', context)
 
