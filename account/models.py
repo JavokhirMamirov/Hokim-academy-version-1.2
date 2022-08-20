@@ -64,6 +64,7 @@ class Student(models.Model):
     status = models.SmallIntegerField(default=1, choices=STUDENT_TYPES)
     username = models.CharField(max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.pk is None:

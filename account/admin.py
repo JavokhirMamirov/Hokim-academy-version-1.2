@@ -20,6 +20,7 @@ class AccountAdmin(UserAdmin):
                     "is_staff",
                     "is_superuser",
                     "status",
+                    'school',
                     "groups",
                     "user_permissions",
                 ),

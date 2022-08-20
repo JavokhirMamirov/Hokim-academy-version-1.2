@@ -4,9 +4,11 @@ from home.viewset.school_view import *
 
 
 school_url = [
-    path('school-dashboard/', Dashboard, name='school-dashboard'),
-    path('teacher-profile/<int:pk>/', TeacherProfile, name='teacher-profile'),
-    path('teachers/', TeachersView.as_view(), name='teachers'),
-    path('change-teacher/<int:pk>/', ChangeTeacher, name='change-teacher'),
-    path('add-teacher/', AddTeacher.as_view(), name='add-teacher'),
+    path('school-dashboard/', dashboard, name='school-dashboard'),
+    path('teacher-profile/<int:pk>/', teacher_profile, name='teacher-profile'),
+    path('teachers/', teachers_view, name='teachers'),
+    path('change-teacher/<int:pk>/', change_teacher_view, name='change-teacher'),
+    path('add-teacher/', add_teachers_view, name='add-teacher'),
+    path('create-teacher/', create_teacher, name='create-teacher'),
+
 ]
