@@ -23,18 +23,25 @@ def organ_dashboard_view(request):
     schools = School.objects.all().count()
     city = City.objects.all().count()
     students = Student.objects.all().count()
-    staff = Account.objects.filter(status=3)
-    abiturent = Student.objects.filter(status=2)
+    staff = Account.objects.filter(status=3).count()
+    abiturent = Student.objects.filter(status=2).count()
+    chet_tili = Student.objects.filter(status=3).count()
+    prez_maktab = Student.objects.filter(status=1).count()
+    teachers = Student.objects.filter(status=4).count()
     context = {
-        'schools':schools,
-        'city':city,
-        'students':students,
-        'staff':staff,
-        'abiturent':abiturent
+        'schools': schools,
+        'city': city,
+        'students': students,
+        'staff': staff,
+        'abiturent': abiturent,
+        'chet_tili': chet_tili,
+        'prez_maktab': prez_maktab,
+        'teachers': teachers
     }
     return render(request, 'oranization/index.html', context)
 
-
+@login_required(login_url='admin-login')
+@organ_required
 def schools_list_view(request):
     citys = City.objects.all()
     q = request.GET.get('q')
@@ -48,7 +55,8 @@ def schools_list_view(request):
     }
     return render(request, 'oranization/schools.html', context)
 
-
+@login_required(login_url='admin-login')
+@organ_required
 def add_schools_view(request):
     citys = City.objects.all()
     context = {
@@ -86,7 +94,8 @@ def add_schools_view(request):
         return redirect('school-detail', school.id)
     return render(request, 'oranization/add-school.html', context)
 
-
+@login_required(login_url='admin-login')
+@organ_required
 def school_detail_view (request, pk) :
     school = School.objects.get(pk=pk)
     context = {
@@ -94,7 +103,8 @@ def school_detail_view (request, pk) :
     }
     return render(request, 'oranization/school-detail.html', context)
 
-
+@login_required(login_url='admin-login')
+@organ_required
 def update_detail_view(request, pk):
     school = School.objects.get(pk=pk)
     citys = City.objects.all()
@@ -118,9 +128,11 @@ def update_detail_view(request, pk):
         school.facebook = facebook
         school.instagram = instagram
         school.telegram = telegram
-        school.lat = lat
-        school.lng = lng
         school.save()
+        if lat and lng is not  None:
+            school.lat = lat
+            school.lng = lng
+            school.save()
         return redirect('school-detail', school.id)
     context = {
         'school': school,
@@ -128,7 +140,8 @@ def update_detail_view(request, pk):
     }
     return render(request, 'oranization/update-school.html', context)
 
-
+@login_required(login_url='admin-login')
+@organ_required
 def school_delete_view(request, pk):
     school = School.objects.get(id=pk)
     school.delete()
