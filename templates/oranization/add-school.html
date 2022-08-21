@@ -101,8 +101,18 @@
                                                 <label for="inputFirstName" class="form-label">Telegram</label>
                                                 <input type="text" class="form-control" id="inputFirstName" placeholder="t-me://" name="telegram">
                                             </div>
-                                            </div>
+											<input type="hidden" id="lc_lat" name="lat">
+											<input type="hidden" id="lc_lng" name="lng">
 										</div>
+									</div>
+									<div class="row mb-3">
+										<label  class="col-sm-3 col-form-label">Manzilnin belgilang </label>
+										<div class="col-sm-9">
+												<div class="card-body" style=" width: 105%;">
+													<div id="simple-map" class="gmaps"></div>
+												</div>
+										</div>
+									</div>
 									</div>
 									<div class="row">
 										<label class="col-sm-3 col-form-label"></label>
@@ -142,4 +152,8 @@
 		});
 	</script>
 {% endblock script %}
+<!-- google maps api -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4&callback=initMap" async defer></script>
+<script src="{% static 'plugins/gmaps/map-custom-script.js' %}"></script>
+<script src="{% static 'js/map2.js' %}"></script>
 {% endblock %}

@@ -9,6 +9,7 @@ from home.decarators import organ_required
 def organ_dashboard_view(request):
     return render(request, 'oranization/index.html')
 
+
 def schools_list_view(request):
     schools = School.objects.all()
     citys = City.objects.all()
@@ -34,6 +35,8 @@ def add_schools_view(request):
         instagram = request.POST['instagram']
         telegram = request.POST['telegram']
         city = City.objects.get(id=city_id)
+        lat = request.POST.get('lat')
+        lng = request.POST.get('lng')
         school = School.objects.create(
             name=name,
             director=director,
@@ -42,9 +45,10 @@ def add_schools_view(request):
             website=website,
             facebook=facebook,
             instagram=instagram,
-            telegram=telegram
+            telegram=telegram,
+            lat = lat,
+            lng = lng
         )
-
     return render(request, 'oranization/add-school.html', context)
 
 def school_detail_view (request, pk) :

@@ -32,71 +32,119 @@
 				</div>
 				<!--end breadcrumb-->
 
-				<div class="row">
-					<div class="col-xl-9 mx-auto">
-						<h6 class="mb-0 text-uppercase">{{ school.name }} maktab </h6>
-						<hr/>
-						<div class="card border-top border-0 border-4 border-info">
-							<div class="card-body">
-								<div class="border p-4 rounded">
-                                    <div class="card-title d-flex align-items-center">
-										<div><i class="bx bxs-user me-1 font-22 text-info"></i>
-										</div>
-										<h5 class="mb-0 text-info">Registratsiya</h5>
-									</div>
-									<hr/>
-									<div class="row mb-3">
-										<label for="inputEnterYourName" class="col-sm-3 col-form-label">Maktab nomi</label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEnterYourName" name="name" readonly value="{{ school.name }}">
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="inputPhoneNo2" class="col-sm-3 col-form-label">Direktor </label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputPhoneNo2" value="{{ school.director }}" readonly>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="inputEmailAddress2" class="col-sm-3 col-form-label">Manzil</label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ school.address }}" readonly>
-										</div>
-									</div>
-									<div class="row mb-3">
-										<label for="inputChoosePassword2" class="col-sm-3 col-form-label">Shahar</label>
-										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ school.city }}" readonly>
-										</div>
-									</div>
-                                    <div class="row mb-3">
-										<label for="inputAddress4" class="col-sm-3 col-form-label">Linklar</label>
-                                        <div class="col-sm-9">
-                                            <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="inputFirstName" class="form-label">Website</label>
-                                                <input type="text" class="form-control" id="inputFirstName" value="{{ school.website }}" readonly>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="inputFirstName" class="form-label">Facebook</label>
-                                                <input type="text" class="form-control" id="inputFirstName" value="{{ school.facebook }}" readonly>
-                                            </div>
-                                                 <div class="col-md-6">
-                                                <label for="inputFirstName" class="form-label">Instagram</label>
-                                                <input type="text" class="form-control" id="inputFirstName" value="{{ school.instagram }}" readonly>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="inputFirstName" class="form-label">Telegram</label>
-                                                <input type="text" class="form-control" id="inputFirstName" value="{{ school.telegram }}" readonly>
-                                            </div>
-                                            </div>
-										</div>
-									</div>
-                               	</div>
+				<div class="card">
+					<div class="row g-0">
+					  <div class="col-md-12">
+						<div class="card-body">
+						  <h4 class="card-title">{{school}} maktab haqida ma`lumot</h4>
+						  <hr>
+						  <div class="mb-3 d-flex justify-content-around"> 
+							<div>
+								<span class="price h4">Maktab nomi:</span> 
+								<span class="price h4"><strong>{{school}}</strong></span> 
+							</div>
+							<div>
+								<span class="price h4">Maktab direktori:</span> 
+								<span class="price h4"> <strong>{{school.director}}</strong></span> 
 							</div>
 						</div>
+						  <div class="mb-3 d-flex justify-content-around"> 
+							<div>
+								<span class="price h4">Shahri:</span> 
+								<span class="price h4"><strong>{{school.city}}</strong></span> 
+							</div>
+							<div>
+								<span class="price h4">Manzil:</span> 
+								<span class="price h4"> <strong>{{school.address}}</strong></span> 
+							</div>
+						</div>
+						  <div class="mb-3 d-flex justify-content-around"> 
+							<div>
+								<span class="price h4">Web site:</span> 
+								<span class="price h4"><strong>{{school.website}}</strong></span> 
+							</div>
+							<div>
+								<span class="price h4">Telegram:</span> 
+								<span class="price h4"> <strong>{{school.telegram}}</strong></span> 
+							</div>
+						</div>
+						  <div class="mb-3 d-flex justify-content-around"> 
+							<div>
+								<span class="price h4">Facebook:</span> 
+								<span class="price h4"><strong>{{school.facebook}}</strong></span> 
+							</div>
+							<div>
+								<span class="price h4">Instagram:</span> 
+								<span class="price h4"> <strong>{{school.instagram}}</strong></span> 
+							</div>
+						</div>
+						  <p class="card-text fs-6">
+							<div class="card">
+							<div class="card-body">
+								<div id="simple-map" class="gmaps"></div>
+							</div>
+						</div></p>
+						  <dl class="row">
+							<dt class="col-sm-3">Model#</dt>
+							<dd class="col-sm-9">Odsy-1000</dd>
+						  
+							<dt class="col-sm-3">Color</dt>
+							<dd class="col-sm-9">Brown</dd>
+						  
+							<dt class="col-sm-3">Delivery</dt>
+							<dd class="col-sm-9">Russia, USA, and Europe </dd>
+						  </dl>
+						  <hr>
+						  <div class="row row-cols-auto row-cols-1 row-cols-md-3 align-items-center">
+							<div class="col">
+								<label class="form-label">Quantity</label>
+								<div class="input-group input-spinner">
+									<button class="btn btn-white" type="button" id="button-plus"> + </button>
+								     <input type="text" class="form-control" value="1">
+									<button class="btn btn-white" type="button" id="button-minus"> − </button>
+								</div>
+							</div> 
+							<div class="col">
+									<label class="form-label">Select size</label>
+									<div class="">
+										<label class="form-check form-check-inline">
+										  <input type="radio" class="form-check-input" name="select_size" checked="">
+										  <div class="form-check-label">Small</div>
+										</label>
+										<label class="form-check form-check-inline">
+											<input type="radio" class="form-check-input" name="select_size" checked="">
+											<div class="form-check-label">Medium</div>
+										  </label>
+
+										  <label class="form-check form-check-inline">
+											<input type="radio" class="form-check-input" name="select_size" checked="">
+											<div class="form-check-label">Large</div>
+										  </label>
+									</div>
+							</div> 
+							<div class="col">
+								<label class="form-label">Select Color</label>
+								<div class="color-indigators d-flex align-items-center gap-2">
+									 <div class="color-indigator-item bg-primary"></div> 
+									 <div class="color-indigator-item bg-danger"></div> 
+									 <div class="color-indigator-item bg-success"></div> 
+									 <div class="color-indigator-item bg-warning"></div> 
+								</div>
+							</div>
+						</div>
+						<div class="d-flex gap-3 mt-3">
+							<a href="#" class="btn btn-primary">Buy Now</a>
+							<a href="#" class="btn btn-outline-primary"><span class="text">Add to cart</span> <i class="bx bxs-cart-alt"></i></a>
+						</div>
+						</div>
+					  </div>
 					</div>
-				</div>
+                    <hr>
+					<div class="card-body">
+						
+					</div>
+
+				  </div>
 				<!--end row-->
 			</div>
 		</div>
@@ -106,7 +154,9 @@
 	<script src="{% static 'plugins/chartjs/js/Chart.min.js' %}"></script>
 	<script src="{% static 'plugins/chartjs/js/Chart.extension.js' %}"></script>
 	<script src="{% static 'js/index.js' %}"></script>
-    <script src="{% static '/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
+	<!-- google maps api -->
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4&callback=initMap" async defer></script>
     <script>
 		$('.single-select').select2({
 			theme: 'bootstrap4',
@@ -121,5 +171,25 @@
 			allowClear: Boolean($(this).data('allow-clear')),
 		});
 	</script>
+	<script>
+		function initMap() {
+			let Lat = parseFloat('{{ school.lat }}')
+			let Lng = parseFloat('{{ school.lng }}')
+			let mapOptions = {
+				center: {lat: Lat, lng: Lng},
+				zoom: 6
+			}
+	
+			let map = new google.maps.Map(document.getElementById('simple-map'), mapOptions)
+	
+			let markerOptions = {
+				position: new google.maps.LatLng(Lat, Lng)
+			}
+	
+			let marker = new google.maps.Marker(markerOptions)
+	
+			marker.setMap(map)
+		}
+		</script>
 {% endblock script %}
 {% endblock %}
