@@ -1,20 +1,49 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from account.models import School, City
+from account.models import School, City, Student, Account
 from home.decarators import organ_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+def PagenatorPage(List, num, request):
+    paginator = Paginator(List, num)
+    pages = request.GET.get('page')
+    try:
+        list = paginator.page(pages)
+    except PageNotAnInteger:
+        list = paginator.page(1)
+    except EmptyPage:
+        list = paginator.page(paginator.num_pages)
+    return list
 
 
 @login_required(login_url='admin-login')
 @organ_required
 def organ_dashboard_view(request):
-    return render(request, 'oranization/index.html')
+    schools = School.objects.all().count()
+    city = City.objects.all().count()
+    students = Student.objects.all().count()
+    staff = Account.objects.filter(status=3)
+    abiturent = Student.objects.filter(status=2)
+    context = {
+        'schools':schools,
+        'city':city,
+        'students':students,
+        'staff':staff,
+        'abiturent':abiturent
+    }
+    return render(request, 'oranization/index.html', context)
 
 
 def schools_list_view(request):
-    schools = School.objects.all()
     citys = City.objects.all()
+    q = request.GET.get('q')
+    schools = School.objects.all()
+    if q != '' and q is not None:
+        schools = School.objects.filter(name__icontains=q)
+
     context = {
-        'schools':schools,
+        'schools': PagenatorPage(schools, 10, request),
         'citys':citys
     }
     return render(request, 'oranization/schools.html', context)
@@ -30,10 +59,10 @@ def add_schools_view(request):
         director = request.POST['director']
         address = request.POST['address']
         city_id = request.POST['city']
-        website = request.POST['website']
-        facebook = request.POST['facebook']
-        instagram = request.POST['instagram']
-        telegram = request.POST['telegram']
+        website = request.POST.get('website')
+        facebook = request.POST.get('facebook')
+        instagram = request.POST.get('instagram')
+        telegram = request.POST.get('telegram')
         city = City.objects.get(id=city_id)
         lat = request.POST.get('lat')
         lng = request.POST.get('lng')
@@ -42,14 +71,21 @@ def add_schools_view(request):
             director=director,
             address=address,
             city=city,
-            website=website,
-            facebook=facebook,
-            instagram=instagram,
-            telegram=telegram,
             lat = lat,
             lng = lng
         )
+        if website is not None:
+            school.website = website
+        if facebook is not None:
+            school.facebook = facebook
+        if instagram is not  None:
+            school.instagram = instagram
+        if telegram is not None:
+            school.telegram = telegram
+        school.save()
+        return redirect('school-detail', school.id)
     return render(request, 'oranization/add-school.html', context)
+
 
 def school_detail_view (request, pk) :
     school = School.objects.get(pk=pk)
@@ -57,6 +93,7 @@ def school_detail_view (request, pk) :
         'school': school
     }
     return render(request, 'oranization/school-detail.html', context)
+
 
 def update_detail_view(request, pk):
     school = School.objects.get(pk=pk)
@@ -70,6 +107,8 @@ def update_detail_view(request, pk):
         facebook = request.POST.get('facebook')
         instagram = request.POST.get('instagram')
         telegram = request.POST.get('telegram')
+        lat = request.POST.get('lat')
+        lng = request.POST.get('lng')
         city = City.objects.get(id=city_id)
         school.name = name
         school.director = director
@@ -79,6 +118,8 @@ def update_detail_view(request, pk):
         school.facebook = facebook
         school.instagram = instagram
         school.telegram = telegram
+        school.lat = lat
+        school.lng = lng
         school.save()
         return redirect('school-detail', school.id)
     context = {
@@ -86,6 +127,7 @@ def update_detail_view(request, pk):
         'citys': citys
     }
     return render(request, 'oranization/update-school.html', context)
+
 
 def school_delete_view(request, pk):
     school = School.objects.get(id=pk)

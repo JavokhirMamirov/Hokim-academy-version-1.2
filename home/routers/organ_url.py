@@ -8,6 +8,6 @@ organization_url = [
     path('schools/', organization_vew.schools_list_view, name='schools'),
     path('school/add/', organization_vew.add_schools_view, name='add-school'),
     path('school/detail/<int:pk>/', organization_vew.school_detail_view, name='school-detail'),
-    path('school/update/<int:pk>/', organization_vew.update_detail_view, name='update-school')
-
+    path('school/update/<int:pk>/', organization_vew.update_detail_view, name='update-school'),
+    path('school/delete/<int:pk>/', organization_vew.school_delete_view, name='delete-school'),
 ]

@@ -12,9 +12,9 @@
     </div>
     <!--navigation-->
         <ul class="metismenu" id="menu">
-            {% if request.path == '/school/school-dashboard/'%}
+            {% if request.path == '/organ/dashboard/'%}
             <li class="active">
-                <a href="{% url 'school-dashboard' %}" >
+                <a href="{% url 'organ-dashboard' %}" >
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
@@ -22,33 +22,16 @@
             </li>
             {% else %}
             <li>
-                <a href="{% url 'school-dashboard' %}" >
+                <a href="{% url 'organ-dashboard' %}" >
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
             {% endif %}
-            {% if request.path == '/school/add-teacher/'%}
+            {% if request.path == '/school/schools/'%}
             <li class="active">
-                <a href="{% url 'add-teacher' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">O'quvchi qo'shish</div>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'add-teacher' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">O'quvchi qo'shish</div>
-                </a>
-            </li>
-            {% endif %}
-            {% if request.path == '/school/teachers/'%}
-            <li>
-                <a href="{% url 'teachers' %}">
+                <a href="{% url 'schools' %}">
                     <div class="parent-icon"><i class="bx bx-home"></i>
                     </div>
                     <div class="menu-title">Schools</div>
@@ -62,60 +45,7 @@
                     <div class="menu-title">Schools</div>
                 </a>
             </li>
-            {% endif %}
-            {% if request.path == '/school/abuturient/'%}
-            <li class="active">
-                <a href="{% url 'abuturient' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Abuturient</div>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'abuturient' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Abuturient</div>
-                </a>
-            </li>
-            {% endif %}
-            {% if request.path == '/school/president-student/'%}
-            <li class="active">
-                <a href="{% url 'president-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Prezident Maktabiga</div>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'president-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Prezident Maktabiga</div>
-                </a>
-            </li>
-            {% endif %}
-
-            {% if request.path == '/school/foreign-student/'%}
-            <li class="active">
-                <a href="{% url 'foreign-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Horijiy til o'rganuvchilari</div>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'foreign-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
-                    </div>
-                    <div class="menu-title">Horijiy til o'rganuvchilari</div>
-                </a>
-            </li>
-            {% endif %}
-
+        {% endif %}
         </ul>
     <!--end navigation-->
 </div>

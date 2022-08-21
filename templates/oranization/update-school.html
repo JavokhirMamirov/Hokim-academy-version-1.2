@@ -101,10 +101,22 @@
                                                 <label for="inputFirstName" class="form-label">Instagram</label>
                                                 <input type="text" class="form-control" id="inputFirstName" value="{{ school.instagram }}" name="instagram">
                                             </div>
-                                            <div class="col-md-6">
+                                             <div class="col-md-6">
                                                 <label for="inputFirstName" class="form-label">Telegram</label>
-                                                <input type="text" class="form-control" id="inputFirstName" value="{{ school.telegram }}" name="telegram">
+                                                <input type="url" class="form-control" id="inputFirstName" placeholder="t-me://" name="telegram">
                                             </div>
+											<input type="hidden" id="lc_lat" name="lat" value="{{ school.lat }}">
+											<input type="hidden" id="lc_lng" name="lng" value="{{ school.lng }}">
+										</div>
+									</div>
+									<div class="row mb-3">
+										<label  class="col-sm-3 col-form-label">Manzilnin belgilang </label>
+										<div class="col-sm-9">
+												<div class="card-body" style=" width: 105%;">
+													<div id="simple-map" class="gmaps"></div>
+												</div>
+										</div>
+									</div>
                                             </div>
 										</div>
 									</div>
@@ -130,7 +142,7 @@
 	<script src="{% static 'plugins/chartjs/js/Chart.min.js' %}"></script>
 	<script src="{% static 'plugins/chartjs/js/Chart.extension.js' %}"></script>
 	<script src="{% static 'js/index.js' %}"></script>
-    <script src="{% static '/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'plugins/select2/js/select2.min.js' %}"></script>
     <script>
 		$('.single-select').select2({
 			theme: 'bootstrap4',
@@ -145,5 +157,27 @@
 			allowClear: Boolean($(this).data('allow-clear')),
 		});
 	</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4&callback=initMap" async defer></script>
+	<script>
+		 function initMap() {
+        let Lat = parseFloat('{{ school.lat }}')
+        let Lng = parseFloat('{{ school.lng }}')
+        let mapOptions = {
+            center: {lat: Lat, lng: Lng},
+            zoom: 6
+        }
+
+        let map = new google.maps.Map(document.getElementById('simple-map'), mapOptions)
+
+        let markerOptions = {
+            position: new google.maps.LatLng(Lat, Lng)
+        }
+
+        let marker = new google.maps.Marker(markerOptions)
+
+        marker.setMap(map)
+    }
+    </script>
+    <script src="{% static 'js/map2.js' %}"></script>
 {% endblock script %}
 {% endblock %}
