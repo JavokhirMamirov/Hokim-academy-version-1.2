@@ -132,12 +132,12 @@ def add_teachers_view(request):
     context = {
         "subject": Subject.objects.all(),
     }
-    return render(request, 'school/add-teacher.html', context)
+    return render(request, 'school/add-student.html', context)
 
 
 @login_required(login_url='admin-login')
 @school_required
-def create_teacher(request):
+def create_student(request):
     user = request.user
     if request.method == "POST":
         full_name = request.POST['full_name']
@@ -159,7 +159,7 @@ def create_teacher(request):
             status=status,
             school=user.school
         )
-    return redirect('add-teacher')
+    return redirect('add-student')
 
 
 @login_required(login_url='admin-login')
