@@ -29,8 +29,8 @@ def generate_qrcode(username, promocode):
     qr.make(fit=True)
 
     img = qr.make_image(fill_color="black", back_color="white")
-    img.save('qrcode.png')
-    return 'qrcode.png'
+    img.save(os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'qrcode.png'))
+    return os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'qrcode.png')
 
 
 def certificate_generate(student):
