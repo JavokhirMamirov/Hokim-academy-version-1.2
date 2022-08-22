@@ -128,12 +128,13 @@ def change_student_view(request, pk):
 
 @login_required(login_url='admin-login')
 @school_required
-def add_teachers_view(request):
+def add_student_view(request):
     context = {
         "subject": Subject.objects.all(),
     }
     return render(request, 'school/add-student.html', context)
 
+from PIL import Image
 
 @login_required(login_url='admin-login')
 @school_required
@@ -148,6 +149,9 @@ def create_student(request):
         image = request.FILES.get('image')
         subject = request.POST['subject']
         status = int(request.POST['status'])
+        img = Image.open(image)
+        area = (400, 400, 800, 800)
+        cropped_img = img.crop(area)
         Student.objects.create(
             full_name=full_name,
             birth_date=birth_date,

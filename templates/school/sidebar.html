@@ -29,9 +29,9 @@
                 </a>
             </li>
             {% endif %}
-            {% if request.path == '/school/add-teacher/'%}
+            {% if request.path == '/school/add-student/'%}
             <li class="active">
-                <a href="{% url 'add-teacher' %}">
+                <a href="{% url 'add-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
                     </div>
                     <div class="menu-title">O'quvchi qo'shish</div>
@@ -39,7 +39,7 @@
             </li>
             {% else %}
             <li>
-                <a href="{% url 'add-teacher' %}">
+                <a href="{% url 'add-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
                     </div>
                     <div class="menu-title">O'quvchi qo'shish</div>
