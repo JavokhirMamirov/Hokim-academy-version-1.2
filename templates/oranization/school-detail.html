@@ -147,20 +147,6 @@
 							</div>
                             {% endif %}
 						</div>
-						  <div class="mb-3 d-flex justify-content-around">
-                              {% if facebook %}
-							<div>
-								<span class="price h5">Facebook:</span>
-								<span class="price h5"><strong>{{school.facebook}}</strong></span>
-							</div>
-                              {% endif %}
-                              {% if instagram %}
-							<div>
-								<span class="price h5">Instagram:</span>
-								<span class="price h5"> <strong>{{school.instagram}}</strong></span>
-							</div>
-                              {% endif %}
-						</div>
 						  <p class="card-text fs-6">
 							<div class="card">
                                 <div class="card-body">
@@ -172,8 +158,31 @@
 					  </div>
 					</div>
                     <hr>
-					<div class="card-body">
-					</div>
+					<div class="row row-cols-1 row-cols-lg-3">
+                        {% for st in staff %}
+                            <a href="{% url 'user-detail' st.id %}" style="text-decoration: none">
+                               <div class="col">
+                                <div class="card">
+                                    <div class="row g-0">
+                                      <div class="col-md-4">
+                                        <img src="{% static 'img/user.png' %}" class="img-fluid" alt="...">
+                                      </div>
+                                      <div class="col-md-8">
+                                        <div class="card-body">
+                                          <h6 class="card-title">{{ st.username}}</h6>
+                                          <div class="cursor-pointer my-2">{{ st.first_name }}
+                                          </div>
+                                          <div class="clearfix">
+                                            <p class="mb-0 float-start fw-bold">{{ st.last_name }}</p>
+                                         </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                               </div>
+                            </a>
+                        {% endfor %}
+					   </div>
 				  </div>
 				<!--end row-->
 			</div>

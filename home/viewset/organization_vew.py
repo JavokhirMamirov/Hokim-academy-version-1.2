@@ -99,10 +99,12 @@ def add_schools_view(request):
 
 @login_required(login_url='admin-login')
 @organ_required
-def school_detail_view (request, pk) :
+def school_detail_view(request, pk):
     school = School.objects.get(pk=pk)
+    staff = Account.objects.filter(school=school)
     context = {
-        'school': school
+        'school': school,
+        'staff': staff
     }
     return render(request, 'oranization/school-detail.html', context)
 
@@ -177,3 +179,34 @@ def school_delete_view(request, pk):
     school = School.objects.get(id=pk)
     school.delete()
     return redirect('schools')
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def user_detail_view(request, pk):
+    account = Account.objects.get(id=pk)
+    schools = School.objects.all()
+    context = {
+        'user': account,
+        'schools': schools
+    }
+    return render(request, 'oranization/user-detail.html', context)
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def user_update_view(request, pk):
+    account = Account.objects.get(id=pk)
+    if request.method == 'POST':
+        school_id = request.POST['school']
+        school = School.objects.get(id=school_id)
+        username = request.POST['username']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        account.username = username
+        account.first_name = first_name
+        account.last_name = last_name
+        account.school = school
+        account.save()
+        return redirect('user-detail', account.id)
+    return render(request, 'oranization/user-detail.html', context)
