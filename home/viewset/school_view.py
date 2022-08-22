@@ -4,6 +4,8 @@ from account.models import *
 from django.contrib.auth.decorators import login_required
 from home.decarators import school_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.hashers import make_password
+
 
 def PagenatorPage(List, num, request):
     paginator = Paginator(List, num)
@@ -92,7 +94,7 @@ def president_student_view(request):
     else:
         student = Student.objects.filter(status=1, school=request.user.school, full_name__icontains=search)
     context = {
-        'student': PagenatorPage(student, 1, request)
+        'student': PagenatorPage(student, 50, request)
     }
     return render(request, 'school/president-school-student.html', context)
 
@@ -156,4 +158,65 @@ def create_teacher(request):
             school=user.school
         )
     return redirect('add-teacher')
+
+
+@login_required(login_url='admin-login')
+@school_required
+def settings_view(request):
+    context = {
+        'city': City.objects.all()
+    }
+    return render(request, 'school/settings.html', context)
+
+
+@login_required(login_url='admin-login')
+@school_required
+def change_school_view(request, pk):
+    if request.method == 'POST':
+        name = request.POST['name']
+        director = request.POST.get('director')
+        address = request.POST.get('address')
+        city_id = request.POST.get('city')
+        website = request.POST.get('website')
+        facebook = request.POST.get('facebook')
+        instagram = request.POST.get('instagram')
+        telegram = request.POST.get('telegram')
+        city = City.objects.get(id=city_id)
+        lat = request.POST.get('lat')
+        lng = request.POST.get('lng')
+        school = School.objects.get(id=pk)
+        school.name = name
+        school.director = director
+        school.address = address
+        school.city = city
+        school.website = website
+        school.facebook = facebook
+        school.instagram = instagram
+        school.telegram = telegram
+        school.lat = lat
+        school.lng = lng
+        school.save()
+        return redirect('settings')
+
+
+@login_required(login_url='admin-login')
+@school_required
+def change_student_password(request, pk):
+    if request.method == "POST":
+        password = request.POST.get('password')
+        st = Student.objects.get(id=pk)
+        st.password = make_password(password)
+        st.save()
+        page = request.POST.get('page')
+        if int(page) == 1:
+            return redirect("president-student")
+        elif int(page) == 2:
+            return redirect('abuturient')
+        elif int(page) == 3:
+            return redirect('foreign-student')
+        elif int(page) == 4:
+            return redirect('teachers')
+        else:
+            return redirect('school-dashboard')
+
 

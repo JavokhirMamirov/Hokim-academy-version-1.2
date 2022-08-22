@@ -49,7 +49,9 @@
                                     <th class="text-center">Manzil</th>
                                     <th class="text-center">Rasm</th>
                                     <th class="text-center">Fan</th>
+                                    <th class="text-center">Sertifikat</th>
                                     <th class="text-center">Ko'proq</th>
+                                    <th class="text-center">Parol ozgartirish</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,7 +67,43 @@
 										<td class="text-center"><img src="" alt="Rasm kiritilmagan"></td>
                                         {% endif %}
                                         <td class="text-center">{{ t.subject }}</td>
+                                        {% if t.certificate %}
+                                        <td class="text-center"><a href="{{ t.certificate.url }}" download><button class="btn btn-primary">Download</button></a></td>
+                                        {% else %}
+                                        <td class="text-center">Sertifikat kiritilmagan</td>
+                                        {% endif %}
                                         <td class="text-center"><a href="{% url 'student-profile' t.id %}" class="btn btn-primary">Detail</a></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ t.id }}">
+                                        <div class="text-white text-center"><i class="fadeIn animated bx bx-edit-alt"></i></div>
+                                        </button></td>
+										<!-- Modal -->
+										<div class="modal fade" id="exampleVerticallycenteredModal{{ t.id }}" tabindex="-1" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+                                                    <form action="{% url 'change-student-password' t.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Parol O'gartirish</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <input type="hidden" value="{{ t.status }}" name="page">
+                                                                <label for="" class="col-sm-12 col-form-label">Yangi parol kiriting</label>
+                                                                <div class="col-sm-12">
+                                                                    <input type="text" class="form-control" name="password" placeholder="parol" required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                                                        </div>
+                                                    </form>
+												</div>
+											</div>
+										</div>
 									</tr>
                                 {% endfor %}
                             </tbody>
