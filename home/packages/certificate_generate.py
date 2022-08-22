@@ -56,6 +56,8 @@ def certificate_generate(student):
     )
 
     img.paste(img2, (qrcode_x, qrcode_y))
+    if exists(os.path.join(BASE_DIR, 'media', 'certificate')) == False:
+        os.makedirs(os.path.join(BASE_DIR, 'media', 'certificate'))
     file_name = f"{student.full_name}.jpg"
     save_img_path = os.path.join(BASE_DIR, 'media', 'certificate', file_name)
     if exists(save_img_path):
