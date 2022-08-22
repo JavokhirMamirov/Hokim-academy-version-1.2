@@ -6,8 +6,9 @@ from os.path import exists
 import secrets
 import string
 
-WEBSITE = 'https://hokimakacedmy.uz/login'
-FONT = os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'MTCORSVA.ttf')
+WEBSITE = 'http://hokimakademiyasi.uz/login'
+FONT = os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'MTCORSVA.TTF')
+# FONT = '/home/hokim_akademy/backend/app/home/packages/default_certificate/MTCORSVA.ttf'
 CERTIFICATE = os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'certificate.jpg')
 
 
@@ -38,11 +39,9 @@ def certificate_generate(student):
     img = Image.open(CERTIFICATE, mode='r')
     image_width = img.width
     image_height = img.height
-
+    # f = open(FONT, 'rb')
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype(
-        FONT, size=150
-    )
+    font = ImageFont.truetype(FONT, size=150)
     qrcode_file = generate_qrcode(student.username, student.promo_code)
     img2 = Image.open(qrcode_file, mode='r')
     qrcode_x = 880
