@@ -10,9 +10,9 @@ organization_url = [
     path('staff/add/', organization_vew.add_staff_school, name='staff-add'),
     path('school/detail/<int:pk>/', organization_vew.school_detail_view, name='school-detail'),
     path('school/update/<int:pk>/', organization_vew.update_detail_view, name='update-school'),
+    path('user/delete/<int:pk>/', organization_vew.user_delete_view, name='user-delete'),
     path('user/<int:pk>/', organization_vew.user_detail_view, name='user-detail'),
     path('user/update/<int:pk>/', organization_vew.user_update_view, name='user-update'),
-    path('user/set-password/<int:pk>/', organization_vew.user_set_password, name='user-set-password'),
-    path('user/delete/<int:pk>/', organization_vew.user_delete_view, name='user-delete'),
+    path('user/password/set/<int:pk>/', organization_vew.user_set_password, name='user-set-password'),
     path('school/delete/<int:pk>/', organization_vew.school_delete_view, name='delete-school'),
 ]

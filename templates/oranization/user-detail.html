@@ -27,7 +27,7 @@
 					</div>
 					<div class="ms-auto">
 						<div class="d-flex"><!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success" style="margin: 10px" data-bs-toggle="modal" data-bs-target="#exampleModal2">Parol o`zgartirish</button>
+                            <button ype="button" class="btn btn-success" style="margin: 10px" data-bs-toggle="modal" data-bs-target="#exampleModal2">Parol o`zgartirish</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -67,18 +67,15 @@
                                         </div>
                                         <div class="modal-body">Foydalanuvchini o`chirishni xoxlaysizmi?</div>
                                         <div class="modal-footer">
-                                            <form method="get" action="{% url 'user-delete' account.pk %}">
-                                            <button type="submit" class="btn btn-danger">O`chirish</button>
+                                            <a href="{% url 'user-delete' 4 %}" class="btn btn-danger">O`chirish</a>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Qatish</button>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 						</div>
 					</div>
-			</div>
-            {% if messages %}
+                     {% if messages %}
                     <div id="message_container" class="row" style="position: absolute; top: -20px; right: 20px; z-index: 999999999; width: 15%!important;">
                             {% for message in messages %}
                             {% if message.tags == 'success' %}
@@ -94,6 +91,7 @@
                         </div>
                     </div>
                 {% endif %}
+			</div>
 				<div class="row">
 					<div class="col-xl-9 mx-auto">
 						<h6 class="mb-0 text-uppercase">Maktab qo`shish uchun quyidagilarni to`ldiring</h6>
@@ -101,7 +99,7 @@
 						<div class="card border-top border-0 border-4 border-info">
 							<div class="card-body">
 								<div class="border p-4 rounded">
-                               <form method="post" action="{% url 'user-update' account.id %}">
+                               <form method="post" action="{% url 'user-update' user.id %}">
                                     {% csrf_token %}
                                     <div class="card-title d-flex align-items-center">
 										<div><i class="bx bxs-user me-1 font-22 text-info"></i>
@@ -112,19 +110,19 @@
 									<div class="row mb-3">
 										<label for="inputEnterYourName" class="col-sm-3 col-form-label">Ism:</label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEnterYourName" value="{{ account.first_name }}" name="first_name">
+											<input type="text" class="form-control" id="inputEnterYourName" value="{{ user.first_name }}" name="first_name">
 										</div>
 									</div>
 									<div class="row mb-3">
 										<label for="inputPhoneNo2" class="col-sm-3 col-form-label">Familiya: </label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputPhoneNo2" value="{{ account.last_name }}" name="last_name">
+											<input type="text" class="form-control" id="inputPhoneNo2" value="{{ user.last_name }}" name="last_name">
 										</div>
 									</div>
 									<div class="row mb-3">
 										<label for="inputEmailAddress2" class="col-sm-3 col-form-label">Username: </label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ account.username }}" name="username">
+											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ user.username }}" name="username">
 										</div>
 									</div>
                                     <div class="row mb-3">
@@ -132,7 +130,7 @@
 										<div class="col-sm-9">
 											<select class="single-select" name="school" >
                                                 {% for school in schools %}
-                                                    {% if school == account.school %}
+                                                    {% if school == user.uschools %}
                                                 <option value="{{ school.pk }}" selected>{{ school }}</option>
                                                     {% else %}
                                                 <option value="{{ school.pk }}">{{ school }}</option>
@@ -185,4 +183,5 @@
         // Timeout is 1 sec, you can change it
     </script>
 {% endblock script %}
+
 {% endblock %}

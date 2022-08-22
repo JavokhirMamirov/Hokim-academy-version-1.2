@@ -213,23 +213,23 @@ def user_update_view(request, pk):
 
 
 def user_set_password(request, pk):
-    user = Account.objects.get(id=pk)
+    user = Account.objects.get(pk=pk)
     if request.method == 'POST':
         password = request.POST['password']
         password_2 = request.POST['password2']
         if password == password_2:
             user.set_password(password)
             user.save()
-            messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
-            return redirect('user-update', user.id)
+            messages.success(request, "Foydalanuvchi paroli o`zgartirildi!")
+            return redirect('user-detail', user.id)
         else:
-            messages.success(request, "Parollar to`g`ri kelmadi!")
-            return redirect('user-update', user.id)
+            messages.error(request, "Parollar bir xil emas!")
+            return redirect('user-detail', user.id)
     else:
-        return redirect('user-update', user.id)
+        return redirect('user-detail', user.id)
 
 
-def user_delete_view(request,pk):
+def user_delete_view(request, pk):
     user = Account.objects.get(pk=pk)
     school = School.objects.get(id=user.school.id)
     user.delete()
