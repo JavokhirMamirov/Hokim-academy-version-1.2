@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from account.models import School, City, Student, Account
 from home.decarators import organ_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.contrib import messages
 
 def PagenatorPage(List, num, request):
     paginator = Paginator(List, num)
@@ -40,6 +40,7 @@ def organ_dashboard_view(request):
     }
     return render(request, 'oranization/index.html', context)
 
+
 @login_required(login_url='admin-login')
 @organ_required
 def schools_list_view(request):
@@ -54,6 +55,7 @@ def schools_list_view(request):
         'citys':citys
     }
     return render(request, 'oranization/schools.html', context)
+
 
 @login_required(login_url='admin-login')
 @organ_required
@@ -94,6 +96,7 @@ def add_schools_view(request):
         return redirect('school-detail', school.id)
     return render(request, 'oranization/add-school.html', context)
 
+
 @login_required(login_url='admin-login')
 @organ_required
 def school_detail_view (request, pk) :
@@ -102,6 +105,7 @@ def school_detail_view (request, pk) :
         'school': school
     }
     return render(request, 'oranization/school-detail.html', context)
+
 
 @login_required(login_url='admin-login')
 @organ_required
@@ -139,6 +143,33 @@ def update_detail_view(request, pk):
         'citys': citys
     }
     return render(request, 'oranization/update-school.html', context)
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def add_staff_school(request):
+    if request.method == 'POST':
+        try:
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            username = request.POST['username']
+            password = request.POST['password']
+            school_id = request.POST['school_id']
+            school = School.objects.get(id=school_id)
+            Account.objects.create_user(
+                username=username,
+                password=password,
+                school=school,
+                status=3,
+                first_name=first_name,
+                last_name=last_name
+            )
+            messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
+            return redirect('school-detail', school.id)
+        except:
+            messages.error(request, "Foydalanuvchi yaratishda xatolik!")
+            return redirect('school-detail', school.id)
+
 
 @login_required(login_url='admin-login')
 @organ_required

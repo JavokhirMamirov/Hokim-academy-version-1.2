@@ -25,6 +25,48 @@
 					</div>
 					<div class="ms-auto">
 						<div class="d-flex"><!-- Button trigger modal -->
+                            <button ype="button" class="btn btn-success" style="margin: 10px" data-bs-toggle="modal" data-bs-target="#exampleModal2">Xodim qo`shish</button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Maktabni xodimni qo`shish</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form class="row g-3" method="post" action="{% url 'staff-add' %}">
+                                        <div class="modal-body">
+                                            {% csrf_token %}
+                                                <div class="col-md-12">
+                                                    <label for="inputFirstName" class="form-label">Ism:</label>
+                                                    <input type="text" class="form-control" id="inputFirstName" name="first_name">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputLastName" class="form-label">Familiya:</label>
+                                                    <input type="text" class="form-control" id="inputLastName" name="last_name">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputUsername" class="form-label">Username:</label>
+                                                    <input type="text" class="form-control" id="inputUsername" name="username">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputPassword" class="form-label">Parol:</label>
+                                                    <input type="password" class="form-control" id="inputPassword" name="password">
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label for="inputPassword" class="form-label">Parol qaytaring:</label>
+                                                    <input type="password" class="form-control" id="inputPassword" name="password2">
+                                                </div>
+                                                    <input type="hidden" value="{{ school.id }}" name="school_id">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success">Qo`shish</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Qatish</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <button ype="button" class="btn btn-danger" style="margin: 10px" data-bs-toggle="modal" data-bs-target="#exampleModal">O`chirish</button>
                             <!-- Modal -->
                             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -49,7 +91,22 @@
 					</div>
 				</div>
 				<!--end breadcrumb-->
-
+                {% if messages %}
+                    <div id="message_container" class="row" style="position: absolute; top: -20px; right: 20px; z-index: 999999999; width: 15%!important;">
+                            {% for message in messages %}
+                            {% if message.tags == 'success' %}
+                            <div style="display:block;" class="alert alert-primary">
+                                {{ message}}
+                            </div>
+                            {% elif message.tags == 'error' %}
+                            <div style="display:block;" class="alert alert-warning">
+                                {{ message}}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
 				<div class="card">
 					<div class="row g-0">
 					  <div class="col-md-12">
@@ -76,25 +133,33 @@
 								<span class="price h5"> <strong>{{school.address}}</strong></span>
 							</div>
 						</div>
-						  <div class="mb-3 d-flex justify-content-around"> 
+						  <div class="mb-3 d-flex justify-content-around">
+                              {% if school.website %}
 							<div>
 								<span class="price h5">Web site:</span>
 								<span class="price h5"><strong>{{school.website}}</strong></span>
 							</div>
+                              {% endif %}
+                              {% if school.telegram %}
 							<div>
 								<span class="price h5">Telegram:</span>
 								<span class="price h5"> <strong>{{school.telegram}}</strong></span>
 							</div>
+                            {% endif %}
 						</div>
-						  <div class="mb-3 d-flex justify-content-around"> 
+						  <div class="mb-3 d-flex justify-content-around">
+                              {% if facebook %}
 							<div>
 								<span class="price h5">Facebook:</span>
 								<span class="price h5"><strong>{{school.facebook}}</strong></span>
 							</div>
+                              {% endif %}
+                              {% if instagram %}
 							<div>
 								<span class="price h5">Instagram:</span>
 								<span class="price h5"> <strong>{{school.instagram}}</strong></span>
 							</div>
+                              {% endif %}
 						</div>
 						  <p class="card-text fs-6">
 							<div class="card">
@@ -156,6 +221,14 @@
 
         marker.setMap(map)
     }
+    </script>
+     <script>
+        let message_ele = document.getElementById("message_container");
+
+        setTimeout(function(){
+           message_ele.style.display = "none";
+        }, 3000);
+        // Timeout is 1 sec, you can change it
     </script>
 {% endblock script %}
 {% endblock %}
