@@ -101,7 +101,7 @@ def president_student_view(request):
 
 @login_required(login_url='admin-login')
 @school_required
-def change_teacher_view(request, pk):
+def change_student_view(request, pk):
     if request.method == "POST":
         full_name = request.POST['full_name']
         birth_date = request.POST.get('birth_date')
@@ -110,10 +110,12 @@ def change_teacher_view(request, pk):
         address = request.POST['address']
         image = request.FILES.get('image')
         subject = request.POST['subject']
+        username = request.POST['username']
         st = Student.objects.get(id=pk)
         st.full_name = full_name
         st.start_study_year = start_study_year
         st.phone = phone
+        st.username = username
         st.address = address
         st.subject = Subject.objects.get(id=subject)
         if birth_date:
