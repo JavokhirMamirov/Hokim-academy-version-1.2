@@ -41,7 +41,6 @@ def dashboard(request):
 def student_profile(request, pk):
     context = {
         'teacher': Student.objects.get(id=pk),
-        'subject': Subject.objects.all()
     }
     return render(request, 'school/student-profile.html', context)
 
@@ -131,7 +130,6 @@ def change_student_view(request, pk):
         phone = request.POST['phone']
         address = request.POST['address']
         image = request.FILES.get('image')
-        subject = request.POST['subject']
         active = request.POST['active']
         status = request.POST['status']
         st = Student.objects.get(id=pk)
@@ -142,7 +140,6 @@ def change_student_view(request, pk):
         st.address = address
         st.active = int(active)
         st.status = int(status)
-        st.subject = Subject.objects.get(id=subject)
         if birth_date:
             st.birth_date = birth_date
         if len(request.FILES) > 0:
@@ -155,7 +152,6 @@ def change_student_view(request, pk):
 @school_required
 def add_student_view(request):
     context = {
-        "subject": Subject.objects.all(),
     }
     return render(request, 'school/add-student.html', context)
 
@@ -171,7 +167,6 @@ def create_student(request):
         phone = request.POST['phone']
         address = request.POST['address']
         image = request.FILES.get('image')
-        subject = request.POST['subject']
         status = int(request.POST['status'])
         Student.objects.create(
             full_name=full_name,
@@ -180,7 +175,6 @@ def create_student(request):
             phone=phone,
             address=address,
             image=image,
-            subject_id=subject,
             status=status,
             school=user.school
         )

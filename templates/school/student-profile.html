@@ -177,22 +177,6 @@
                                             </div>
                                             <div class="row mb-3">
                                                 <div class="col-sm-4">
-                                                    <h6 class="mb-0">Fan</h6>
-                                                </div>
-                                                <div class="col-sm-8 text-secondary">
-                                                    <select name="subject" class="form-control" id="">
-                                                        {% for s in subject %}
-                                                            {% if teacher.subject.id == s.id %}
-                                                                <option value="{{ s.id }}" selected>{{ s.name }}</option>
-                                                            {% else %}
-                                                                <option value="{{ s.id }}">{{ s.name }}</option>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-sm-4">
                                                     <h6 class="mb-0">Foydalanuvchi holati</h6>
                                                 </div>
                                                 <div class="col-sm-8 text-secondary">

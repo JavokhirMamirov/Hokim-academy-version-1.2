@@ -47,7 +47,6 @@
                                     <th class="text-center">Tugilgan kun</th>
                                     <th class="text-center">Manzil</th>
                                     <th class="text-center">Rasm</th>
-                                    <th class="text-center">Fan</th>
                                     <th class="text-center">Sertifikat</th>
                                     <th class="text-center">Ko'proq</th>
                                     <th class="text-center">Parol ozgartirish</th>
@@ -66,7 +65,6 @@
 										{% else %}
 										<td class="text-center"><img src="" alt="Rasm kiritilmagan"></td>
                                         {% endif %}
-                                        <td class="text-center">{{ t.subject }}</td>
                                         {% if t.certificate %}
                                         <td class="text-center"><a href="{{ t.certificate.url }}" download><button class="btn btn-primary">Download</button></a></td>
                                         {% else %}

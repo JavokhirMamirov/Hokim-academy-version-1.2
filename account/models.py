@@ -49,12 +49,6 @@ class Account(AbstractUser):
     status = models.SmallIntegerField(default=1, choices=STATUS_CHOICES)
 
 
-class Subject(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
 
 class Student(models.Model):
     STUDENT_TYPES = (
@@ -69,7 +63,6 @@ class Student(models.Model):
     phone = models.CharField(max_length=50, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     image = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.SmallIntegerField(default=1, choices=STUDENT_TYPES)
     promo_code = models.CharField(max_length=10, null=True, blank=True)
     username = models.CharField(max_length=255, unique=True)
