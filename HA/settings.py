@@ -82,6 +82,18 @@ DATABASES = {
     }
 }
 
+
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'hokim_akademy',
+#        'USER': 'digitalcity',
+#        'PASSWORD': 'd1g1talc1ty',
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#    }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -116,6 +128,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# STATIC_ROOT = BASE_DIR / 'static'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
