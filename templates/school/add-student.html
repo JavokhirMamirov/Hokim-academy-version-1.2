@@ -22,6 +22,22 @@
                         </nav>
 					</div>
 				</div>
+                {% if messages %}
+                    <div id="message_container" class="row" style="position: absolute; top: -20px; right: 20px; z-index: 999999999; width: 15%!important;">
+                            {% for message in messages %}
+                            {% if message.tags == 'success' %}
+                            <div style="display:block;" class="alert alert-primary">
+                                {{ message}}
+                            </div>
+                            {% elif message.tags == 'warning' %}
+                            <div style="display:block;" class="alert alert-warning">
+                                {{ message}}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
 				<div class="row">
 					<div class="col-xl-10 mx-auto">
 						<div class="card border-top border-0 border-4 border-info">
@@ -112,5 +128,13 @@
 
 		<!--end page wrapper -->
 {% block script %}
+    <script>
+        let message_ele = document.getElementById("message_container");
+
+        setTimeout(function(){
+           message_ele.style.display = "none";
+        }, 3000);
+        // Timeout is 1 sec, you can change it
+    </script>
 {% endblock script %}
 {% endblock %}

@@ -16,5 +16,7 @@ school_url = [
     path('settings/', settings_view, name='settings'),
     path('change-school/<int:pk>/', change_school_view, name='change-school'),
     path('change-student-password/<int:pk>/', change_student_password, name='change-student-password'),
+    path('delete-student/<int:pk>/', delete_student_view, name='delete-student'),
+    path('deleted-students/', deleted_students_view, name='deleted-students'),
 
 ]

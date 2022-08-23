@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from home.decarators import school_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
+from django.contrib import messages
 
 
 def PagenatorPage(List, num, request):
@@ -24,11 +26,12 @@ def PagenatorPage(List, num, request):
 def dashboard(request):
     school = request.user.school
     context = {
-        'pupil_count': Student.objects.filter(status__in=[1, 2, 3], school=school).count(),
-        'for_president_school_count': Student.objects.filter(status=1, school=school).count(),
-        'abuturient_count': Student.objects.filter(status=2, school=school).count(),
-        'foreigners_count': Student.objects.filter(status=3, school=school).count(),
-        'teacher_count': Student.objects.filter(status=4, school=school).count(),
+        'pupil_count': Student.objects.filter(status__in=[1, 2, 3], active=True, school=school).count(),
+        'for_president_school_count': Student.objects.filter(status=1, active=True, school=school).count(),
+        'abuturient_count': Student.objects.filter(status=2, active=True, school=school).count(),
+        'foreigners_count': Student.objects.filter(status=3, active=True, school=school).count(),
+        'teacher_count': Student.objects.filter(status=4, active=True, school=school).count(),
+        'passive_count': Student.objects.filter(active=False, school=school).count(),
     }
     return render(request, 'school/index.html', context)
 
@@ -48,9 +51,9 @@ def student_profile(request, pk):
 def teachers_view(request):
     search = request.GET.get('search')
     if search == "" or search is None:
-        teacher = Student.objects.filter(status=4, school=request.user.school)
+        teacher = Student.objects.filter(status=4, active=True, school=request.user.school)
     else:
-        teacher = Student.objects.filter(status=4, school=request.user.school, full_name__icontains=search)
+        teacher = Student.objects.filter(Q(full_name__icontains=search) | Q(username__icontains=search), status=4, active=True, school=request.user.school)
     context = {
         'teachers': PagenatorPage(teacher, 50, request)
     }
@@ -62,9 +65,9 @@ def teachers_view(request):
 def abuturient_view(request):
     search = request.GET.get('search')
     if search == "" or search is None:
-        abuturient = Student.objects.filter(status=2, school=request.user.school)
+        abuturient = Student.objects.filter(status=2, active=True, school=request.user.school)
     else:
-        abuturient = Student.objects.filter(status=2, school=request.user.school, full_name__icontains=search)
+        abuturient = Student.objects.filter(Q(full_name__icontains=search) | Q(username__icontains=search), status=2, active=True, school=request.user.school)
     context = {
         'abuturient': PagenatorPage(abuturient, 50, request)
     }
@@ -76,9 +79,9 @@ def abuturient_view(request):
 def foreign_student_view(request):
     search = request.GET.get('search')
     if search == "" or search is None:
-        student = Student.objects.filter(status=3, school=request.user.school)
+        student = Student.objects.filter(status=3, active=True, school=request.user.school)
     else:
-        student = Student.objects.filter(status=3, school=request.user.school, full_name__icontains=search)
+        student = Student.objects.filter(Q(full_name__icontains=search) | Q(username__icontains=search), status=3, active=True, school=request.user.school)
     context = {
         'student': PagenatorPage(student, 50, request)
     }
@@ -90,9 +93,9 @@ def foreign_student_view(request):
 def president_student_view(request):
     search = request.GET.get('search')
     if search == "" or search is None:
-        student = Student.objects.filter(status=1, school=request.user.school)
+        student = Student.objects.filter(status=1, active=True, school=request.user.school)
     else:
-        student = Student.objects.filter(status=1, school=request.user.school, full_name__icontains=search)
+        student = Student.objects.filter(Q(full_name__icontains=search) | Q(username__icontains=search), status=1, active=True, school=request.user.school)
     context = {
         'student': PagenatorPage(student, 50, request)
     }
@@ -101,8 +104,27 @@ def president_student_view(request):
 
 @login_required(login_url='admin-login')
 @school_required
+def deleted_students_view(request):
+    search = request.GET.get('search')
+    if search == "" or search is None:
+        student = Student.objects.filter(active=False, school=request.user.school)
+    else:
+        student = Student.objects.filter(Q(full_name__icontains=search) | Q(username__icontains=search),
+                                         active=False, school=request.user.school)
+    context = {
+        'student': PagenatorPage(student, 50, request)
+    }
+    return render(request, 'school/deleted-students.html', context)
+
+
+@login_required(login_url='admin-login')
+@school_required
 def change_student_view(request, pk):
     if request.method == "POST":
+        username = request.POST['username']
+        if Student.objects.filter(username=username).count() > 0:
+            messages.warning(request, "Bunday Foydalanuvchi mavjud usernameni o'zgartiring!")
+            return redirect('student-profile', pk)
         full_name = request.POST['full_name']
         birth_date = request.POST.get('birth_date')
         start_study_year = request.POST['start_study_year']
@@ -110,13 +132,16 @@ def change_student_view(request, pk):
         address = request.POST['address']
         image = request.FILES.get('image')
         subject = request.POST['subject']
-        username = request.POST['username']
+        active = request.POST['active']
+        status = request.POST['status']
         st = Student.objects.get(id=pk)
         st.full_name = full_name
         st.start_study_year = start_study_year
         st.phone = phone
         st.username = username
         st.address = address
+        st.active = int(active)
+        st.status = int(status)
         st.subject = Subject.objects.get(id=subject)
         if birth_date:
             st.birth_date = birth_date
@@ -134,7 +159,6 @@ def add_student_view(request):
     }
     return render(request, 'school/add-student.html', context)
 
-from PIL import Image
 
 @login_required(login_url='admin-login')
 @school_required
@@ -149,9 +173,6 @@ def create_student(request):
         image = request.FILES.get('image')
         subject = request.POST['subject']
         status = int(request.POST['status'])
-        img = Image.open(image)
-        area = (400, 400, 800, 800)
-        cropped_img = img.crop(area)
         Student.objects.create(
             full_name=full_name,
             birth_date=birth_date,
@@ -163,6 +184,7 @@ def create_student(request):
             status=status,
             school=user.school
         )
+        messages.success(request, "Muvofaqiyatli qo'shildi")
     return redirect('add-student')
 
 
@@ -225,4 +247,21 @@ def change_student_password(request, pk):
         else:
             return redirect('school-dashboard')
 
+
+@login_required(login_url='admin-login')
+@school_required
+def delete_student_view(request, pk):
+    st = Student.objects.get(id=pk)
+    st.active = False
+    st.save()
+    if int(st.status) == 1:
+        return redirect("president-student")
+    elif int(st.status) == 2:
+        return redirect('abuturient')
+    elif int(st.status) == 3:
+        return redirect('foreign-student')
+    elif int(st.status) == 4:
+        return redirect('teachers')
+    else:
+        return redirect('school-dashboard')
 

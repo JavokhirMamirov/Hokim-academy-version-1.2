@@ -32,7 +32,7 @@
             {% if request.path == '/school/add-student/'%}
             <li class="active">
                 <a href="{% url 'add-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    <div class="parent-icon"><i class="bx bx-user-plus"></i>
                     </div>
                     <div class="menu-title">O'quvchi qo'shish</div>
                 </a>
@@ -40,7 +40,7 @@
             {% else %}
             <li>
                 <a href="{% url 'add-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user"></i>
+                    <div class="parent-icon"><i class="bx bx-user-plus"></i>
                     </div>
                     <div class="menu-title">O'quvchi qo'shish</div>
                 </a>
@@ -116,6 +116,23 @@
             </li>
             {% endif %}
 
+            {% if request.path == '/school/deleted-students/'%}
+            <li class="active">
+                <a href="{% url 'deleted-students' %}">
+                    <div class="parent-icon"><i class="bx bx-user-minus"></i>
+                    </div>
+                    <div class="menu-title">O'chirilgan studentlar</div>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'deleted-students' %}">
+                    <div class="parent-icon"><i class="bx bx-user-minus"></i>
+                    </div>
+                    <div class="menu-title">O'chirilgan studentlar</div>
+                </a>
+            </li>
+            {% endif %}
         </ul>
     <!--end navigation-->
 </div>

@@ -43,7 +43,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">To'liq ism</th>
-                                    <th class="text-center">Telefon</th>
+                                    <th class="text-center">Username</th>
                                     <th class="text-center">Tugilgan kun</th>
                                     <th class="text-center">Manzil</th>
                                     <th class="text-center">Rasm</th>
@@ -51,13 +51,14 @@
                                     <th class="text-center">Sertifikat</th>
                                     <th class="text-center">Ko'proq</th>
                                     <th class="text-center">Parol ozgartirish</th>
+                                    <th class="text-center">O'chirish</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for t in abuturient %}
 									<tr>
 										<td class="text-center">{{ t.full_name }}</td>
-										<td class="text-center">{{ t.phone }}</td>
+										<td class="text-center">{{ t.username }}</td>
 										<td class="text-center">{{ t.birth_date|date:'Y-m-d' }}</td>
 										<td class="text-center">{{ t.address }}</td>
                                         {% if t.image %}
@@ -76,6 +77,8 @@
                                             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleVerticallycenteredModal{{ t.id }}">
                                         <div class="text-white text-center"><i class="fadeIn animated bx bx-edit-alt"></i></div>
                                         </button></td>
+                                        <td class="text-center"><a href="{% url 'delete-student' t.id %}" class="btn btn-danger"><i class="bx bx-trash text-white"></i></a></td>
+
 										<!-- Modal -->
 										<div class="modal fade" id="exampleVerticallycenteredModal{{ t.id }}" tabindex="-1" aria-hidden="true">
 											<div class="modal-dialog modal-dialog-centered">
