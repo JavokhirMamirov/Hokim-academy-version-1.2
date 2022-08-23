@@ -121,9 +121,6 @@ def deleted_students_view(request):
 def change_student_view(request, pk):
     if request.method == "POST":
         username = request.POST['username']
-        if Student.objects.filter(username=username).count() > 0:
-            messages.warning(request, "Bunday Foydalanuvchi mavjud usernameni o'zgartiring!")
-            return redirect('student-profile', pk)
         full_name = request.POST['full_name']
         birth_date = request.POST.get('birth_date')
         start_study_year = request.POST['start_study_year']
@@ -136,6 +133,10 @@ def change_student_view(request, pk):
         st.full_name = full_name
         st.start_study_year = start_study_year
         st.phone = phone
+        if username != st.username:
+            if Student.objects.filter(username=username).count() > 0:
+                messages.warning(request, "Bunday Foydalanuvchi mavjud usernameni o'zgartiring!")
+                return redirect('student-profile', pk)
         st.username = username
         st.address = address
         st.active = int(active)
@@ -145,6 +146,7 @@ def change_student_view(request, pk):
         if len(request.FILES) > 0:
             st.image = image
         st.save()
+        messages.success(request, "Muvofaqiyatli o'zgartirildi")
     return redirect('student-profile', pk)
 
 
