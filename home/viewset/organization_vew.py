@@ -187,7 +187,7 @@ def user_detail_view(request, pk):
     account = Account.objects.get(id=pk)
     schools = School.objects.all()
     context = {
-        'user': account,
+        'account': account,
         'schools': schools
     }
     return render(request, 'oranization/user-detail.html', context)
@@ -209,4 +209,28 @@ def user_update_view(request, pk):
         account.school = school
         account.save()
         return redirect('user-detail', account.id)
-    return render(request, 'oranization/user-detail.html', context)
+    return render(request, 'oranization/user-detail.html')
+
+
+def user_set_password(request, pk):
+    user = Account.objects.get(id=pk)
+    if request.method == 'POST':
+        password = request.POST['password']
+        password_2 = request.POST['password2']
+        if password == password_2:
+            user.set_password(password)
+            user.save()
+            messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
+            return redirect('user-update', user.id)
+        else:
+            messages.success(request, "Parollar to`g`ri kelmadi!")
+            return redirect('user-update', user.id)
+    else:
+        return redirect('user-update', user.id)
+
+
+def user_delete_view(request,pk):
+    user = Account.objects.get(pk=pk)
+    school = School.objects.get(id=user.school.id)
+    user.delete()
+    return redirect('school-detail', school.id)
