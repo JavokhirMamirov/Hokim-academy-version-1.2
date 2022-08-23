@@ -67,7 +67,8 @@
                                         </div>
                                         <div class="modal-body">Foydalanuvchini o`chirishni xoxlaysizmi?</div>
                                         <div class="modal-footer">
-                                            <a href="{% url 'user-delete' 4 %}" class="btn btn-danger">O`chirish</a>
+                                            <a href="{% url 'user-delete' account.id %}" class="btn btn-danger">O`chirish</a>
+
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Qatish</button>
                                         </div>
                                     </div>
@@ -110,19 +111,19 @@
 									<div class="row mb-3">
 										<label for="inputEnterYourName" class="col-sm-3 col-form-label">Ism:</label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEnterYourName" value="{{ user.first_name }}" name="first_name">
+											<input type="text" class="form-control" id="inputEnterYourName" value="{{ account.first_name }}" name="first_name">
 										</div>
 									</div>
 									<div class="row mb-3">
 										<label for="inputPhoneNo2" class="col-sm-3 col-form-label">Familiya: </label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputPhoneNo2" value="{{ user.last_name }}" name="last_name">
+											<input type="text" class="form-control" id="inputPhoneNo2" value="{{ account.last_name }}" name="last_name">
 										</div>
 									</div>
 									<div class="row mb-3">
 										<label for="inputEmailAddress2" class="col-sm-3 col-form-label">Username: </label>
 										<div class="col-sm-9">
-											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ user.username }}" name="username">
+											<input type="text" class="form-control" id="inputEmailAddress2" value="{{ account.username }}" name="username">
 										</div>
 									</div>
                                     <div class="row mb-3">

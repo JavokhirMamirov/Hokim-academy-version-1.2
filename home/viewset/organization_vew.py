@@ -212,6 +212,8 @@ def user_update_view(request, pk):
     return render(request, 'oranization/user-detail.html')
 
 
+@login_required(login_url='admin-login')
+@organ_required
 def user_set_password(request, pk):
     user = Account.objects.get(pk=pk)
     if request.method == 'POST':
@@ -229,8 +231,10 @@ def user_set_password(request, pk):
         return redirect('user-detail', user.id)
 
 
+@login_required(login_url='admin-login')
+@organ_required
 def user_delete_view(request, pk):
-    user = Account.objects.get(pk=pk)
-    school = School.objects.get(id=user.school.id)
-    user.delete()
+    user_del = Account.objects.get(pk=pk)
+    school = School.objects.get(id=user_del.school.id)
+    user_del.delete()
     return redirect('school-detail', school.id)
