@@ -6,6 +6,7 @@ __pycache__/
 **/__pycache__/**
 .vscode
 media/
+home/packages/default_certificate/qrcode.png
 venv
 home/migrations/*
 !home/migrations/__init__.py
