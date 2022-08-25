@@ -49,7 +49,6 @@ class Account(AbstractUser):
     status = models.SmallIntegerField(default=1, choices=STATUS_CHOICES)
 
 
-
 class Student(models.Model):
     STUDENT_TYPES = (
         (1, "Prezident Maktabiga"),
@@ -88,3 +87,48 @@ class Student(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class Skill(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Teacher(models.Model):
+    full_name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    username = models.CharField(max_length=50, unique=True)
+    password = models.CharField(max_length=255)
+    skill = models.ManyToManyField(Skill)
+    email = models.CharField(max_length=255, null=True, blank=True)
+    biography = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='teacher-image/', null=True, blank=True)
+    website = models.CharField(max_length=255, null=True, blank=True)
+    instagram = models.CharField(max_length=255, null=True, blank=True)
+    facebook = models.CharField(max_length=255, null=True, blank=True)
+    telegram = models.CharField(max_length=255, null=True, blank=True)
+    date_added = models.DateField(auto_now_add=True)
+    last_modified = models.DateField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.full_name
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.password = make_password(self.password)
+        super(Teacher, self).save(*args, **kwargs)
+
+    @property
+    def is_authenticated(self):
+        """
+        Always return True. This is a way to tell if the user has been
+        authenticated in templates.
+        """
+        return True
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+        self.save()
