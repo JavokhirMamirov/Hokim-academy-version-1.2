@@ -5,9 +5,10 @@ account/migrations/*
 __pycache__/
 **/__pycache__/**
 .vscode
+media/
 venv
 home/migrations/*
 !home/migrations/__init__.py
-agent/migrations/*
-!agent/migrations/__init__.py
+course/migrations/*
+!course/migrations/__init__.py
 db.sqlite3
