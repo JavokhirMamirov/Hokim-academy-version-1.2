@@ -69,7 +69,15 @@ class Student(models.Model):
     password = models.CharField(max_length=255)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     is_used_promocode = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+
+    @property
+    def is_authenticated(self):
+        """
+        Always return True. This is a way to tell if the user has been
+        authenticated in templates.
+        """
+        return True
 
     def save(self, *args, **kwargs):
         if self.pk is None:
