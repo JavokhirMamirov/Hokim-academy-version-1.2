@@ -8,17 +8,17 @@ VIDEO_TYPES = (
     ("Vimeo", "Vimeo")
 )
 
+COURSE_TYPES = (
+    (1, "Prezident Maktabiga kiruvchilar uchun"),
+    (2, "Abuturentlar uchun"),
+    (3, "Xorijiy til o'rganuvchilar uchun"),
+    (4, "O'qtuvchilar uchun"),
+    (5, "Barcha uchun"),
+)
 
 class Language(models.Model):
     name = models.CharField(max_length=255)
-    shot_name = models.CharField(max_length=5)
-
-    def __str__(self):
-        return self.name
-
-
-class CourseType(models.Model):
-    name = models.CharField(max_length=255)
+    short_name = models.CharField(max_length=5)
 
     def __str__(self):
         return self.name
@@ -40,8 +40,6 @@ class Level(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    date_added = models.DateField(auto_now_add=True)
-    last_modified = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -50,8 +48,6 @@ class Category(models.Model):
 class SubCategory(models.Model):
     name = models.CharField(max_length=255)
     parent = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    date_added = models.DateField(auto_now_add=True)
-    last_modified = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -59,8 +55,6 @@ class SubCategory(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
-    date_added = models.DateField(auto_now_add=True)
-    last_modified = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -82,7 +76,7 @@ class Course(models.Model):
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now=True)
     status = models.ForeignKey(CourseStatus, on_delete=models.SET_NULL, null=True, blank=True)
-    course_type = models.ManyToManyField(CourseType)
+    course_type = models.SmallIntegerField(default=5, choices=COURSE_TYPES)
     total_time = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
