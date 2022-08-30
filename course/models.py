@@ -16,6 +16,7 @@ COURSE_TYPES = (
     (5, "Barcha uchun"),
 )
 
+
 class Language(models.Model):
     name = models.CharField(max_length=255)
     short_name = models.CharField(max_length=5)
@@ -78,6 +79,8 @@ class Course(models.Model):
     status = models.ForeignKey(CourseStatus, on_delete=models.SET_NULL, null=True, blank=True)
     course_type = models.SmallIntegerField(default=5, choices=COURSE_TYPES)
     total_time = models.IntegerField(default=0)
+    is_recommended = models.BooleanField(default=False)
+    best_three = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
