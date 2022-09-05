@@ -8,16 +8,14 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 from account.models import Student
 
 
-
-
 @api_view(['PUT'])
 @authentication_classes([StudentJwtAuthentication])
 @permission_classes([IsAuthenticated])
-def changePasswordAndUsernameFirstView(request, pk):
+def changePasswordAndUsernameFirstView(request):
     try:
         password = request.data.get('password')
         username = request.data.get('username')
-        student = Student.objects.get(id=pk)
+        student = request.user
         if student.username != username:
             students = Student.objects.filter(username=username)
             if students.count() > 0:
@@ -55,10 +53,11 @@ def changePasswordAndUsernameFirstView(request, pk):
 @api_view(['PUT'])
 @authentication_classes([StudentJwtAuthentication])
 @permission_classes([IsAuthenticated])
-def changePasswordView(request, pk):
+def changePasswordView(request):
     try:
+
         password = request.data.get('password')
-        student = Student.objects.get(id=pk)
+        student = request.user
         student.password = make_password(password)
         student.save()
         data = {
@@ -104,12 +103,16 @@ def studentLoginView(request):
             "success": False,
             "error": err
         }
+    print(data)
     return Response(data)
 
 
 def authenticate(model, username, password):
-    user = model.objects.get(username=username)
-    if check_password(password, user.password):
-        return user
-    else:
+    try:
+        user = model.objects.get(username=username)
+        if check_password(password, user.password):
+            return user
+        else:
+            return None
+    except:
         return None

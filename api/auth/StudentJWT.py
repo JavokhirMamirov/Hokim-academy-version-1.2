@@ -20,7 +20,7 @@ class StudentJwtAuthentication(JWTAuthentication):
         except Student.DoesNotExist:
             raise AuthenticationFailed(_("User not found"), code="user_not_found")
 
-        if not user.is_active:
+        if not user.active:
             raise AuthenticationFailed(_("User is inactive"), code="user_inactive")
 
         return user

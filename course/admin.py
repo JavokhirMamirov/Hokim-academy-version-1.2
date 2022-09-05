@@ -63,7 +63,7 @@ class LessonAttachmentAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'section', 'video_type', 'summary', 'attachment', 'date_added']
+    list_display = ['id', 'title', 'section', 'video_type', 'summary',  'date_added']
 
 
 @admin.register(Quiz)
@@ -107,10 +107,8 @@ class WatchHistoryAdmin(admin.ModelAdmin):
     list_display = ['id',
                     'student',
                     'course',
-                    'completed_lesson',
                     'course_progress',
                     'watching_lesson',
-                    'quiz_result',
                     'date_added',
                     'date_updated',
                     ]
