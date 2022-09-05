@@ -37,6 +37,7 @@ def changePasswordAndUsernameFirstView(request):
                 "full_name": student.full_name,
                 "username": student.username,
                 "status": student.status,
+                "image": student.image,
                 "is_used_promocode": student.is_used_promocode
             },
             "message": "Username and Password changed"
@@ -82,7 +83,7 @@ def studentLoginView(request):
             refresh = RefreshToken.for_user(user)
             data = {
                 'success': True,
-                'token':{
+                'token': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                 },

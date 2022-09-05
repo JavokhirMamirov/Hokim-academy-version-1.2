@@ -112,7 +112,7 @@ class Lesson(models.Model):
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now_add=True)
     summary = models.TextField(null=True)
-    attachment = models.ManyToManyField(LessonAttachment)
+    attachment = models.ManyToManyField(LessonAttachment, blank=True)
     time = models.IntegerField(default=0)
     order = models.IntegerField(default=0)
 
