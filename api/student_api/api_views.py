@@ -82,8 +82,10 @@ def studentLoginView(request):
             refresh = RefreshToken.for_user(user)
             data = {
                 'success': True,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
+                'token':{
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                },
                 'user': {
                     "id": user.id,
                     "full_name": user.full_name,
