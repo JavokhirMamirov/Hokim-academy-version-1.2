@@ -3,13 +3,127 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Teacher
+from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
+    SubCategorySerialzier, TagSerializer
+from api.auth.TeacherJWT import TeacherJwtAuthentication
+from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def languageView(request):
+    try:
+        queries = Language.objects.all()
+        ser = LanguageSerializer(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def courseStatusView(request):
+    try:
+        queries = CourseStatus.objects.all()
+        ser = CourseStatusSerializer(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def levelView(request):
+    try:
+        queries = Level.objects.all()
+        ser = LevelSerializer(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def categoryView(request):
+    try:
+        queries = Category.objects.all()
+        ser = CategorySerializer(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def subCategoryView(request):
+    try:
+        queries = SubCategory.objects.all()
+        ser = SubCategorySerialzier(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def tagView(request):
+    try:
+        queries = Tag.objects.all()
+        ser = TagSerializer(queries, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 @api_view(['PUT'])
-@authentication_classes([StudentJwtAuthentication])
+@authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
 def changePasswordView(request):
     try:
