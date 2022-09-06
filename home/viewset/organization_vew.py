@@ -46,11 +46,13 @@ def organ_dashboard_view(request):
 @organ_required
 def schools_list_view(request):
     citys = City.objects.all()
+    req = request.GET.get('city')
     q = request.GET.get('q')
     schools = School.objects.all()
     if q != '' and q is not None:
         schools = School.objects.filter(Q(name__icontains=q)| Q(director__icontains=q)|Q(address__icontains=q))
-
+    if req != '' and req is not None:
+        schools = School.objects.filter(city__in=[req])
     context = {
         'schools': PagenatorPage(schools.order_by('city_id'), 30, request),
         'citys':citys

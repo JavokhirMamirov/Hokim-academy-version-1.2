@@ -4,6 +4,10 @@
     {% include 'oranization/sidebar.html' %}
 {% endblock sidebar_header %}
 {% block style %}
+
+    
+<link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
 {% endblock style %}
 {% block content %}
 		<!--start page wrapper -->
@@ -21,7 +25,6 @@
 							</ol>
 						</nav>
 					</div>
-
 					<div class="ms-auto">
 						<div class="btn-group">
 							<a href="{% url 'add-school' %}" class="btn btn-primary">Maktab qo`shish</a>
@@ -32,15 +35,24 @@
 				<hr/>
 
             	<div class="card">
-                    <div class="d-flex justify-content-start">
+                    <div class="d-flex justify-content-between">
                         <div class="m-2">
                             <form method="get">
                             <div class="input-group ">
                                 <input type="text" class="form-control" placeholder="Qidiruv" aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
                                 <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
                             </div>
-                            </form>
-                        </div>
+                        </form>
+                    </div>                        
+                    <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px; width: 15%;" method="get">
+                            <label class="form-label"></label>
+                            <select class="single-select" name="city">
+                                {% for city in citys %}
+                                <option value="{{city.id}}">{{city.name}}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Filterlash</button>
+                    </form>
                     </div>
                     <div class="card-body">
                         <table class="table mb-0 table-striped">
@@ -103,5 +115,22 @@
 		<!--end page wrapper -->
 {% block script %}
 
+<script src=" {% static 'plugins/select2/js/select2.min.js' %}"></script>
+	<script>
+		$('.single-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+		$('.multiple-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+	</script>
 {% endblock script %}
+
+<link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
 {% endblock %}

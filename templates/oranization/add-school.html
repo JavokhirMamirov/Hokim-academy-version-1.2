@@ -95,23 +95,29 @@
 											<input type="hidden" id="lc_lng" name="lng">
 										</div>
 									</div>
-									<div class="row mb-3">
-										<label  class="col-sm-3 col-form-label">Manzilnin belgilang </label>
-										<div class="col-sm-9">
-												<div class="card-body" style=" width: 105%;">
-													<div id="simple-map" class="gmaps"></div>
-												</div>
+								</div>		
+								<div class="row mb-3">
+									<label for="inputAddress4" class="col-sm-3 col-form-label">Manzilnin belgilang </label>
+									<div class="col-sm-9">
+										<div class="row">
+										<div class="col-md-6">
+											<label for="inputFirstName" class="form-label">Uzunlik</label>
+											<input type="text" class="form-control" id="lc_lat" placeholder="42.320982660114694" name="lat">
+										</div>
+										<div class="col-md-6">
+											<label for="inputFirstName" class="form-label">Kenglik</label>
+											<input type="text" class="form-control" id="lng" placeholder="69.59167315405273" name="lng">
 										</div>
 									</div>
 									</div>
-									<div class="row">
+								</div>
+								<div class="row">
 										<label class="col-sm-3 col-form-label"></label>
 										<div class="col-sm-9">
 											<button type="submit" class="btn btn-info px-5">Qo`shish</button>
 										</div>
-									</div>
-                                </form>
-
+								</div>
+                            </form>
 								</div>
 							</div>
 						</div>
@@ -143,7 +149,7 @@
 	</script>
 {% endblock script %}
 <!-- google maps api -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4&callback=initMap" async defer></script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKXKdHQdtqgPVl2HI2RnUa_1bjCxRCQo4&callback=initMap" async defer></script>
 <script src="{% static 'plugins/gmaps/map-custom-script.js' %}"></script>
-<script src="{% static 'js/map2.js' %}"></script>
+<script src="{% static 'js/map2.js' %}"></script> -->
 {% endblock %}
