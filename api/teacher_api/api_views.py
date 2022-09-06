@@ -12,6 +12,9 @@ from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerial
 from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course, Section, Lesson
 
 
+
+
+
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
