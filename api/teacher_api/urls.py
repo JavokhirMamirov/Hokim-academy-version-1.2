@@ -12,7 +12,11 @@ urlpatterns = [
     path('tag/', api_views.tagView),
 
     path('course/', api_views.courseView),
-    path('course/<int:pk>/', api_views.courseView)
+    path('course/<int:pk>/', api_views.courseView),
+    path('section/', api_views.sectionView),
+    path('section/<int:pk>/', api_views.sectionView),
+    path('lesson/', api_views.lessonView),
+    path('lesson/<int:pk>/', api_views.lessonView)
 
 ]
 

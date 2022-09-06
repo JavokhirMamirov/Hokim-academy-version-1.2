@@ -63,13 +63,12 @@ class Tag(models.Model):
 
 class Course(models.Model):
     STEP = (
-        (1, 'Media uploading'),
-        (2, 'Lesson adding'),
-        (3, 'Quiz adding'),
-        (4, 'Finished'),
-        (5, 'Checking'),
-        (6, 'Canceled'),
-        (7, 'Published'),
+        (1, 'Lesson adding'),
+        (2, 'Quiz adding'),
+        (3, 'Finished'),
+        (4, 'Checking'),
+        (5, 'Canceled'),
+        (6, 'Published'),
     )
     title = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)

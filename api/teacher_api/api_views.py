@@ -8,8 +8,133 @@ from account.models import Teacher
 from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
     SubCategorySerialzier, TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
-from api.teacher_api.serializers import CourseGetSerializer
-from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course
+from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer
+from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course, Section, Lesson
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def lessonView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            section = request.GET.get('section')
+            query = Lesson.objects.filter(section_id=section)
+            ser = LessonSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == 'POST':
+            title = request.data['title']
+            section = request.data['section']
+            video_type = request.data['video_type']
+            video = request.data['video']
+            summary = request.data['summary']
+            time = request.data['time']
+            order = request.data['order']
+
+            query = Lesson.objects.create(
+                title=title, section_id=section, video_type=video_type,
+                video=video, summary=summary, time=time,
+                order=order
+            )
+
+            ser = LessonSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+
+        elif request.method == 'PUT':
+            title = request.data['title']
+            section = request.data['section']
+            video_type = request.data['video_type']
+            video = request.data['video']
+            summary = request.data['summary']
+            time = request.data['time']
+            order = request.data['order']
+            query = Lesson.objects.get(id=pk)
+            query.title = title
+            query.order = order
+            query.section_id = section
+            query.video_type = video_type
+            query.video = video
+            query.summary = summary
+            query.time = time
+            query.save()
+            ser = LessonSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        else:
+            query = Lesson.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": pk
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def sectionView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            course = request.GET.get('course')
+            query = Section.objects.filter(course_id=course)
+            ser = CourseLessonsSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == 'POST':
+            title = request.data['title']
+            course = request.data['course']
+            order = request.data['order']
+
+            query = Section.objects.create(
+                title=title, course_id=course, order=order
+            )
+
+            ser = CourseLessonsSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+
+        elif request.method == 'PUT':
+            title = request.data['title']
+            order = request.data['order']
+            query = Section.objects.get(id=pk)
+            query.title = title
+            query.order = order
+            query.save()
+            ser = CourseLessonsSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        else:
+            query = Section.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": pk
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 @api_view(['POST', 'GET', 'PUT'])
@@ -21,7 +146,7 @@ def courseView(request, pk=None):
             if pk is not None:
                 query = Course.objects.get(id=pk)
             else:
-                query = Course.objects.get(teacher=request.user, step__lt=7)
+                query = Course.objects.get(teacher=request.user, step__lt=6)
 
             ser = CourseGetSerializer(query)
             data = {
