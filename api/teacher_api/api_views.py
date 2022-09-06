@@ -12,7 +12,7 @@ from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerial
 from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course, Section, Lesson
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
 def lessonView(request, pk=None):
@@ -82,7 +82,7 @@ def lessonView(request, pk=None):
         }
     return Response(data)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
 def sectionView(request, pk=None):
