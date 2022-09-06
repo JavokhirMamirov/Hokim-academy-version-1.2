@@ -8,7 +8,7 @@ urlpatterns = [
     path('course-status/', api_views.courseStatusView),
     path('level/', api_views.levelView),
     path('category/', api_views.categoryView),
-    path('sub-category/', api_views.languageView),
+    path('sub-category/', api_views.subCategoryView),
     path('tag/', api_views.tagView),
 
 ]

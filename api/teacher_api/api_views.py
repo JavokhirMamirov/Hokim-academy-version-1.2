@@ -29,6 +29,7 @@ def languageView(request):
         }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -85,6 +86,7 @@ def categoryView(request):
         }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -102,6 +104,7 @@ def subCategoryView(request):
             "error": f"{err}"
         }
     return Response(data)
+
 
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -150,6 +153,10 @@ def teacherLoginView(request):
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(model=Teacher, username=username, password=password)
+        try:
+            img = user.image.url
+        except:
+            img = None
         if user is not None:
             refresh = RefreshToken.for_user(user)
             data = {
@@ -162,9 +169,10 @@ def teacherLoginView(request):
                     "id": user.id,
                     "full_name": user.full_name,
                     "username": user.username,
-                    "image": user.image
+                    "image": img
                 }
             }
+            print(data)
         else:
             data = {
                 "success": False,

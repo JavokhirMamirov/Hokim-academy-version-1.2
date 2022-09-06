@@ -16,6 +16,10 @@ def changePasswordAndUsernameFirstView(request):
         password = request.data.get('password')
         username = request.data.get('username')
         student = request.user
+        try:
+            img = student.image.url
+        except:
+            img = None
         if student.username != username:
             students = Student.objects.filter(username=username)
             if students.count() > 0:
@@ -37,7 +41,7 @@ def changePasswordAndUsernameFirstView(request):
                 "full_name": student.full_name,
                 "username": student.username,
                 "status": student.status,
-                "image": student.image,
+                "image": img,
                 "is_used_promocode": student.is_used_promocode
             },
             "message": "Username and Password changed"
@@ -81,6 +85,10 @@ def studentLoginView(request):
         user = authenticate(model=Student, username=username, password=password)
         if user is not None:
             refresh = RefreshToken.for_user(user)
+            try:
+                img = user.image.url
+            except:
+                img = None
             data = {
                 'success': True,
                 'token': {
@@ -92,6 +100,7 @@ def studentLoginView(request):
                     "full_name": user.full_name,
                     "username": user.username,
                     "status": user.status,
+                    "image":img,
                     "is_used_promocode": user.is_used_promocode
                 }
             }
