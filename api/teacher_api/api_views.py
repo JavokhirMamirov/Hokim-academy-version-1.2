@@ -8,7 +8,83 @@ from account.models import Teacher
 from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
     SubCategorySerialzier, TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
-from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag
+from api.teacher_api.serializers import CourseGetSerializer
+from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course
+
+
+@api_view(['POST', 'GET', 'PUT'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def courseView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            if pk is not None:
+                query = Course.objects.get(id=pk)
+            else:
+                query = Course.objects.get(teacher=request.user, step__lt=7)
+
+            ser = CourseGetSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+
+        elif request.method == 'POST':
+            teacher = request.user
+            title = request.data['title']
+            short_description = request.data['short_description']
+            description = request.data['description']
+            language = request.data['language']
+            category = request.data['category']
+            sub_category = request.data['sub_category']
+            level = request.data['level']
+            image = request.data['image']
+            course_type = request.data['course_type']
+
+            query = Course.objects.create(
+                teacher=teacher, title=title, short_description=short_description,
+                description=description, language_id=language, category_id=category,
+                sub_category_id=sub_category, level_id=level, course_type=course_type,
+                image=image
+            )
+            ser = CourseGetSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == "PUT":
+            query = Course.objects.get(id=pk)
+            title = request.data['title']
+            short_description = request.data['short_description']
+            description = request.data['description']
+            language = request.data['language']
+            category = request.data['category']
+            sub_category = request.data['sub_category']
+            level = request.data['level']
+            image = request.data.get('image')
+            course_type = request.data['course_type']
+            query.title = title
+            query.short_description = short_description
+            query.description = description
+            query.language_id = language
+            query.category_id = category
+            query.sub_category_id = sub_category
+            query.level_id = level
+            query.course_type = course_type
+            if image is not None:
+                query.image = image
+            query.save()
+            ser = CourseGetSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 @api_view(['GET'])

@@ -62,6 +62,15 @@ class Tag(models.Model):
 
 
 class Course(models.Model):
+    STEP = (
+        (1, 'Media uploading'),
+        (2, 'Lesson adding'),
+        (3, 'Quiz adding'),
+        (4, 'Finished'),
+        (5, 'Checking'),
+        (6, 'Canceled'),
+        (7, 'Published'),
+    )
     title = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
@@ -81,6 +90,7 @@ class Course(models.Model):
     total_time = models.IntegerField(default=0)
     is_recommended = models.BooleanField(default=False)
     best_three = models.BooleanField(default=False)
+    step = models.SmallIntegerField(default=1, choices=STEP)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

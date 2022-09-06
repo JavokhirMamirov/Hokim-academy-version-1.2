@@ -11,6 +11,9 @@ urlpatterns = [
     path('sub-category/', api_views.subCategoryView),
     path('tag/', api_views.tagView),
 
+    path('course/', api_views.courseView),
+    path('course/<int:pk>/', api_views.courseView)
+
 ]
 
 auth_patterns = [
