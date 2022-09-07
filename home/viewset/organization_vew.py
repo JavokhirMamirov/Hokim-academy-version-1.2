@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from account.models import School, City, Student, Account
 from home.decarators import organ_required
@@ -48,10 +49,10 @@ def schools_list_view(request):
     q = request.GET.get('q')
     schools = School.objects.all()
     if q != '' and q is not None:
-        schools = School.objects.filter(name__icontains=q)
+        schools = School.objects.filter(Q(name__icontains=q)| Q(director__icontains=q)|Q(address__icontains=q))
 
     context = {
-        'schools': PagenatorPage(schools, 10, request),
+        'schools': PagenatorPage(schools.order_by('city_id'), 30, request),
         'citys':citys
     }
     return render(request, 'oranization/schools.html', context)

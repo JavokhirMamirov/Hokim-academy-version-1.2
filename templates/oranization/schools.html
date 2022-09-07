@@ -57,7 +57,7 @@
                             <tbody>
                                 {% for school in schools %}
                                     <tr>
-										<td class="text-center">{{forloop.counter}}</td>
+										<td class="text-center">{{forloop.counter0|add:schools.start_index}}</td>
 										<td class="text-center">{{ school.name }}</td>
 										<td class="text-center">{{ school.director }}</td>
 										<td class="text-center">{{ school.city }}</td>
