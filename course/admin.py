@@ -23,9 +23,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
 
 
-@admin.register(SubCategory)
-class SubCategoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'parent']
 
 
 @admin.register(Tag)
@@ -40,7 +37,6 @@ class CourseAdmin(admin.ModelAdmin):
         "title",
         "short_description",
         "language",
-        "sub_category",
         "level",
         "teacher",
         "status",

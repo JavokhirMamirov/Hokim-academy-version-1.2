@@ -33,11 +33,6 @@ class CategoryViewset(ModelViewSet):
     queryset = Category.objects.all()
 
 
-class SubCategoryViewset(ModelViewSet):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [CustomAdminPermission]
-    serializer_class = SubCategorySerialzier
-    queryset = SubCategory.objects.all()
 
 
 class TagViewset(ModelViewSet):

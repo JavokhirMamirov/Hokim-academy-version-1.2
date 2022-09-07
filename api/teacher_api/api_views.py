@@ -5,11 +5,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from account.models import Teacher
-from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
-    SubCategorySerialzier, TagSerializer
+from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer
-from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag, Course, Section, Lesson
+from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson
 
 
 

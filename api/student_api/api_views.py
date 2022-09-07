@@ -6,6 +6,35 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Student
+from api.student_api.serializers import CourseHomeWithCategorySerializer
+from api.teacher_api.serializers import CourseGetSerializer
+from course.models import Course, Category
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def bestThreeAndRecomCourseView(request):
+    try:
+        user = request.user
+        bestThree = Course.objects.filter(best_three=True, course_type=user.status)
+        recommends = Course.objects.filter(is_recommended=True, course_type=user.status)
+        category = Category.objects.filter(type=user.status)[:8]
+        data = {
+            "success": True,
+            "data": {
+                "three_course": CourseGetSerializer(bestThree[:3], many=True).data,
+                "recommends": CourseGetSerializer(recommends[:12], many=True).data,
+                "category": CourseHomeWithCategorySerializer(category, many=True).data
+            }
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['PUT'])
@@ -100,7 +129,7 @@ def studentLoginView(request):
                     "full_name": user.full_name,
                     "username": user.username,
                     "status": user.status,
-                    "image":img,
+                    "image": img,
                     "is_used_promocode": user.is_used_promocode
                 }
             }

@@ -28,6 +28,7 @@ class Language(models.Model):
 class CourseStatus(models.Model):
     name = models.CharField(max_length=255)
 
+
     def __str__(self):
         return self.name
 
@@ -41,14 +42,7 @@ class Level(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
-class SubCategory(models.Model):
-    name = models.CharField(max_length=255)
-    parent = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.SmallIntegerField(choices=VIDEO_TYPES, default=1)
 
     def __str__(self):
         return self.name
@@ -75,7 +69,6 @@ class Course(models.Model):
     description = models.TextField(null=True, blank=True)
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    sub_category = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     tag = models.ManyToManyField(Tag)
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)

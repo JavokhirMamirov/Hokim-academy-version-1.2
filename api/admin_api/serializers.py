@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
-from course.models import Language, CourseStatus, Level, Category, SubCategory, Tag
+from course.models import Language, CourseStatus, Level, Category, Tag
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -28,10 +28,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SubCategorySerialzier(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategory
-        fields = "__all__"
 
 
 class TagSerializer(serializers.ModelSerializer):
