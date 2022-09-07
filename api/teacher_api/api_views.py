@@ -5,14 +5,180 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from account.models import Teacher
-from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, TagSerializer
+from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
+    TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
-from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer
-from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson
+from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
+    QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer
+from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
+    CourseAttachment
+
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def courseAttachmentView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            course = request.GET.get('course')
+            query = CourseAttachment.objects.filter(course_id=course).order_by('order')
+            ser = CourseAttachmentSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == 'POST':
+            payload = request.data
+            ser = CourseAttachmentSerializer(data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong!"
+                }
+        elif request.method == 'PUT':
+            payload = request.data
+            question = CourseAttachment.objects.get(id=pk)
+            ser = CourseAttachmentSerializer(instance=question, data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong!"
+                }
+        else:
+            query = CourseAttachment.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": pk
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def questionView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            quiz = request.GET.get('quiz')
+            query = Question.objects.filter(quiz_id=quiz)
+            ser = QuestionSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == 'POST':
+            payload = request.data
+            ser = QuestionSerializer(data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong!"
+                }
+        elif request.method == 'PUT':
+            payload = request.data
+            question = Question.objects.get(id=pk)
+            ser = QuestionSerializer(instance=question, data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong!"
+                }
+        else:
+            query = Question.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": pk
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizView(request, pk=None):
+    try:
+        if request.method == 'GET':
+            course = request.GET.get('course')
+            query = Quiz.objects.filter(course_id=course)
+            ser = QuizGETSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        elif request.method == 'POST':
+            payload = request.data
+            ser = QuizPOSTSerializer(data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong"
+                }
+
+        elif request.method == 'PUT':
+            payload = request.data
+            quiz = Quiz.objects.get(id=pk)
+            ser = QuizPOSTSerializer(instance=quiz, data=payload)
+            if ser.is_valid():
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Something is wrong"
+                }
+        else:
+            query = Quiz.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": pk
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -83,6 +249,8 @@ def lessonView(request, pk=None):
             "error": f"{err}"
         }
     return Response(data)
+
+
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -278,25 +446,6 @@ def categoryView(request):
     try:
         queries = Category.objects.all()
         ser = CategorySerializer(queries, many=True)
-        data = {
-            "success": True,
-            "data": ser.data
-        }
-    except Exception as err:
-        data = {
-            "success": False,
-            "error": f"{err}"
-        }
-    return Response(data)
-
-
-@api_view(['GET'])
-@authentication_classes([TeacherJwtAuthentication])
-@permission_classes([IsAuthenticated])
-def subCategoryView(request):
-    try:
-        queries = SubCategory.objects.all()
-        ser = SubCategorySerialzier(queries, many=True)
         data = {
             "success": True,
             "data": ser.data

@@ -28,7 +28,6 @@ class Language(models.Model):
 class CourseStatus(models.Model):
     name = models.CharField(max_length=255)
 
-
     def __str__(self):
         return self.name
 
@@ -53,6 +52,10 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+
 
 
 class Course(models.Model):
@@ -88,19 +91,21 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-
-class Section(models.Model):
+class CourseAttachment(models.Model):
     title = models.CharField(max_length=255)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='course/attachment/')
     order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
 
 
-class LessonAttachment(models.Model):
+
+class Section(models.Model):
     title = models.CharField(max_length=255)
-    file = models.FileField(upload_to='course/attachment/')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -114,7 +119,6 @@ class Lesson(models.Model):
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now_add=True)
     summary = models.TextField(null=True)
-    attachment = models.ManyToManyField(LessonAttachment, blank=True)
     time = models.IntegerField(default=0)
     order = models.IntegerField(default=0)
 
@@ -125,6 +129,7 @@ class Lesson(models.Model):
 class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=600)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
     query_count = models.IntegerField(default=0)
     time = models.IntegerField(default=0)

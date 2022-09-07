@@ -45,7 +45,7 @@ class Account(AbstractUser):
         (2, "Ta'lim boshqarmasi"),
         (3, "Maktab xodimi"),
     )
-    school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
     status = models.SmallIntegerField(default=1, choices=STATUS_CHOICES)
 
 

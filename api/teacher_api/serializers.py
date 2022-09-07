@@ -83,6 +83,52 @@ class CoursePostSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CourseAttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseAttachment
+        fields = "__all__"
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = "__all__"
+
+
+class QuizGETSerializer(serializers.ModelSerializer):
+    questions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        fields = [
+            'id',
+            'title',
+            'description',
+            'course',
+            'level',
+            'query_count',
+            'time',
+            'order',
+            'questions',
+            'passed_percent',
+            'is_active',
+        ]
+
+    def get_questions(self, obj):
+        try:
+            queries = Question.objects.filter(quiz=obj)
+            ser = QuestionSerializer(queries, many=True)
+            return ser.data
+        except:
+            return []
+
+
+class QuizPOSTSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = "__all__"
+
+
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson

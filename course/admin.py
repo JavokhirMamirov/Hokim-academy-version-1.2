@@ -52,9 +52,7 @@ class SectionAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'order']
 
 
-@admin.register(LessonAttachment)
-class LessonAttachmentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'file']
+
 
 
 @admin.register(Lesson)
