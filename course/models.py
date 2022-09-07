@@ -28,7 +28,6 @@ class Language(models.Model):
 class CourseStatus(models.Model):
     name = models.CharField(max_length=255)
 
-
     def __str__(self):
         return self.name
 
@@ -57,12 +56,13 @@ class Tag(models.Model):
 
 class Course(models.Model):
     STEP = (
-        (1, 'Lesson adding'),
-        (2, 'Quiz adding'),
-        (3, 'Finished'),
-        (4, 'Checking'),
-        (5, 'Canceled'),
-        (6, 'Published'),
+        (1, 'created'),
+        (2, 'Lesson Added'),
+        (3, 'Quiz added'),
+        (4, 'Attachment added'),
+        (5, 'Finished'),
+        (6, 'Canceled'),
+        (7, 'Published'),
     )
     title = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)
@@ -79,7 +79,6 @@ class Course(models.Model):
     last_modified = models.DateField(auto_now=True)
     status = models.ForeignKey(CourseStatus, on_delete=models.SET_NULL, null=True, blank=True)
     course_type = models.SmallIntegerField(default=5, choices=COURSE_TYPES)
-    total_time = models.IntegerField(default=0)
     is_recommended = models.BooleanField(default=False)
     best_three = models.BooleanField(default=False)
     step = models.SmallIntegerField(default=1, choices=STEP)
@@ -88,19 +87,21 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-
-class Section(models.Model):
+class CourseAttachment(models.Model):
     title = models.CharField(max_length=255)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='course/attachment/', null=True, blank=True)
     order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
 
 
-class LessonAttachment(models.Model):
+
+class Section(models.Model):
     title = models.CharField(max_length=255)
-    file = models.FileField(upload_to='course/attachment/')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -114,7 +115,6 @@ class Lesson(models.Model):
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now_add=True)
     summary = models.TextField(null=True)
-    attachment = models.ManyToManyField(LessonAttachment, blank=True)
     time = models.IntegerField(default=0)
     order = models.IntegerField(default=0)
 
@@ -125,8 +125,8 @@ class Lesson(models.Model):
 class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=600)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     level = models.ForeignKey(Level, on_delete=models.CASCADE)
-    query_count = models.IntegerField(default=0)
     time = models.IntegerField(default=0)
     order = models.IntegerField(default=0)
     passed_percent = models.DecimalField(max_digits=4, decimal_places=2, default=0)

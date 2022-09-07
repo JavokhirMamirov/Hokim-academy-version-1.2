@@ -8,7 +8,6 @@ urlpatterns = [
     path('course-status/', api_views.courseStatusView),
     path('level/', api_views.levelView),
     path('category/', api_views.categoryView),
-    path('sub-category/', api_views.subCategoryView),
     path('tag/', api_views.tagView),
 
     path('course/', api_views.courseView),
@@ -16,7 +15,14 @@ urlpatterns = [
     path('section/', api_views.sectionView),
     path('section/<int:pk>/', api_views.sectionView),
     path('lesson/', api_views.lessonView),
-    path('lesson/<int:pk>/', api_views.lessonView)
+    path('lesson/<int:pk>/', api_views.lessonView),
+    path('quiz/', api_views.quizView),
+    path('quiz/<int:pk>/', api_views.quizView),
+    path('question/', api_views.questionView),
+    path('question/<int:pk>/', api_views.questionView),
+    path('attachment/', api_views.courseAttachmentView),
+    path('attachment/<int:pk>/', api_views.courseAttachmentView),
+    path('course-step/<int:pk>/', api_views.changeCourseStep),
 
 ]
 

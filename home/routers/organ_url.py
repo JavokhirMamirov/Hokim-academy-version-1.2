@@ -13,6 +13,6 @@ organization_url = [
     path('user/delete/<int:pk>/', organization_vew.user_delete_view, name='user-delete'),
     path('user/<int:pk>/', organization_vew.user_detail_view, name='user-detail'),
     path('user/update/<int:pk>/', organization_vew.user_update_view, name='user-update'),
-    path('user/password/set/<int:pk>/', organization_vew.user_set_password, name='user-set-password'),
+    path('user/password/set/<int:pk>/', organization_vew.user_set_password, name='user-change-password'),
     path('school/delete/<int:pk>/', organization_vew.school_delete_view, name='delete-school'),
 ]

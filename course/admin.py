@@ -52,9 +52,7 @@ class SectionAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'order']
 
 
-@admin.register(LessonAttachment)
-class LessonAttachmentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'file']
+
 
 
 @admin.register(Lesson)
@@ -64,7 +62,7 @@ class LessonAdmin(admin.ModelAdmin):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'level', 'order', 'query_count', 'passed_percent', 'is_active', 'time']
+    list_display = ['id', 'title', 'level', 'order', 'passed_percent', 'is_active', 'time']
 
 
 @admin.register(Question)
