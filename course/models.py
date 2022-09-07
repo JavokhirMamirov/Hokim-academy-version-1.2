@@ -42,7 +42,7 @@ class Level(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    type = models.SmallIntegerField(choices=VIDEO_TYPES, default=1)
+    type = models.SmallIntegerField(choices=COURSE_TYPES, default=1)
 
     def __str__(self):
         return self.name
