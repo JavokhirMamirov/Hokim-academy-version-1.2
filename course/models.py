@@ -54,10 +54,6 @@ class Tag(models.Model):
         return self.name
 
 
-
-
-
-
 class Course(models.Model):
     STEP = (
         (1, 'created'),
