@@ -36,7 +36,7 @@
                                             <h5 class="modal-title" id="exampleModalLabel">Parol o`zgartirish</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form class="row g-3" method="post" action="{% url 'user-set-password' account.pk %}">
+                                        <form class="row g-3" method="post" action="{% url 'user-change-password' account.pk %}">
                                         <div class="modal-body">
                                             {% csrf_token %}
                                                 <div class="col-md-12">

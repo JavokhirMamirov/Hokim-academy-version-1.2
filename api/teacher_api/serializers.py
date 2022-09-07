@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from rest_framework import serializers
 
 from course.models import *
@@ -17,6 +18,7 @@ class CourseGetSerializer(serializers.ModelSerializer):
     sub_category = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    total_time = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -38,6 +40,19 @@ class CourseGetSerializer(serializers.ModelSerializer):
             "course_type",
             "total_time",
         ]
+
+    def get_total_time(self, obj):
+        try:
+            t_time = Lesson.objects.filter(
+                section__course=obj
+            ).aggregate(total=Sum('time')).get('total')
+
+            if t_time is None:
+                t_time = 0
+
+            return t_time
+        except:
+            return 0
 
     def get_lessons_count(self, obj):
         try:
@@ -97,7 +112,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class QuizGETSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
-
+    query_count = serializers.SerializerMethodField()
     class Meta:
         model = Quiz
         fields = [
@@ -113,6 +128,13 @@ class QuizGETSerializer(serializers.ModelSerializer):
             'passed_percent',
             'is_active',
         ]
+
+    def get_query_count(self, obj):
+        try:
+            query = Question.objects.filter(quiz=obj)
+            return query.count()
+        except:
+            return 0
 
     def get_questions(self, obj):
         try:

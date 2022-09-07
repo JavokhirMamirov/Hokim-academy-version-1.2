@@ -22,6 +22,7 @@ urlpatterns = [
     path('question/<int:pk>/', api_views.questionView),
     path('attachment/', api_views.courseAttachmentView),
     path('attachment/<int:pk>/', api_views.courseAttachmentView),
+    path('course-step/<int:pk>/', api_views.changeCourseStep),
 
 ]
 

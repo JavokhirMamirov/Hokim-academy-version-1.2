@@ -13,6 +13,26 @@ from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerial
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment
 
+@api_view(['POST'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def changeCourseStep(request, pk):
+    try:
+        step = request.data['step']
+        queries = Course.objects.get(id=pk)
+        queries.step = step
+        queries.save()
+        ser = CourseGetSerializer(queries)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -31,6 +51,7 @@ def courseAttachmentView(request, pk=None):
             payload = request.data
             ser = CourseAttachmentSerializer(data=payload)
             if ser.is_valid():
+                ser.save()
                 data = {
                     "success": True,
                     "data": ser.data
@@ -42,18 +63,25 @@ def courseAttachmentView(request, pk=None):
                 }
         elif request.method == 'PUT':
             payload = request.data
-            question = CourseAttachment.objects.get(id=pk)
-            ser = CourseAttachmentSerializer(instance=question, data=payload)
-            if ser.is_valid():
-                data = {
-                    "success": True,
-                    "data": ser.data
-                }
-            else:
-                data = {
-                    "success": False,
-                    "error": "Something is wrong!"
-                }
+            title = payload.get('title')
+            course = payload.get('course')
+            order = payload.get('order')
+            file = payload.get('file')
+
+            query = CourseAttachment.objects.get(id=pk)
+            if file is not None:
+                query.file = file
+
+            query.title = title
+            query.course_id = course
+            query.order = order
+            query.save()
+            ser = CourseAttachmentSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+
         else:
             query = CourseAttachment.objects.get(id=pk)
             query.delete()
@@ -67,7 +95,6 @@ def courseAttachmentView(request, pk=None):
             "error": f"{err}"
         }
     return Response(data)
-
 
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
@@ -87,6 +114,7 @@ def questionView(request, pk=None):
             payload = request.data
             ser = QuestionSerializer(data=payload)
             if ser.is_valid():
+                ser.save()
                 data = {
                     "success": True,
                     "data": ser.data
@@ -101,6 +129,7 @@ def questionView(request, pk=None):
             question = Question.objects.get(id=pk)
             ser = QuestionSerializer(instance=question, data=payload)
             if ser.is_valid():
+                ser.save()
                 data = {
                     "success": True,
                     "data": ser.data
@@ -142,6 +171,7 @@ def quizView(request, pk=None):
             payload = request.data
             ser = QuizPOSTSerializer(data=payload)
             if ser.is_valid():
+                ser.save()
                 data = {
                     "success": True,
                     "data": ser.data
@@ -157,6 +187,7 @@ def quizView(request, pk=None):
             quiz = Quiz.objects.get(id=pk)
             ser = QuizPOSTSerializer(instance=quiz, data=payload)
             if ser.is_valid():
+                ser.save()
                 data = {
                     "success": True,
                     "data": ser.data
@@ -179,6 +210,7 @@ def quizView(request, pk=None):
             "error": f"{err}"
         }
     return Response(data)
+
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -251,7 +283,6 @@ def lessonView(request, pk=None):
     return Response(data)
 
 
-
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -316,7 +347,7 @@ def courseView(request, pk=None):
             if pk is not None:
                 query = Course.objects.get(id=pk)
             else:
-                query = Course.objects.get(teacher=request.user, step__lt=6)
+                query = Course.objects.get(teacher=request.user, step__lt=5)
 
             ser = CourseGetSerializer(query)
             data = {
