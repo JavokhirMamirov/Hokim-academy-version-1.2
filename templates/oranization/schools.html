@@ -10,7 +10,7 @@
 <link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
 {% endblock style %}
 {% block content %}
-		<!--start page wrapper -->
+	<!--start page wrapper -->
     <div class="page-wrapper">
 			<div class="page-content">
 				<!--breadcrumb-->
@@ -33,26 +33,35 @@
 				</div>
 				<!--end breadcrumb-->
 				<hr/>
-
             	<div class="card">
                     <div class="d-flex justify-content-between">
-                        <div class="m-2">
+                        <div class="d-flex align-items-center m-2">
                             <form method="get">
-                            <div class="input-group ">
-                                <input type="text" class="form-control" placeholder="Qidiruv" aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
-                                <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
-                            </div>
-                        </form>
-                    </div>                        
-                    <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px; width: 15%;" method="get">
+                                <div class="input-group ">
+                                    <input type="text" class="form-control" placeholder="Qidiruv" aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
+                                    <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
+                                </div>
+                            </form>
+                            <form class="input-group m-2" method="get">
+                                <select class="form-select" id="inputGroupSelect02" name="pagination">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <button class="input-group-text" type="submit">Tanlash</button>
+                            </form>    
+                        </div> 
+                                       
+                        <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;" method="get">
                             <label class="form-label"></label>
                             <select class="single-select" name="city">
                                 {% for city in citys %}
-                                <option value="{{city.id}}">{{city.name}}</option>
+                                    <option value="{{city.id}}">{{city.name}}</option>
                                 {% endfor %}
                             </select>
                             <button type="submit" class="btn btn-primary">Filterlash</button>
-                    </form>
+                        </form>
                     </div>
                     <div class="card-body">
                         <table class="table mb-0 table-striped">
@@ -86,7 +95,7 @@
                             <ul class="pagination">
                             {% if schools.has_previous %}
                               <li class="page-item">
-                                    <a class="page-link" href="?page={{schools.previous_page_number }}"><i class="bx bx-left-arrow-alt"></i></a>
+                                    <a class="page-link" href="?page={{schools.previous_page_number }}&pagination={{pagination}}"><i class="bx bx-left-arrow-alt"></i></a>
                                 </li>
                             {% endif %}
                                 {% for num in schools.paginator.page_range %}
@@ -95,12 +104,12 @@
                                             <a class="page-link" href="#" tabindex="-1">{{ num }}</a>
                                         </li>
                                     {% elif num > schools.number|add:'-3' and num < schools.number|add:'3' %}
-                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}&pagination={{pagination}} ">{{ num }}</a></li>
                                     {% endif %}
                                 {% endfor %}
                             {% if schools.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ schools.next_page_number }}" aria-label="Next">
+                                    <a class="page-link" href="?page={{ schools.next_page_number }}&pagination={{pagination}} " aria-label="Next">
                                         <i class="bx bx-right-arrow-alt"></i>
                                     </a>
                                 </li>
