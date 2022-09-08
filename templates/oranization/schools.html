@@ -41,26 +41,30 @@
                                     <input type="text" class="form-control" placeholder="Qidiruv" aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
                                     <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
                                 </div>
-                            </form>
-                            <form class="input-group m-2" method="get">
-                                <select class="form-select" id="inputGroupSelect02" name="pagination">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                                <button class="input-group-text" type="submit">Tanlash</button>
-                            </form>    
-                        </div> 
-                                       
+                            </form>   
+                        </div>                                        
                         <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;" method="get">
                             <label class="form-label"></label>
-                            <select class="single-select" name="city">
-                                {% for city in citys %}
-                                    <option value="{{city.id}}">{{city.name}}</option>
+                            <select class="form-select" id="inputGroupSelect02" name="pagination">
+                                <!-- <option value="{{pagination}}" selected>{{pagination}}</option> -->
+                                {% for page in pages %}
+                                    {% if page == pagination %}
+                                    <option value="{{ page }}" selected>{{ page }}</option>
+                                    {% else %}
+                                    <option value="{{ page }}">{{ page }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
-                            <button type="submit" class="btn btn-primary">Filterlash</button>
+                            <select class="single-select" name="city">
+                                {% for city in citys %}
+                                    {% if city.id == req %}
+                                    <option value="{{city.id}}" selected>{{city.name}}</option>
+                                    {% else %}
+                                    <option value="{{city.id}}">{{city.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">{{pagination}}</button>
                         </form>
                     </div>
                     <div class="card-body">

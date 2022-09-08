@@ -45,6 +45,7 @@ def organ_dashboard_view(request):
 @login_required(login_url='admin-login')
 @organ_required
 def schools_list_view(request):
+    pages = [10,25,50,100]
     citys = City.objects.all()
     req = request.GET.get('city')
     q = request.GET.get('q')
@@ -57,11 +58,13 @@ def schools_list_view(request):
     if pagination != '' and pagination is not None:
         pagination = pagination
     else:
-        pagination = 30
+        pagination = 10
     context = {
         'schools': PagenatorPage(schools.order_by('city_id'), pagination, request),
         'citys':citys,
-        'pagination':pagination
+        'pagination': int(pagination),
+        'pages':pages,
+        'req':int(req),
     }
     return render(request, 'oranization/schools.html', context)
 
