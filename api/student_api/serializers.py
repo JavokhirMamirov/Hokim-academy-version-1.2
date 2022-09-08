@@ -17,7 +17,7 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
 
     def get_course(self, obj):
         try:
-            courses = Course.objects.filter(category=obj)[0:12]
+            courses = Course.objects.filter(category=obj, step=7)[0:12]
 
             ser = CourseGetSerializer(courses, many=True)
             return ser.data

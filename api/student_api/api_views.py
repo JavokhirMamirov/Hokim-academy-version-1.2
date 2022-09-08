@@ -1,14 +1,123 @@
 from django.contrib.auth.hashers import check_password, make_password
+from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.admin_api.serializers import CategorySerializer, LevelSerializer, CourseStatusSerializer
 from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Student
+from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer
 from api.teacher_api.serializers import CourseGetSerializer
-from course.models import Course, Category
+from course.models import Course, Category, Level, CourseStatus
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def allCourseView(request):
+    try:
+        student = request.user
+        query = Course.objects.filter(course_type=student.status, step=7)
+
+        search = request.GET.get('search')
+        level = request.GET.get('level')
+        category = request.GET.get('category')
+        status = request.GET.get('status')
+        page = request.GET.get('page')
+
+        if search is not None:
+            query = query.filter(
+                Q(title__icontains=search) | Q(short_description__icontains=search)
+                | Q(teacher__full_name__icontains=search)
+            )
+
+        if level is not None and level != "":
+            query = query.filter(level_id=level)
+
+        if category is not None and category != "":
+            query = query.filter(category_id=category)
+
+        if status is not None and status != "":
+            query = query.filter(status_id=status)
+
+        if page == "":
+            page = None
+
+        data = {
+            "success": True,
+            "data": pagination_json(page, query, CourseGetSerializer, 9)
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def levelView(request):
+    try:
+        cats = Level.objects.all()
+        ser = LevelSerializer(cats, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def courseStatusView(request):
+    try:
+        cats = CourseStatus.objects.all()
+        ser = CourseStatusSerializer(cats, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def categoryView(request):
+    try:
+        cats = Category.objects.filter(type=request.user.status)
+        ser = CategorySerializer(cats, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -17,8 +126,8 @@ from course.models import Course, Category
 def bestThreeAndRecomCourseView(request):
     try:
         user = request.user
-        bestThree = Course.objects.filter(best_three=True, course_type=user.status)
-        recommends = Course.objects.filter(is_recommended=True, course_type=user.status)
+        bestThree = Course.objects.filter(best_three=True, course_type=user.status, step=7)
+        recommends = Course.objects.filter(is_recommended=True, course_type=user.status, step=7)
         category = Category.objects.filter(type=user.status)[:8]
         data = {
             "success": True,
