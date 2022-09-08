@@ -10,9 +10,121 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Student
 from api.paginator import pagination_json
-from api.student_api.serializers import CourseHomeWithCategorySerializer
+from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer
 from api.teacher_api.serializers import CourseGetSerializer
 from course.models import Course, Category, Level, CourseStatus
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def checkUsernameView(request):
+    try:
+        username = request.GET.get('username')
+        if username != request.user.username:
+            students = Student.objects.filter(username=username)
+            if students.count() > 0:
+                data = {
+                    "success": False,
+                    "error": "Username already exist"
+                }
+            else:
+                data = {
+                    "success": True,
+                    "error": ""
+                }
+        else:
+            data = {
+                "success": True,
+                "error": ""
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['POST'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def changeStudentImageView(request):
+    try:
+        student = request.user
+
+        image = request.data.get('image')
+        if image is not None:
+            student.image = image
+            student.save()
+
+        ser = StudentSerializer(student)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def studentView(request):
+    try:
+        student = request.user
+        if request.method == 'GET':
+            ser = StudentSerializer(student)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        else:
+            username = request.data.get('username')
+            phone = request.data.get('phone')
+            address = request.data.get('address')
+            telegram = request.data.get('telegram')
+            facebook = request.data.get('facebook')
+            instagram = request.data.get('instagram')
+            website = request.data.get('website')
+            if username != student.username:
+                students = Student.objects.filter(username=username)
+                if students.count() > 0:
+                    data = {
+                        "success": False,
+                        "status": 203,
+                        "error": "Username already exist"
+                    }
+                    return Response(data)
+                else:
+                    student.username = username
+            student.phone = phone
+            student.phone = phone
+            student.address = address
+            student.telegram = telegram
+            student.facebook = facebook
+            student.instagram = instagram
+            student.website = website
+
+            student.save()
+
+            ser = StudentSerializer(student)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])

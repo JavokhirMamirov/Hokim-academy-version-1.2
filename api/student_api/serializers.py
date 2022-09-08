@@ -4,13 +4,46 @@ from api.teacher_api.serializers import CourseGetSerializer
 from course.models import *
 
 
+class StudentSerializer(serializers.ModelSerializer):
+    school = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    class Meta:
+        model = Student
+        fields = [
+            'id',
+            'full_name',
+            'birth_date',
+            'start_study_year',
+            'phone',
+            'address',
+            'image',
+            'status',
+            'username',
+            'telegram',
+            'facebook',
+            'instagram',
+            'website',
+            'school',
+        ]
+
+    def get_school(self, obj):
+        try:
+            return obj.shool.name
+        except:
+            return None
+
+    def get_status(self, obj):
+        return obj.get_status_display()
+
 class CourseSerializerForCard(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = "__all__"
 
+
 class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
     course = serializers.SerializerMethodField()
+
     class Meta:
         model = Category
         fields = ['id', 'name', 'course']
@@ -23,5 +56,3 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
             return ser.data
         except:
             return []
-
-
