@@ -362,15 +362,13 @@ def courseView(request, pk=None):
             description = request.data['description']
             language = request.data['language']
             category = request.data['category']
-            sub_category = request.data['sub_category']
             level = request.data['level']
             image = request.data['image']
             course_type = request.data['course_type']
 
             query = Course.objects.create(
                 teacher=teacher, title=title, short_description=short_description,
-                description=description, language_id=language, category_id=category,
-                sub_category_id=sub_category, level_id=level, course_type=course_type,
+                description=description, language_id=language, category_id=category, level_id=level, course_type=course_type,
                 image=image
             )
             ser = CourseGetSerializer(query)
@@ -385,7 +383,6 @@ def courseView(request, pk=None):
             description = request.data['description']
             language = request.data['language']
             category = request.data['category']
-            sub_category = request.data['sub_category']
             level = request.data['level']
             image = request.data.get('image')
             course_type = request.data['course_type']
@@ -394,7 +391,6 @@ def courseView(request, pk=None):
             query.description = description
             query.language_id = language
             query.category_id = category
-            query.sub_category_id = sub_category
             query.level_id = level
             query.course_type = course_type
             if image is not None:
