@@ -46,7 +46,6 @@
                         <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;" method="get">
                             <label class="form-label"></label>
                             <select class="form-select" id="inputGroupSelect02" name="pagination">
-                                <!-- <option value="{{pagination}}" selected>{{pagination}}</option> -->
                                 {% for page in pages %}
                                     {% if page == pagination %}
                                     <option value="{{ page }}" selected>{{ page }}</option>
@@ -56,6 +55,13 @@
                                 {% endfor %}
                             </select>
                             <select class="single-select" name="city">
+                                {% if req == 0 %}
+                                <option value="0" selected>Shahar tanlash</option>
+                                {% for city in citys %}
+                                <option value="{{city.id}}">{{city}}</option>
+                                {% endfor %}
+                                {% else %}
+                                <option value="0">Barchasi</option>
                                 {% for city in citys %}
                                     {% if city.id == req %}
                                     <option value="{{city.id}}" selected>{{city.name}}</option>
@@ -63,8 +69,9 @@
                                     <option value="{{city.id}}">{{city.name}}</option>
                                     {% endif %}
                                 {% endfor %}
+                                {% endif %}
                             </select>
-                            <button type="submit" class="btn btn-primary">{{pagination}}</button>
+                            <button type="submit" class="btn btn-primary">Filterlash</button>
                         </form>
                     </div>
                     <div class="card-body">
@@ -74,6 +81,7 @@
                                 <th class="text-center">№</th>
                                 <th class="text-center">Maktab nomi</th>
 								<th class="text-center">Direktor</th>
+								<th class="text-center">O'quvchilari</th>
 								<th class="text-center">Shahri</th>
 								<th class="text-center">Manzil</th>
 								<th class="text-center">Batafsil</th>
@@ -85,6 +93,7 @@
 										<td class="text-center">{{forloop.counter0|add:schools.start_index}}</td>
 										<td class="text-center">{{ school.name }}</td>
 										<td class="text-center">{{ school.director }}</td>
+										<td class="text-center">{{ school.students }}</td>
 										<td class="text-center">{{ school.city }}</td>
 										<td class="text-center">{{ school.address }}</td>
                                         <td class="text-center"><a href="{% url 'school-detail' school.id %}" class="btn btn-primary">Detail</a></td>

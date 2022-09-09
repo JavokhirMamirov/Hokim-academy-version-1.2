@@ -5,7 +5,7 @@ from account.models import School, City, Student, Account
 from home.decarators import organ_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
-
+from django.db.models import OuterRef, Subquery, Count
 def PagenatorPage(List, num, request):
     paginator = Paginator(List, num)
     pages = request.GET.get('page')
@@ -54,11 +54,21 @@ def schools_list_view(request):
     if q != '' and q is not None:
         schools = School.objects.filter(Q(name__icontains=q)| Q(director__icontains=q)|Q(address__icontains=q))
     if req != '' and req is not None:
-        schools = School.objects.filter(city__in=[req])
+        req = int(req)
+        if req == 0:
+            schools = School.objects.all()
+        else:
+            schools = School.objects.filter(city__in=[req])
+    else:
+        req = 0
     if pagination != '' and pagination is not None:
         pagination = pagination
     else:
         pagination = 10
+    
+    # schools = schools.annotate(students=Count(
+    #     Student.objects.filter(school_id=OuterRef('pk'))
+    # ))
     context = {
         'schools': PagenatorPage(schools.order_by('city_id'), pagination, request),
         'citys':citys,
@@ -170,16 +180,21 @@ def add_staff_school(request):
             password = request.POST['password']
             school_id = request.POST['school_id']
             school = School.objects.get(id=school_id)
-            Account.objects.create_user(
-                username=username,
-                password=password,
-                school=school,
-                status=3,
-                first_name=first_name,
-                last_name=last_name
-            )
-            messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
-            return redirect('school-detail', school.id)
+            users = Account.objects.filter(username=username).count()
+            if users > 0:
+                messages.error(request, 'Xatolik, Bunday foydalanuvchi mavjud!')
+                return redirect('school-detail', school.id) 
+            else:
+                Account.objects.create_user(
+                    username=username,
+                    password=password,
+                    school=school,
+                    status=3,
+                    first_name=first_name,
+                    last_name=last_name
+                )
+                messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
+                return redirect('school-detail', school.id) 
         except:
             messages.error(request, "Foydalanuvchi yaratishda xatolik!")
             return redirect('school-detail', school.id)
@@ -215,12 +230,17 @@ def user_update_view(request, pk):
         username = request.POST['username']
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
-        account.username = username
-        account.first_name = first_name
-        account.last_name = last_name
-        account.school = school
-        account.save()
-        return redirect('user-detail', account.id)
+        users = Account.objects.filter(username=username).count()
+        if users > 0 and account.username != username:
+            messages.error(request, 'Xatolik, Bunday foydalanuvchi mavjud!')
+            return redirect('user-detail', account.id) 
+        else:
+            account.username = username
+            account.first_name = first_name
+            account.last_name = last_name
+            account.school = school
+            account.save()
+            return redirect('user-detail', account.id)
     return render(request, 'oranization/user-detail.html')
 
 
