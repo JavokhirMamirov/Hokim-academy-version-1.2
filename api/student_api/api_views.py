@@ -133,7 +133,7 @@ def studentView(request):
 def allCourseView(request):
     try:
         student = request.user
-        query = Course.objects.filter(Q(course_type=student.status) | Q(course_type=5), step=7)
+        query = Course.objects.filter(Q(course_type=student.status) | Q(course_type=5), Q(step=7))
 
         search = request.GET.get('search')
         level = request.GET.get('level')
@@ -141,7 +141,7 @@ def allCourseView(request):
         status = request.GET.get('status')
         page = request.GET.get('page')
 
-        if search is not None:
+        if search is not None and level != "":
             query = query.filter(
                 Q(title__icontains=search) | Q(short_description__icontains=search)
                 | Q(teacher__full_name__icontains=search)
