@@ -100,7 +100,7 @@
 						<div class="card border-top border-0 border-4 border-info">
 							<div class="card-body">
 								<div class="border p-4 rounded">
-                               <form method="post" action="{% url 'user-update' user.id %}">
+                               <form method="post" action="{% url 'user-update' account.id %}">
                                     {% csrf_token %}
                                     <div class="card-title d-flex align-items-center">
 										<div><i class="bx bxs-user me-1 font-22 text-info"></i>
@@ -131,7 +131,7 @@
 										<div class="col-sm-9">
 											<select class="single-select" name="school" >
                                                 {% for school in schools %}
-                                                    {% if school == user.uschools %}
+                                                    {% if school == account.school %}
                                                 <option value="{{ school.pk }}" selected>{{ school }}</option>
                                                     {% else %}
                                                 <option value="{{ school.pk }}">{{ school }}</option>
