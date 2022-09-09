@@ -195,6 +195,39 @@ def settings_view(request):
 
 @login_required(login_url='admin-login')
 @school_required
+def account_view(request):
+    print(request.user)
+    context = {
+        'user': request.user
+    }
+    return render(request, 'school/account.html', context)
+
+
+from home.viewset.auth_view import login
+
+@login_required(login_url='admin-login')
+@school_required
+def change_profile_view(request, pk):
+    if request.method == "POST":
+        user = request.user
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if username != user.username:
+            if Account.objects.filter(username=username).count() > 0:
+                messages.error(request, "Bunday Foydalanuvchi mavjud usernameni o'zgartiring!")
+                return redirect('account')
+        if len(password) < 8:
+            messages.error(request, "Parol 8 ta belgidan iborat bo'lishi kerak!")
+            return redirect("account")
+        user.username = username
+        user.set_password(password)
+        user.save()
+        login(request, user)
+        return redirect('school-dashboard')
+
+
+@login_required(login_url='admin-login')
+@school_required
 def change_school_view(request, pk):
     if request.method == 'POST':
         name = request.POST['name']

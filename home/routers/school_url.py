@@ -14,6 +14,9 @@ school_url = [
     path('president-student/', president_student_view, name='president-student'),
     path('foreign-student/', foreign_student_view, name='foreign-student'),
     path('settings/', settings_view, name='settings'),
+    path('account/', account_view, name='account'),
+    path('change-profile/<int:pk>/', change_profile_view, name='change-profile'),
+
     path('change-school/<int:pk>/', change_school_view, name='change-school'),
     path('change-student-password/<int:pk>/', change_student_password, name='change-student-password'),
     path('delete-student/<int:pk>/', delete_student_view, name='delete-student'),
