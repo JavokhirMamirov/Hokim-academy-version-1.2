@@ -23,6 +23,8 @@ urlpatterns = [
     path('attachment/', api_views.courseAttachmentView),
     path('attachment/<int:pk>/', api_views.courseAttachmentView),
     path('course-step/<int:pk>/', api_views.changeCourseStep),
+    path('my-courses/', api_views.myCourseView),
+    path('my-students/', api_views.myStudentsView)
 
 ]
 

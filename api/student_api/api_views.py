@@ -141,7 +141,7 @@ def allCourseView(request):
         status = request.GET.get('status')
         page = request.GET.get('page')
 
-        if search is not None and level != "":
+        if search is not None and search != "":
             query = query.filter(
                 Q(title__icontains=search) | Q(short_description__icontains=search)
                 | Q(teacher__full_name__icontains=search)

@@ -1,17 +1,98 @@
 from django.contrib.auth.hashers import check_password, make_password
+from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from account.models import Teacher
+from account.models import Teacher, Student
 from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer, LevelSerializer, CategorySerializer, \
     TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
+from api.paginator import pagination_json
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
-    QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer
+    QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
+    MyStudentSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
-    CourseAttachment
+    CourseAttachment, WatchHistory
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def myStudentsView(request):
+    try:
+        query = WatchHistory.objects.filter(course__teacher=request.user)
+        search = request.GET.get('search')
+        course = request.GET.get('course')
+        page = request.GET.get('page')
+
+        if search is not None and search != "":
+            query = query.filter(
+                Q(student__full_name__icontains=search) | Q(student__school__name__icontains=search)
+                | Q(course__title__icontains=search)
+            )
+
+        if course is not None and course != "":
+            query = query.filter(course_id=course)
+
+        query = query.values('student_id')
+        students = Student.objects.filter(id__in=query)
+        data = {
+            "success": True,
+            "data": pagination_json(page, students, MyStudentSerializer, 20)
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def myCourseView(request):
+    try:
+        query = Course.objects.filter(teacher=request.user)
+        search = request.GET.get('search')
+        level = request.GET.get('level')
+        category = request.GET.get('category')
+        status = request.GET.get('status')
+        page = request.GET.get('page')
+
+        if search is not None and search != "":
+            query = query.filter(
+                Q(title__icontains=search) | Q(short_description__icontains=search)
+                | Q(teacher__full_name__icontains=search)
+            )
+
+        if level is not None and level != "":
+            query = query.filter(level_id=level)
+
+        if category is not None and category != "":
+            query = query.filter(category_id=category)
+
+        if status is not None and status != "":
+            query = query.filter(status_id=status)
+
+        if page == "":
+            page = None
+
+        data = {
+            "success": True,
+            "data": pagination_json(page, query, MyCourseSerializer, 20)
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
 
 @api_view(['POST'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -33,6 +114,7 @@ def changeCourseStep(request, pk):
             "error": f"{err}"
         }
     return Response(data)
+
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -368,7 +450,8 @@ def courseView(request, pk=None):
 
             query = Course.objects.create(
                 teacher=teacher, title=title, short_description=short_description,
-                description=description, language_id=language, category_id=category, level_id=level, course_type=course_type,
+                description=description, language_id=language, category_id=category, level_id=level,
+                course_type=course_type,
                 image=image
             )
             ser = CourseGetSerializer(query)

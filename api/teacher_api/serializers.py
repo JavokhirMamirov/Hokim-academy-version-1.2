@@ -10,6 +10,120 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'title', 'image']
 
 
+class MyStudentSerializer(serializers.ModelSerializer):
+    school = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    course_count = serializers.SerializerMethodField()
+    class Meta:
+        model = Student
+        fields = [
+            'id',
+            'full_name',
+            'phone',
+            'image',
+            'status',
+            'school',
+            'course_count',
+        ]
+
+    def get_school(self, obj):
+        try:
+            return obj.school.name
+        except:
+            return ""
+
+    def get_status(self, obj):
+        return obj.get_status_display()
+
+    def get_course_count(self, obj):
+        try:
+            teacher = self.context['request'].user
+            courses = WatchHistory.objects.filter(course__teacher=teacher, student=obj)
+            return courses.count()
+        except:
+            return 1
+
+
+class MyCourseSerializer(serializers.ModelSerializer):
+    lessons_count = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    sub_category = serializers.SerializerMethodField()
+    level = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    total_time = serializers.SerializerMethodField()
+    step = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Course
+        fields = [
+            "id",
+            "title",
+            "short_description",
+            "language",
+            "category",
+            "sub_category",
+            "level",
+            "image",
+            "date_added",
+            "status",
+            "lessons_count",
+            "course_type",
+            "total_time",
+            "step"
+        ]
+
+    def get_total_time(self, obj):
+        try:
+            t_time = Lesson.objects.filter(
+                section__course=obj
+            ).aggregate(total=Sum('time')).get('total')
+
+            if t_time is None:
+                t_time = 0
+
+            return t_time
+        except:
+            return 0
+
+    def get_lessons_count(self, obj):
+        try:
+            lessons = Lesson.objects.filter(section__course=obj)
+            return lessons.count()
+        except:
+            return 0
+
+    def get_language(self, obj):
+        try:
+            return obj.language.name
+        except:
+            return None
+
+    def get_category(self, obj):
+        try:
+            return obj.category.name
+        except:
+            return None
+
+    def get_sub_category(self, obj):
+        try:
+            return obj.sub_category.name
+        except:
+            return None
+
+    def get_level(self, obj):
+        try:
+            return obj.level.name
+        except:
+            return None
+
+    def get_status(self, obj):
+        try:
+            return obj.status.name
+        except:
+            return None
+
+
 class CourseGetSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer()
     lessons_count = serializers.SerializerMethodField()
@@ -113,6 +227,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 class QuizGETSerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
     query_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Quiz
         fields = [
