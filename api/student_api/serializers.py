@@ -90,7 +90,7 @@ class SectionSerializer(serializers.ModelSerializer):
     def get_videos(self, obj):
         try:
             videos = Lesson.objects.filter(section=obj).order_by('order')
-            return LessonSerializer(videos, many=True)
+            return LessonSerializer(videos, many=True).data
         except:
             return []
 
@@ -98,7 +98,7 @@ class SectionSerializer(serializers.ModelSerializer):
 class DetailCourseSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     students = serializers.SerializerMethodField()
-    test = serializers.SerializerMethodField()
+    tests = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
@@ -118,6 +118,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
             'category',
             'level',
             'teacher',
+            'status',
             'image',
             'date_added',
             'course_type',
@@ -162,8 +163,8 @@ class DetailCourseSerializer(serializers.ModelSerializer):
 
     def get_sections(self, obj):
         try:
-            sections = Section.objects.filter(course=obj).order_by('order')
-            return SectionSerializer(sections, many=True)
+            query = Section.objects.filter(course=obj).order_by('order')
+            return SectionSerializer(query, many=True).data
         except:
             return []
 
