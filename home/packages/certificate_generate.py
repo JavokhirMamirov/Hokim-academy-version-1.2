@@ -69,4 +69,4 @@ def certificate_generate(student):
                 break
     img.save(save_img_path)
 
-    return os.path.join('media', 'certificate', file_name)
+    return os.path.join('certificate', file_name)

@@ -9,5 +9,14 @@ urlpatterns = [
     path('change-password-first/', api_views.changePasswordAndUsernameFirstView),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    path('course-home/', api_views.bestThreeAndRecomCourseView)
+    path('course-home/', api_views.bestThreeAndRecomCourseView),
+    path('courses/', api_views.allCourseView),
+
+    path('category/', api_views.categoryView),
+    path('level/', api_views.levelView),
+    path('course-status/', api_views.courseStatusView),
+
+    path('profile/', api_views.studentView),
+    path('change-image/', api_views.changeStudentImageView),
+    path('check-username/', api_views.checkUsernameView)
 ]
