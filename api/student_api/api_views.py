@@ -10,9 +10,38 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Student
 from api.paginator import pagination_json
-from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer
+from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer
 from api.teacher_api.serializers import CourseGetSerializer
 from course.models import Course, Category, Level, CourseStatus
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def searchCourseView(request):
+    try:
+        student = request.user
+        query = Course.objects.filter(Q(course_type=student.status) | Q(course_type=5), Q(step=7))
+
+        search = request.GET.get('search')
+
+        if search is not None and search != "":
+            query = query.filter(
+                Q(title__icontains=search) | Q(short_description__icontains=search)
+                | Q(teacher__full_name__icontains=search)
+            )
+
+        data = {
+            "success": True,
+            "data": SearchCourseSerializer(query[:25], many=True).data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])

@@ -61,3 +61,8 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
             return ser.data
         except:
             return []
+
+class SearchCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'title']
