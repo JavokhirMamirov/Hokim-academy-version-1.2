@@ -133,7 +133,7 @@ def studentView(request):
 def allCourseView(request):
     try:
         student = request.user
-        query = Course.objects.filter(course_type=student.status, step=7)
+        query = Course.objects.filter(Q(course_type=student.status) | Q(course_type=5), step=7)
 
         search = request.GET.get('search')
         level = request.GET.get('level')
