@@ -27,8 +27,7 @@ def searchCourseView(request):
 
         if search is not None and search != "":
             query = query.filter(
-                Q(title__icontains=search) | Q(short_description__icontains=search)
-                | Q(teacher__full_name__icontains=search)
+                Q(title__icontains=search)
             )
 
         data = {

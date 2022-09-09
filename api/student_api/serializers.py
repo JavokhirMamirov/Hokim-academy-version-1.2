@@ -65,4 +65,4 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
 class SearchCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'image']
