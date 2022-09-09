@@ -106,6 +106,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
     total_time = serializers.SerializerMethodField()
     teacher = TeacherSerializer()
     lessons_count = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField()
     class Meta:
         model = Course
         fields = [
@@ -124,8 +125,20 @@ class DetailCourseSerializer(serializers.ModelSerializer):
             'students',
             'tests',
             'lessons_count',
-            'total_time'
+            'total_time',
+            'is_saved'
         ]
+
+    def get_is_saved(self, obj):
+        try:
+            user = self.context['request'].user
+            query = WatchHistory.objects.filter(course=obj, student=user)
+            if query.count() > 0:
+                return True
+            else:
+                return False
+        except:
+            return False
 
     def get_total_time(self, obj):
         try:
