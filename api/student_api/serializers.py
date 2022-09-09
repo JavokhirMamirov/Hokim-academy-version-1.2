@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers
 
 from api.teacher_api.serializers import CourseGetSerializer
@@ -7,6 +8,7 @@ from course.models import *
 class StudentSerializer(serializers.ModelSerializer):
     school = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+
     class Meta:
         model = Student
         fields = [
@@ -35,6 +37,7 @@ class StudentSerializer(serializers.ModelSerializer):
     def get_status(self, obj):
         return obj.get_status_display()
 
+
 class CourseSerializerForCard(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -50,7 +53,9 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
 
     def get_course(self, obj):
         try:
-            courses = Course.objects.filter(category=obj, step=7)[0:12]
+            user = self.context['request'].user
+            courses = Course.objects.filter(Q(category=obj), Q(course_type=user.status) | Q(category__type=5),
+                                            Q(step=7))[0:12]
 
             ser = CourseGetSerializer(courses, many=True)
             return ser.data
