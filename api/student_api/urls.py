@@ -12,6 +12,7 @@ urlpatterns = [
     path('course-home/', api_views.bestThreeAndRecomCourseView),
     path('courses/', api_views.allCourseView),
     path('search-course/', api_views.searchCourseView),
+    path('course/detail/<int:pk>/', api_views.detailCourseView),
 
     path('category/', api_views.categoryView),
     path('level/', api_views.levelView),

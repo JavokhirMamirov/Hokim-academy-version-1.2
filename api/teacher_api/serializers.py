@@ -48,7 +48,6 @@ class MyCourseSerializer(serializers.ModelSerializer):
     lessons_count = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    sub_category = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     total_time = serializers.SerializerMethodField()

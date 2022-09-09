@@ -10,9 +10,30 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 
 from account.models import Student
 from api.paginator import pagination_json
-from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer
+from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
+    DetailCourseSerializer
 from api.teacher_api.serializers import CourseGetSerializer
 from course.models import Course, Category, Level, CourseStatus
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def detailCourseView(request, pk):
+    try:
+        course = Course.objects.get(id=pk)
+        ser = DetailCourseSerializer(course)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])
