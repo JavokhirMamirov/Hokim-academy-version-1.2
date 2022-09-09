@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, IntegerField
+from django.db.models.functions import Coalesce
 from django.shortcuts import render, redirect
 from account.models import School, City, Student, Account
 from home.decarators import organ_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.db.models import OuterRef, Subquery, Count
+
+
 def PagenatorPage(List, num, request):
     paginator = Paginator(List, num)
     pages = request.GET.get('page')
@@ -45,14 +48,14 @@ def organ_dashboard_view(request):
 @login_required(login_url='admin-login')
 @organ_required
 def schools_list_view(request):
-    pages = [10,25,50,100]
+    pages = [10, 25, 50, 100]
     citys = City.objects.all()
     req = request.GET.get('city')
     q = request.GET.get('q')
     pagination = request.GET.get('pagination')
     schools = School.objects.all()
     if q != '' and q is not None:
-        schools = School.objects.filter(Q(name__icontains=q)| Q(director__icontains=q)|Q(address__icontains=q))
+        schools = School.objects.filter(Q(name__icontains=q) | Q(director__icontains=q) | Q(address__icontains=q))
     if req != '' and req is not None:
         req = int(req)
         if req == 0:
@@ -65,16 +68,17 @@ def schools_list_view(request):
         pagination = pagination
     else:
         pagination = 10
-    
-    # schools = schools.annotate(students=Count(
-    #     Student.objects.filter(school_id=OuterRef('pk'))
-    # ))
+
+    students = Student.objects.filter(school_id=OuterRef('pk')).values('school').annotate(c=Count('*')).values('c')
+
+    schools = schools.annotate(students=Subquery(students))
+
     context = {
         'schools': PagenatorPage(schools.order_by('city_id'), pagination, request),
-        'citys':citys,
+        'citys': citys,
         'pagination': int(pagination),
-        'pages':pages,
-        'req':int(req),
+        'pages': pages,
+        'req': int(req),
     }
     return render(request, 'oranization/schools.html', context)
 
@@ -103,14 +107,14 @@ def add_schools_view(request):
             director=director,
             address=address,
             city=city,
-            lat = lat,
-            lng = lng
+            lat=lat,
+            lng=lng
         )
         if website is not None:
             school.website = website
         if facebook is not None:
             school.facebook = facebook
-        if instagram is not  None:
+        if instagram is not None:
             school.instagram = instagram
         if telegram is not None:
             school.telegram = telegram
@@ -157,7 +161,7 @@ def update_detail_view(request, pk):
         school.instagram = instagram
         school.telegram = telegram
         school.save()
-        if lat and lng is not  None:
+        if lat and lng is not None:
             school.lat = lat
             school.lng = lng
             school.save()
@@ -183,7 +187,7 @@ def add_staff_school(request):
             users = Account.objects.filter(username=username).count()
             if users > 0:
                 messages.error(request, 'Xatolik, Bunday foydalanuvchi mavjud!')
-                return redirect('school-detail', school.id) 
+                return redirect('school-detail', school.id)
             else:
                 Account.objects.create_user(
                     username=username,
@@ -194,7 +198,7 @@ def add_staff_school(request):
                     last_name=last_name
                 )
                 messages.success(request, "Foydalanuvchi muoffaqiyatli yaratilindi!")
-                return redirect('school-detail', school.id) 
+                return redirect('school-detail', school.id)
         except:
             messages.error(request, "Foydalanuvchi yaratishda xatolik!")
             return redirect('school-detail', school.id)
@@ -233,7 +237,7 @@ def user_update_view(request, pk):
         users = Account.objects.filter(username=username).count()
         if users > 0 and account.username != username:
             messages.error(request, 'Xatolik, Bunday foydalanuvchi mavjud!')
-            return redirect('user-detail', account.id) 
+            return redirect('user-detail', account.id)
         else:
             account.username = username
             account.first_name = first_name

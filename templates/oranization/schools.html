@@ -45,7 +45,7 @@
                         </div>                                        
                         <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;" method="get">
                             <label class="form-label"></label>
-                            <select class="form-select" id="inputGroupSelect02" name="pagination">
+                            <select class="form-select" id="inputGroupSelect02" name="pagination" style="margin-right: 15px">
                                 {% for page in pages %}
                                     {% if page == pagination %}
                                     <option value="{{ page }}" selected>{{ page }}</option>
@@ -54,7 +54,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-                            <select class="single-select" name="city">
+                            <select class="single-select" name="city" style="margin-right: 15px">
                                 {% if req == 0 %}
                                 <option value="0" selected>Shahar tanlash</option>
                                 {% for city in citys %}
@@ -71,7 +71,7 @@
                                 {% endfor %}
                                 {% endif %}
                             </select>
-                            <button type="submit" class="btn btn-primary">Filterlash</button>
+                            <button type="submit" class="btn btn-primary" style="margin-left: 15px">Filterlash</button>
                         </form>
                     </div>
                     <div class="card-body">
@@ -81,7 +81,7 @@
                                 <th class="text-center">№</th>
                                 <th class="text-center">Maktab nomi</th>
 								<th class="text-center">Direktor</th>
-								<th class="text-center">O'quvchilari</th>
+								<th class="text-center">O'quvchilar</th>
 								<th class="text-center">Shahri</th>
 								<th class="text-center">Manzil</th>
 								<th class="text-center">Batafsil</th>
