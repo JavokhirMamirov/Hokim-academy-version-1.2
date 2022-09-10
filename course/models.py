@@ -9,8 +9,8 @@ VIDEO_TYPES = (
 )
 
 COURSE_TYPES = (
-    (1, "Prezident Maktabiga kiruvchilar uchun"),
-    (2, "Abuturentlar uchun"),
+    (1, "Prezident maktabiga kiruvchilar uchun"),
+    (2, "Abuturiyentlar uchun"),
     (3, "Xorijiy til o'rganuvchilar uchun"),
     (4, "O'qtuvchilar uchun"),
     (5, "Barcha uchun"),
@@ -56,13 +56,13 @@ class Tag(models.Model):
 
 class Course(models.Model):
     STEP = (
-        (1, 'created'),
-        (2, 'Lesson Added'),
-        (3, 'Quiz added'),
-        (4, 'Attachment added'),
-        (5, 'Finished'),
-        (6, 'Canceled'),
-        (7, 'Published'),
+        (1, 'Yaratildi'),
+        (2, "Darslar qo'shildi"),
+        (3, "Testlar qo'shildi"),
+        (4, 'Darslik yuklandi'),
+        (5, "Ko'rib chiqilmoqda"),
+        (6, 'Rad etildi'),
+        (7, 'Taqdim etildi'),
     )
     title = models.CharField(max_length=255)
     short_description = models.CharField(max_length=255)

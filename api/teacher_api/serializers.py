@@ -51,7 +51,8 @@ class MyCourseSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     total_time = serializers.SerializerMethodField()
-
+    course_type = serializers.SerializerMethodField()
+    step = serializers.SerializerMethodField()
     class Meta:
         model = Course
         fields = [
@@ -82,6 +83,12 @@ class MyCourseSerializer(serializers.ModelSerializer):
             return t_time
         except:
             return 0
+
+    def get_course_type(self, obj):
+        return obj.get_course_type_display()
+
+    def get_step(self, obj):
+        return obj.get_step_display()
 
     def get_lessons_count(self, obj):
         try:

@@ -5,6 +5,12 @@ from api.teacher_api.serializers import CourseGetSerializer, TeacherSerializer
 from course.models import *
 
 
+class MyCourseSerializer(serializers.ModelSerializer):
+    course = CourseGetSerializer()
+    class Meta:
+        model = WatchHistory
+        fields = ['course']
+
 class StudentSerializer(serializers.ModelSerializer):
     school = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()

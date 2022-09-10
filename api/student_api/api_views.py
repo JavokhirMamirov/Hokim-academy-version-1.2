@@ -11,10 +11,48 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 from account.models import Student
 from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
-    DetailCourseSerializer
+    DetailCourseSerializer, MyCourseSerializer
 from api.teacher_api.serializers import CourseGetSerializer
-from course.models import Course, Category, Level, CourseStatus
+from course.models import Course, Category, Level, CourseStatus, WatchHistory
 
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def mycourseView(request):
+    try:
+        student = request.user
+        query = WatchHistory.objects.filter(
+            student=student
+        )
+
+        search = request.GET.get('search')
+        category = request.GET.get('category')
+        page = request.GET.get('page')
+
+        if search is not None and search != "":
+            query = query.filter(
+                Q(title__icontains=search) | Q(short_description__icontains=search)
+                | Q(teacher__full_name__icontains=search)
+            )
+
+        if category is not None and category != "":
+            query = query.filter(category_id=category)
+
+        if page == "":
+            page = None
+
+        data = {
+            "success": True,
+            "data": pagination_json(page, query, MyCourseSerializer, 9)
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 @api_view(['GET'])
 @authentication_classes([StudentJwtAuthentication])

@@ -20,12 +20,44 @@ from course.models import Language, CourseStatus, Level, Category, Tag, Course, 
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
+def myDashboardView(request):
+    try:
+        query_s = WatchHistory.objects.filter(course__teacher=request.user)
+
+        query = query_s.values('student_id')
+        students = Student.objects.filter(id__in=query)
+
+        course = Course.objects.filter(teacher=request.user)
+
+        data = {
+            "success": True,
+            "data": {
+                'course_count': course.count(),
+                'student_count': query_s.count(),
+                'students': MyStudentSerializer(students[:25], many=True).data
+            }
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
 def myStudentsView(request):
     try:
         query = WatchHistory.objects.filter(course__teacher=request.user)
         search = request.GET.get('search')
         course = request.GET.get('course')
         page = request.GET.get('page')
+
+        if page == "":
+            page = None
 
         if search is not None and search != "":
             query = query.filter(
