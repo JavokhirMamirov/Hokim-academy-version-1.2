@@ -127,8 +127,9 @@ def changeStudentImageView(request):
 def studentView(request):
     try:
         student = request.user
+        st = Student.objects.get(id=student.id)
         if request.method == 'GET':
-            ser = StudentSerializer(student)
+            ser = StudentSerializer(st)
             data = {
                 "success": True,
                 "data": ser.data

@@ -51,7 +51,6 @@ class MyCourseSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     total_time = serializers.SerializerMethodField()
-    step = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -61,7 +60,6 @@ class MyCourseSerializer(serializers.ModelSerializer):
             "short_description",
             "language",
             "category",
-            "sub_category",
             "level",
             "image",
             "date_added",
@@ -101,12 +99,6 @@ class MyCourseSerializer(serializers.ModelSerializer):
     def get_category(self, obj):
         try:
             return obj.category.name
-        except:
-            return None
-
-    def get_sub_category(self, obj):
-        try:
-            return obj.sub_category.name
         except:
             return None
 
