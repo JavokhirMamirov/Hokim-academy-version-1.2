@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
+from django.template.defaultfilters import title
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,9 +13,124 @@ from api.auth.TeacherJWT import TeacherJwtAuthentication
 from api.paginator import pagination_json
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
-    MyStudentSerializer
+    MyStudentSerializer, TeacherProfileSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment, WatchHistory
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def checkUsernameView(request):
+    try:
+        username = request.GET.get('username')
+        if username != request.user.username:
+            students = Teacher.objects.filter(username=username)
+            if students.count() > 0:
+                data = {
+                    "success": False,
+                    "error": "Username already exist"
+                }
+            else:
+                data = {
+                    "success": True,
+                    "error": ""
+                }
+        else:
+            data = {
+                "success": True,
+                "error": ""
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
+@api_view(['POST'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def changeTeacherImageView(request):
+    try:
+        student = request.user
+
+        image = request.data.get('image')
+        if image is not None:
+            student.image = image
+            student.save()
+
+        ser = TeacherProfileSerializer(student)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def teacherView(request):
+    try:
+        student = request.user
+        if request.method == 'GET':
+            ser = TeacherProfileSerializer(student)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        else:
+            username = request.data.get('username')
+            email = request.data.get('email')
+            telegram = request.data.get('telegram')
+            facebook = request.data.get('facebook')
+            instagram = request.data.get('instagram')
+            website = request.data.get('website')
+            biography = request.data.get('biography')
+            title = request.data.get('title')
+            full_name = request.data.get('full_name')
+            if username != student.username:
+                students = Student.objects.filter(username=username)
+                if students.count() > 0:
+                    data = {
+                        "success": False,
+                        "status": 203,
+                        "error": "Username already exist"
+                    }
+                    return Response(data)
+                else:
+                    student.username = username
+            student.full_name = full_name
+            student.title = title
+            student.telegram = telegram
+            student.facebook = facebook
+            student.instagram = instagram
+            student.website = website
+            student.email = email
+            student.biography = biography
+
+            student.save()
+
+            ser = TeacherProfileSerializer(student)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])

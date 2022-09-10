@@ -9,6 +9,24 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ['id', 'full_name', 'title', 'image']
 
+class TeacherProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = [
+            'id',
+            'full_name',
+            'title',
+            'username',
+            'email',
+            'biography',
+            'image',
+            'website',
+            'instagram',
+            'facebook',
+            'telegram',
+            'date_added',
+        ]
+
 
 class MyStudentSerializer(serializers.ModelSerializer):
     school = serializers.SerializerMethodField()

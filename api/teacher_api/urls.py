@@ -27,6 +27,9 @@ urlpatterns = [
     path('my-students/', api_views.myStudentsView),
 
     path('dashboard/', api_views.myDashboardView),
+    path('change-image/', api_views.changeTeacherImageView),
+    path('check-username/', api_views.checkUsernameView),
+    path('profile/', api_views.teacherView),
 
 ]
 
