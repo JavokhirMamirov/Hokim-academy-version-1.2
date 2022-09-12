@@ -4,6 +4,29 @@ from rest_framework import serializers
 from course.models import *
 
 
+class CommentStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'full_name', 'image']
+
+class CommentTeacherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ['id', 'full_name', 'image']
+
+class CourseCommentPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseComment
+        fields = "__all__"
+
+
+class CourseCommentGetSerializer(serializers.ModelSerializer):
+    student = CommentStudentSerializer()
+    teacher = CommentTeacherSerializer()
+    class Meta:
+        model = CourseComment
+        fields = "__all__"
+
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher

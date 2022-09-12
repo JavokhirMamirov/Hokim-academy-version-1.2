@@ -188,9 +188,10 @@ class Rating(models.Model):
 
 class CourseComment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey("CourseComment", on_delete=models.CASCADE, related_name='course_comment', null=True,
                                blank=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
     comment = models.TextField()
     date_added = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)

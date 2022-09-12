@@ -31,7 +31,8 @@ urlpatterns = [
     path('change-image/', api_views.changeTeacherImageView),
     path('check-username/', api_views.checkUsernameView),
     path('profile/', api_views.teacherView),
-    path('course/detail/<int:pk>/', api_views.detailCourseView)
+    path('course/detail/<int:pk>/', api_views.detailCourseView),
+    path('course/comments/<int:pk>/', api_views.commentsView),
 
 ]
 
