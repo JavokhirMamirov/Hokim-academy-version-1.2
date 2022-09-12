@@ -11,11 +11,32 @@ from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer
     TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
 from api.paginator import pagination_json
+from api.student_api.serializers import DetailCourseSerializer
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
-    MyStudentSerializer, TeacherProfileSerializer
+    MyStudentSerializer, TeacherProfileSerializer, CoursePostSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment, WatchHistory
+
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def detailCourseView(request, pk):
+    try:
+        course = Course.objects.get(id=pk)
+        ser = DetailCourseSerializer(course)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -202,37 +223,45 @@ def myStudentsView(request):
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
-def myCourseView(request):
+def myCourseView(request, pk=None):
     try:
-        query = Course.objects.filter(teacher=request.user)
-        search = request.GET.get('search')
-        level = request.GET.get('level')
-        category = request.GET.get('category')
-        status = request.GET.get('status')
-        page = request.GET.get('page')
+        if pk is None:
+            query = Course.objects.filter(teacher=request.user)
+            search = request.GET.get('search')
+            level = request.GET.get('level')
+            category = request.GET.get('category')
+            status = request.GET.get('status')
+            page = request.GET.get('page')
 
-        if search is not None and search != "":
-            query = query.filter(
-                Q(title__icontains=search) | Q(short_description__icontains=search)
-                | Q(teacher__full_name__icontains=search)
-            )
+            if search is not None and search != "":
+                query = query.filter(
+                    Q(title__icontains=search) | Q(short_description__icontains=search)
+                    | Q(teacher__full_name__icontains=search)
+                )
 
-        if level is not None and level != "":
-            query = query.filter(level_id=level)
+            if level is not None and level != "":
+                query = query.filter(level_id=level)
 
-        if category is not None and category != "":
-            query = query.filter(category_id=category)
+            if category is not None and category != "":
+                query = query.filter(category_id=category)
 
-        if status is not None and status != "":
-            query = query.filter(status_id=status)
+            if status is not None and status != "":
+                query = query.filter(status_id=status)
 
-        if page == "":
-            page = None
+            if page == "":
+                page = None
 
-        data = {
-            "success": True,
-            "data": pagination_json(page, query, MyCourseSerializer, 20)
-        }
+            data = {
+                "success": True,
+                "data": pagination_json(page, query, MyCourseSerializer, 20)
+            }
+        else:
+            query = Course.objects.get(id=pk)
+            ser = CoursePostSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
     except Exception as err:
         data = {
             "success": False,

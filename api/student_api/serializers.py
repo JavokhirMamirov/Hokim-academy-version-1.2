@@ -7,9 +7,11 @@ from course.models import *
 
 class MyCourseSerializer(serializers.ModelSerializer):
     course = CourseGetSerializer()
+
     class Meta:
         model = WatchHistory
         fields = ['course']
+
 
 class StudentSerializer(serializers.ModelSerializer):
     school = serializers.SerializerMethodField()
@@ -113,6 +115,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer()
     lessons_count = serializers.SerializerMethodField()
     is_saved = serializers.SerializerMethodField()
+
     class Meta:
         model = Course
         fields = [
@@ -127,6 +130,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
             'status',
             'image',
             'date_added',
+            'short_description',
             'course_type',
             'sections',
             'students',
@@ -156,7 +160,14 @@ class DetailCourseSerializer(serializers.ModelSerializer):
             if t_time is None:
                 t_time = 0
 
-            return t_time
+            s = t_time // 60
+            m = t_time % 60
+            if s > 0:
+                time = f"{s} s {m} min"
+            else:
+                time = f"{m} min"
+
+            return time
         except:
             return 0
 

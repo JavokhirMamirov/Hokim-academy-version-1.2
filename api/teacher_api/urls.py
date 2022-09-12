@@ -24,12 +24,14 @@ urlpatterns = [
     path('attachment/<int:pk>/', api_views.courseAttachmentView),
     path('course-step/<int:pk>/', api_views.changeCourseStep),
     path('my-courses/', api_views.myCourseView),
+    path('my-courses/<int:pk>/', api_views.myCourseView),
     path('my-students/', api_views.myStudentsView),
 
     path('dashboard/', api_views.myDashboardView),
     path('change-image/', api_views.changeTeacherImageView),
     path('check-username/', api_views.checkUsernameView),
     path('profile/', api_views.teacherView),
+    path('course/detail/<int:pk>/', api_views.detailCourseView)
 
 ]
 
