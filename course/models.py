@@ -72,8 +72,6 @@ class Course(models.Model):
     tag = models.ManyToManyField(Tag)
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
-    video = models.CharField(max_length=255, null=True, blank=True)
-    video_type = models.CharField(max_length=10, choices=VIDEO_TYPES)
     image = models.ImageField(upload_to='course/image/')
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now=True)
@@ -111,7 +109,8 @@ class Lesson(models.Model):
     title = models.CharField(max_length=255)
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, blank=True)
     video_type = models.CharField(max_length=15, choices=VIDEO_TYPES, default="Youtube")
-    video = models.CharField(max_length=255, null=True)
+    video_link = models.CharField(max_length=255, null=True)
+    video = models.FileField(upload_to='course/video', null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now_add=True)
     summary = models.TextField(null=True)
@@ -123,6 +122,7 @@ class Lesson(models.Model):
 
 
 class Quiz(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField(max_length=600)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
