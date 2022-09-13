@@ -12,9 +12,47 @@ from account.models import Student
 from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
     DetailCourseSerializer, MyCourseSerializer
-from api.teacher_api.serializers import CourseGetSerializer
-from course.models import Course, Category, Level, CourseStatus, WatchHistory
+from api.teacher_api.serializers import CourseGetSerializer, CourseCommentGetSerializer, CourseCommentPostSerializer
+from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment
 
+
+@api_view(['GET', 'POST'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def commentsView(request, pk):
+    try:
+        if request.method == "GET":
+            page = request.GET.get('page')
+            query = CourseComment.objects.filter(course_id=pk).order_by('-date_added')
+            ser = CourseCommentGetSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": pagination_json(page, query, CourseCommentGetSerializer, 10)
+            }
+        else:
+            request.data._mutable = True
+            payload = request.data
+            payload['student'] = request.user.id
+            payload['course'] = pk
+            ser = CourseCommentPostSerializer(data=payload)
+            if ser.is_valid():
+                ser.save()
+                data = {
+                    "success": True,
+                    "data": ser.data
+                }
+            else:
+                data = {
+                    "success": False,
+                    "error": f"{ser.errors}"
+                }
+
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 @api_view(['GET'])
 @authentication_classes([StudentJwtAuthentication])

@@ -16,6 +16,13 @@ COURSE_TYPES = (
     (5, "Barcha uchun"),
 )
 
+LEVELS = (
+    (1, "Boshlang'ich"),
+    (2, "O'rta"),
+    (3, "Murakkab")
+
+)
+
 
 class Language(models.Model):
     name = models.CharField(max_length=255)
@@ -70,7 +77,7 @@ class Course(models.Model):
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     tag = models.ManyToManyField(Tag)
-    level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True, blank=True)
+    level = models.SmallIntegerField(default=1, choices=LEVELS)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     image = models.ImageField(upload_to='course/image/')
     date_added = models.DateField(auto_now_add=True)
@@ -85,6 +92,7 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+
 class CourseAttachment(models.Model):
     title = models.CharField(max_length=255)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -93,7 +101,6 @@ class CourseAttachment(models.Model):
 
     def __str__(self):
         return self.title
-
 
 
 class Section(models.Model):

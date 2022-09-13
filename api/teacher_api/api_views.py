@@ -13,7 +13,7 @@ from api.paginator import pagination_json
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
     MyStudentSerializer, TeacherProfileSerializer, CoursePostSerializer, CourseCommentGetSerializer, \
-    CourseCommentPostSerializer, DetailCourseSerializer
+    CourseCommentPostSerializer, DetailCourseSerializer, CourseSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment, WatchHistory, CourseComment
 
@@ -528,13 +528,16 @@ def lessonView(request, pk=None):
             section = request.data['section']
             video_type = request.data['video_type']
             video = request.data['video']
+            video_link = request.data['video_link']
             summary = request.data['summary']
             time = request.data['time']
             order = request.data['order']
+            if video_type != "Video":
+                video = None
 
             query = Lesson.objects.create(
                 title=title, section_id=section, video_type=video_type,
-                video=video, summary=summary, time=time,
+                video=video, summary=summary, time=time,video_link=video_link,
                 order=order
             )
 
@@ -549,15 +552,19 @@ def lessonView(request, pk=None):
             section = request.data['section']
             video_type = request.data['video_type']
             video = request.data['video']
+            video_link = request.data['video_link']
             summary = request.data['summary']
             time = request.data['time']
             order = request.data['order']
+            if video_type != "Video":
+                video = None
             query = Lesson.objects.get(id=pk)
             query.title = title
             query.order = order
             query.section_id = section
             query.video_type = video_type
             query.video = video
+            query.video_link = video_link
             query.summary = summary
             query.time = time
             query.save()
@@ -647,7 +654,7 @@ def courseView(request, pk=None):
             else:
                 query = Course.objects.get(teacher=request.user, step__lt=5)
 
-            ser = CourseGetSerializer(query)
+            ser = CourseSerializer(query)
             data = {
                 "success": True,
                 "data": ser.data
@@ -666,11 +673,11 @@ def courseView(request, pk=None):
 
             query = Course.objects.create(
                 teacher=teacher, title=title, short_description=short_description,
-                description=description, language_id=language, category_id=category, level_id=level,
+                description=description, language_id=language, category_id=category, level=level,
                 course_type=course_type,
                 image=image
             )
-            ser = CourseGetSerializer(query)
+            ser = CourseSerializer(query)
             data = {
                 "success": True,
                 "data": ser.data
@@ -690,12 +697,12 @@ def courseView(request, pk=None):
             query.description = description
             query.language_id = language
             query.category_id = category
-            query.level_id = level
+            query.level = level
             query.course_type = course_type
-            if image is not None:
+            if image is not None and image != 'null' and image != '':
                 query.image = image
             query.save()
-            ser = CourseGetSerializer(query)
+            ser = CourseSerializer(query)
             data = {
                 "success": True,
                 "data": ser.data

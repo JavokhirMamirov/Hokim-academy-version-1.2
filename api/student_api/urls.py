@@ -19,8 +19,9 @@ urlpatterns = [
     path('level/', api_views.levelView),
     path('course-status/', api_views.courseStatusView),
 
+    path('course/comments/<int:pk>/', api_views.commentsView),
+
     path('profile/', api_views.studentView),
     path('change-image/', api_views.changeStudentImageView),
     path('check-username/', api_views.checkUsernameView)
 ]
-

@@ -42,7 +42,6 @@ class SectionSerializer(serializers.ModelSerializer):
             'title',
             'order',
             'videos',
-            'open'
         ]
 
     def get_videos(self, obj):
@@ -300,12 +299,16 @@ class MyCourseSerializer(serializers.ModelSerializer):
             return None
 
 
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = "__all__"
+
 class CourseGetSerializer(serializers.ModelSerializer):
     teacher = TeacherSerializer()
     lessons_count = serializers.SerializerMethodField()
     language = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
-    sub_category = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
     total_time = serializers.SerializerMethodField()
@@ -318,11 +321,8 @@ class CourseGetSerializer(serializers.ModelSerializer):
             "short_description",
             "language",
             "category",
-            "sub_category",
             "level",
             "teacher",
-            "video",
-            "video_type",
             "image",
             "date_added",
             "status",
@@ -360,12 +360,6 @@ class CourseGetSerializer(serializers.ModelSerializer):
     def get_category(self, obj):
         try:
             return obj.category.name
-        except:
-            return None
-
-    def get_sub_category(self, obj):
-        try:
-            return obj.sub_category.name
         except:
             return None
 
