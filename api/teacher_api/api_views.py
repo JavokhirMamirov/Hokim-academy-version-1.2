@@ -1,6 +1,5 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
-from django.template.defaultfilters import title
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,11 +10,10 @@ from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer
     TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
 from api.paginator import pagination_json
-from api.student_api.serializers import DetailCourseSerializer
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
     MyStudentSerializer, TeacherProfileSerializer, CoursePostSerializer, CourseCommentGetSerializer, \
-    CourseCommentPostSerializer
+    CourseCommentPostSerializer, DetailCourseSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment, WatchHistory, CourseComment
 

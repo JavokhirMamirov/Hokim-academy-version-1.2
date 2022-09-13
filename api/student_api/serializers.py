@@ -87,7 +87,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class SectionSerializer(serializers.ModelSerializer):
     videos = serializers.SerializerMethodField()
-
+    open = serializers.SerializerMethodField()
     class Meta:
         model = Section
         fields = [
@@ -95,7 +95,16 @@ class SectionSerializer(serializers.ModelSerializer):
             'title',
             'order',
             'videos',
+            'open'
         ]
+
+    def get_open(self, obj):
+        student = self.context['request'].user
+        tests = QuizResult.objects.filter(quiz__section=obj, student=student, is_passed=True)
+        if tests.count() > 0:
+            return True
+        else:
+            return False
 
     def get_videos(self, obj):
         try:

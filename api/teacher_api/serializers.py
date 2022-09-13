@@ -32,6 +32,143 @@ class TeacherSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ['id', 'full_name', 'title', 'image']
 
+class SectionSerializer(serializers.ModelSerializer):
+    videos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Section
+        fields = [
+            'id',
+            'title',
+            'order',
+            'videos',
+            'open'
+        ]
+
+    def get_videos(self, obj):
+        try:
+            videos = Lesson.objects.filter(section=obj).order_by('order')
+            return LessonSerializer(videos, many=True).data
+        except:
+            return []
+
+
+class DetailCourseSerializer(serializers.ModelSerializer):
+    sections = serializers.SerializerMethodField()
+    students = serializers.SerializerMethodField()
+    tests = serializers.SerializerMethodField()
+    language = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    level = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    total_time = serializers.SerializerMethodField()
+    teacher = TeacherSerializer()
+    lessons_count = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Course
+        fields = [
+            'id',
+            'title',
+            'description',
+            'language',
+            'description',
+            'category',
+            'level',
+            'teacher',
+            'status',
+            'image',
+            'date_added',
+            'short_description',
+            'course_type',
+            'sections',
+            'students',
+            'tests',
+            'lessons_count',
+            'total_time',
+            'is_saved'
+        ]
+
+    def get_is_saved(self, obj):
+        try:
+            user = self.context['request'].user
+            query = WatchHistory.objects.filter(course=obj, student=user)
+            if query.count() > 0:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def get_total_time(self, obj):
+        try:
+            t_time = Lesson.objects.filter(
+                section__course=obj
+            ).aggregate(total=Sum('time')).get('total')
+
+            if t_time is None:
+                t_time = 0
+
+            s = t_time // 60
+            m = t_time % 60
+            if s > 0:
+                time = f"{s} s {m} min"
+            else:
+                time = f"{m} min"
+
+            return time
+        except:
+            return 0
+
+    def get_lessons_count(self, obj):
+        try:
+            lessons = Lesson.objects.filter(section__course=obj)
+            return lessons.count()
+        except:
+            return 0
+
+    def get_sections(self, obj):
+        try:
+            query = Section.objects.filter(course=obj).order_by('order')
+            return SectionSerializer(query, many=True).data
+        except:
+            return []
+
+    def get_students(self, obj):
+        try:
+            query = WatchHistory.objects.filter(course=obj).count()
+            return query
+        except:
+            return 0
+
+    def get_tests(self, obj):
+        return Quiz.objects.filter(course=obj).count()
+
+    def get_language(self, obj):
+        try:
+            return obj.language.name
+        except:
+            return None
+
+    def get_category(self, obj):
+        try:
+            return obj.category.name
+        except:
+            return None
+
+    def get_level(self, obj):
+        try:
+            return obj.level.name
+        except:
+            return None
+
+    def get_status(self, obj):
+        try:
+            return obj.status.name
+        except:
+            return None
+
 class TeacherProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher

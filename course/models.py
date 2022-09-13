@@ -157,6 +157,7 @@ class QuizResult(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     is_submited = models.BooleanField(default=False)
+    is_passed = models.BooleanField(default=False)
 
 
 class QuizAnswer(models.Model):
