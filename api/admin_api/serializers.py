@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
+
+from account.models import Info
 from course.models import Language, CourseStatus, Level, Category, Tag
 
 
@@ -27,6 +29,11 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = "__all__"
 
+
+class InfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Info
+        fields = "__all__"
 
 
 

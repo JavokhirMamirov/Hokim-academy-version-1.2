@@ -20,6 +20,8 @@ from course.models import Language, CourseStatus, Level, Category, Tag, Course, 
     CourseAttachment, WatchHistory, CourseComment
 
 
+
+
 @api_view(['GET', 'POST'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])

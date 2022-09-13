@@ -145,3 +145,13 @@ class Teacher(models.Model):
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
         self.save()
+
+
+class Info(models.Model):
+    email = models.CharField(max_length=255, null=True, blank=True)
+    facebook = models.CharField(max_length=255, null=True, blank=True)
+    instagram = models.CharField(max_length=255, null=True, blank=True)
+    telegram = models.CharField(max_length=255, null=True, blank=True)
+    youtube = models.CharField(max_length=255, null=True, blank=True)
+
+

@@ -1,6 +1,7 @@
 from django.db.models import Q, Sum
 from rest_framework import serializers
 
+from account.models import Info
 from api.teacher_api.serializers import CourseGetSerializer, TeacherSerializer
 from course.models import *
 

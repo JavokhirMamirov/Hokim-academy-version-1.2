@@ -9,6 +9,7 @@ admin.site.register(Teacher)
 admin.site.register(School)
 admin.site.register(Skill)
 admin.site.register(City)
+admin.site.register(Info)
 
 
 @admin.register(Account)
