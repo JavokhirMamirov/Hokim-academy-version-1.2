@@ -11,6 +11,7 @@ FONT = os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'MTCORS
 # FONT = '/home/hokim_akademy/backend/app/home/packages/default_certificate/MTCORSVA.ttf'
 CERTIFICATE = os.path.join(BASE_DIR, 'home', 'packages', 'default_certificate', 'certificate.jpg')
 
+CER_DIR = '/mnt/volume_nyc1_01/academy/'
 
 def generate_name():
     alphabet = string.ascii_letters + string.digits
@@ -55,14 +56,14 @@ def certificate_generate(student):
     )
 
     img.paste(img2, (qrcode_x, qrcode_y))
-    if exists(os.path.join(BASE_DIR, 'media', 'certificate')) == False:
-        os.makedirs(os.path.join(BASE_DIR, 'media', 'certificate'))
+    if exists(os.path.join(CER_DIR, 'media', 'certificate')) == False:
+        os.makedirs(os.path.join(CER_DIR, 'media', 'certificate'))
     file_name = f"{student.full_name}.jpg"
-    save_img_path = os.path.join(BASE_DIR, 'media', 'certificate', file_name)
+    save_img_path = os.path.join(CER_DIR, 'media', 'certificate', file_name)
     if exists(save_img_path):
         while True:
             file_name = f"{student.full_name}{generate_name()}.jpg"
-            save_img_path = os.path.join(BASE_DIR, 'media', 'certificate', file_name)
+            save_img_path = os.path.join(CER_DIR, 'media', 'certificate', file_name)
             if exists(save_img_path):
                 continue
             else:
