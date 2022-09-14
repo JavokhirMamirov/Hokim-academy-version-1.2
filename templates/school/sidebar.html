@@ -24,23 +24,23 @@
                 </a>
             </li>
             {% endif %}
-            {% if request.path == '/school/add-student/'%}
-            <li class="active">
-                <a href="{% url 'add-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user-plus"></i>
-                    </div>
-                    <div class="menu-title">O'quvchi qo'shish</div>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'add-student' %}">
-                    <div class="parent-icon"><i class="bx bx-user-plus"></i>
-                    </div>
-                    <div class="menu-title">O'quvchi qo'shish</div>
-                </a>
-            </li>
-            {% endif %}
+{#            {% if request.path == '/school/add-student/'%}#}
+{#            <li class="active">#}
+{#                <a href="{% url 'add-student' %}">#}
+{#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
+{#                    </div>#}
+{#                    <div class="menu-title">O'quvchi qo'shish</div>#}
+{#                </a>#}
+{#            </li>#}
+{#            {% else %}#}
+{#            <li>#}
+{#                <a href="{% url 'add-student' %}">#}
+{#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
+{#                    </div>#}
+{#                    <div class="menu-title">O'quvchi qo'shish</div>#}
+{#                </a>#}
+{#            </li>#}
+{#            {% endif %}#}
             {% if request.path == '/school/teachers/'%}
             <li class="active">
                 <a href="{% url 'teachers' %}">
