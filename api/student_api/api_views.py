@@ -521,12 +521,13 @@ def bestThreeAndRecomCourseView(request):
         bestThree = Course.objects.filter(best_three=True, course_type=user.status, step=7)
         recommends = Course.objects.filter(is_recommended=True, course_type=user.status, step=7)
         category = Category.objects.filter(type=user.status)[:8]
+        context = {'user':request.user}
         data = {
             "success": True,
             "data": {
                 "three_course": CourseGetSerializer(bestThree[:3], many=True).data,
                 "recommends": CourseGetSerializer(recommends[:12], many=True).data,
-                "category": CourseHomeWithCategorySerializer(category, many=True).data
+                "category": CourseHomeWithCategorySerializer(category, many=True, context=context).data
             }
         }
     except Exception as err:

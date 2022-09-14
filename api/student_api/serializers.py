@@ -147,8 +147,8 @@ class CourseHomeWithCategorySerializer(serializers.ModelSerializer):
 
     def get_course(self, obj):
         try:
-            user = self.context['request'].user
-            courses = Course.objects.filter(Q(category=obj), Q(course_type=user.status) | Q(category__type=5),
+            user = self.context['user']
+            courses = Course.objects.filter(Q(category=obj), Q(course_type=user.status)|Q(course_type=5) | Q(category__type=5),
                                             Q(step=7))[0:12]
 
             ser = CourseGetSerializer(courses, many=True)
