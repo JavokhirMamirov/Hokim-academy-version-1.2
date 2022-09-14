@@ -11,9 +11,113 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 from account.models import Student
 from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
-    DetailCourseSerializer, MyCourseSerializer
+    DetailCourseSerializer, MyCourseSerializer, QuizSerializer, QuizQuestionSerializer, QuizResultSerializer
 from api.teacher_api.serializers import CourseGetSerializer, CourseCommentGetSerializer, CourseCommentPostSerializer
-from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment
+from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment, Quiz, Question, QuizResult
+
+
+@api_view(['GET', 'POST'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizResultView(request):
+    try:
+        if request.method == "GET":
+            quiz = request.GET.get('quiz')
+            query = QuizResult.objects.filter(is_passed=True, quiz_id=quiz).order_by("mark")
+            ser = QuizResultSerializer(query, many=True)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+        else:
+            student = request.user
+            quiz_id = request.data['quiz']
+            answers = request.data['answers']
+            quiz = Quiz.objects.get(id=quiz_id)
+            time = request.data['time']
+            time = int(float(time))
+            question_count = Question.objects.filter(quiz=quiz).count()
+            correct_count = 0
+            for an in answers:
+                try:
+                    question = Question.objects.get(id=an['question'])
+                    if question.correct_answer == an['answer']:
+                        correct_count += 1
+                except:
+                    continue
+
+            mark = round((correct_count * 100) / question_count, 2)
+            if mark >= quiz.passed_percent:
+                is_passed = True
+            else:
+                is_passed = False
+
+            try:
+                result = QuizResult.objects.get(student=student, quiz=quiz)
+                if is_passed == True:
+                    result.mark = mark
+                    result.is_passed = is_passed
+                    result.save()
+            except QuizResult.DoesNotExist:
+                result = QuizResult.objects.create(
+                    quiz=quiz, student=student, mark=mark, is_passed=is_passed, time=time
+                )
+
+            data = {
+                "success": True,
+                "data": {
+                    "time": time,
+                    "mark": mark,
+                    "is_passed": is_passed,
+                }
+            }
+
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizView(request):
+    try:
+        course = request.GET.get('course')
+        query = Quiz.objects.filter(is_active=True, course_id=course).order_by("order")
+        ser = QuizSerializer(query, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizQuestionsView(request):
+    try:
+        quiz = request.GET.get('quiz')
+        query = Question.objects.filter(quiz_id=quiz).order_by("order")
+        ser = QuizQuestionSerializer(query, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 @api_view(['GET', 'POST'])
@@ -54,6 +158,7 @@ def commentsView(request, pk):
         }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([StudentJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -91,6 +196,7 @@ def mycourseView(request):
         }
 
     return Response(data)
+
 
 @api_view(['GET'])
 @authentication_classes([StudentJwtAuthentication])

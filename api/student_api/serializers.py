@@ -6,6 +6,78 @@ from api.teacher_api.serializers import CourseGetSerializer, TeacherSerializer
 from course.models import *
 
 
+class QuizSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = ['id', 'title']
+
+class QuizResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizResult
+        fields = "__all__"
+
+class QuizStudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = [
+            "id", "full_name", 'image'
+        ]
+
+class QuizALLResultSerializer(serializers.ModelSerializer):
+    student = QuizStudentSerializer()
+    class Meta:
+        model = QuizResult
+        fields = [
+            "id",
+            "quiz",
+            "student",
+            "mark",
+            "date_added",
+            "is_passed",
+        ]
+
+class QuizSerializer(serializers.ModelSerializer):
+    section = QuizSectionSerializer()
+    result = serializers.SerializerMethodField()
+    class Meta:
+        model = Quiz
+        fields = [
+            "id",
+            "section",
+            "title",
+            "description",
+            "course",
+            "level",
+            "time",
+            "order",
+            "passed_percent",
+            "result",
+        ]
+
+    def get_result(self, obj):
+        try:
+            student = self.context['request'].user
+            query = QuizResult.objects.get(student=student, quiz=obj)
+            ser = QuizResultSerializer(query)
+            return ser.data
+        except:
+            return None
+
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = [
+            'id',
+            'quiz',
+            'query',
+            'optionA',
+            'optionB',
+            'optionC',
+            'optionD',
+            'order',
+        ]
+
+
 
 class MyCourseSerializer(serializers.ModelSerializer):
     course = CourseGetSerializer()

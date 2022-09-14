@@ -87,7 +87,8 @@ class QuizResultAdmin(admin.ModelAdmin):
                     "mark",
                     "date_added",
                     "date_updated",
-                    "is_submited",
+                    "is_passed",
+                    'time'
                     ]
 
 

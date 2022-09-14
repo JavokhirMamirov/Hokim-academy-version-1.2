@@ -21,6 +21,10 @@ urlpatterns = [
 
     path('course/comments/<int:pk>/', api_views.commentsView),
 
+    path('quizs/', api_views.quizView),
+    path('quiz/questions/', api_views.quizQuestionsView),
+    path('quiz/result/', api_views.quizResultView),
+
     path('profile/', api_views.studentView),
     path('change-image/', api_views.changeStudentImageView),
     path('check-username/', api_views.checkUsernameView)
