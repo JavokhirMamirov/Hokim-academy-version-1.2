@@ -13,6 +13,7 @@ urlpatterns = [
     path('course/', api_views.courseView),
     path('course/<int:pk>/', api_views.courseView),
     path('section/', api_views.sectionView),
+    path('section/quiz/<int:pk>/', api_views.quizSectionView),
     path('section/<int:pk>/', api_views.sectionView),
     path('lesson/', api_views.lessonView),
     path('lesson/<int:pk>/', api_views.lessonView),
@@ -29,6 +30,7 @@ urlpatterns = [
 
     path('dashboard/', api_views.myDashboardView),
     path('change-image/', api_views.changeTeacherImageView),
+    path('change-video/', api_views.changeTeacherVideoView),
     path('check-username/', api_views.checkUsernameView),
     path('profile/', api_views.teacherView),
     path('course/detail/<int:pk>/', api_views.detailCourseView),

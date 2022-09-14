@@ -14,6 +14,7 @@ urlpatterns = [
     path('search-course/', api_views.searchCourseView),
     path('my-course/', api_views.mycourseView),
     path('course/detail/<int:pk>/', api_views.detailCourseView),
+    path('course/attachments/', api_views.courseAttachmentView),
 
     path('category/', api_views.categoryView),
     path('level/', api_views.levelView),

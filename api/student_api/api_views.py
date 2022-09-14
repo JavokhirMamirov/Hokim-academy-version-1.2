@@ -11,9 +11,12 @@ from api.auth.StudentJWT import StudentJwtAuthentication
 from account.models import Student
 from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
-    DetailCourseSerializer, MyCourseSerializer, QuizSerializer, QuizQuestionSerializer, QuizResultSerializer
-from api.teacher_api.serializers import CourseGetSerializer, CourseCommentGetSerializer, CourseCommentPostSerializer
-from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment, Quiz, Question, QuizResult
+    DetailCourseSerializer, MyCourseSerializer, QuizSerializer, QuizQuestionSerializer, QuizResultSerializer, \
+    QuizALLResultSerializer
+from api.teacher_api.serializers import CourseGetSerializer, CourseCommentGetSerializer, CourseCommentPostSerializer, \
+    CourseAttachmentSerializer
+from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment, Quiz, Question, \
+    QuizResult, CourseAttachment
 
 
 @api_view(['GET', 'POST'])
@@ -24,7 +27,7 @@ def quizResultView(request):
         if request.method == "GET":
             quiz = request.GET.get('quiz')
             query = QuizResult.objects.filter(is_passed=True, quiz_id=quiz).order_by("mark")
-            ser = QuizResultSerializer(query, many=True)
+            ser = QuizALLResultSerializer(query, many=True)
             data = {
                 "success": True,
                 "data": ser.data
@@ -68,6 +71,8 @@ def quizResultView(request):
                 "data": {
                     "time": time,
                     "mark": mark,
+                    "correct": correct_count,
+                    "question_count": question_count,
                     "is_passed": is_passed,
                 }
             }
@@ -87,11 +92,33 @@ def quizView(request):
     try:
         course = request.GET.get('course')
         query = Quiz.objects.filter(is_active=True, course_id=course).order_by("order")
-        ser = QuizSerializer(query, many=True)
+        context = {'request': request}
+        ser = QuizSerializer(query, many=True, context=context)
         data = {
             "success": True,
             "data": ser.data
         }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def courseAttachmentView(request):
+    try:
+        course = request.GET.get('course')
+        query = CourseAttachment.objects.filter(course_id=course).order_by('order')
+        ser = CourseAttachmentSerializer(query, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+
     except Exception as err:
         data = {
             "success": False,
@@ -204,7 +231,8 @@ def mycourseView(request):
 def detailCourseView(request, pk):
     try:
         course = Course.objects.get(id=pk)
-        ser = DetailCourseSerializer(course)
+        context = {'request': request}
+        ser = DetailCourseSerializer(course, context=context)
         data = {
             "success": True,
             "data": ser.data

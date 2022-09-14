@@ -76,7 +76,7 @@ class Course(models.Model):
     description = models.TextField(null=True, blank=True)
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    tag = models.ManyToManyField(Tag)
+    tag = models.ManyToManyField(Tag, blank=True)
     level = models.SmallIntegerField(default=1, choices=LEVELS)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
     image = models.ImageField(upload_to='course/image/')
@@ -90,7 +90,10 @@ class Course(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.title
+        try:
+            return f"{self.title}-{self.teacher.full_name}"
+        except:
+            return self.title
 
 
 class CourseAttachment(models.Model):
@@ -116,11 +119,11 @@ class Lesson(models.Model):
     title = models.CharField(max_length=255)
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, blank=True)
     video_type = models.CharField(max_length=15, choices=VIDEO_TYPES, default="Youtube")
-    video_link = models.CharField(max_length=255, null=True)
+    video_link = models.CharField(max_length=255, null=True, blank=True)
     video = models.FileField(upload_to='course/video', null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
     last_modified = models.DateField(auto_now_add=True)
-    summary = models.TextField(null=True)
+    summary = models.TextField(null=True, blank=True)
     time = models.IntegerField(default=0)
     order = models.IntegerField(default=0)
 

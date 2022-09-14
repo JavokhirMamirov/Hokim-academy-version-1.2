@@ -30,7 +30,7 @@ class CourseCommentGetSerializer(serializers.ModelSerializer):
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ['id', 'full_name', 'title', 'image']
+        fields = ['id', 'full_name', 'title', 'image', 'video']
 
 class SectionSerializer(serializers.ModelSerializer):
     videos = serializers.SerializerMethodField()
@@ -51,6 +51,10 @@ class SectionSerializer(serializers.ModelSerializer):
         except:
             return []
 
+class SectionQuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = ['id', 'title']
 
 class DetailCourseSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
@@ -178,6 +182,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'biography',
+            'video',
             'image',
             'website',
             'instagram',
@@ -407,6 +412,7 @@ class QuizGETSerializer(serializers.ModelSerializer):
             'course',
             'level',
             'query_count',
+            'section',
             'time',
             'order',
             'questions',

@@ -39,6 +39,7 @@ class QuizALLResultSerializer(serializers.ModelSerializer):
 class QuizSerializer(serializers.ModelSerializer):
     section = QuizSectionSerializer()
     result = serializers.SerializerMethodField()
+    question_count = serializers.SerializerMethodField()
     class Meta:
         model = Quiz
         fields = [
@@ -52,16 +53,21 @@ class QuizSerializer(serializers.ModelSerializer):
             "order",
             "passed_percent",
             "result",
+            'question_count'
         ]
+
+    def get_question_count(self, obj):
+        questions = Question.objects.filter(quiz=obj)
+        return questions.count()
 
     def get_result(self, obj):
         try:
             student = self.context['request'].user
-            query = QuizResult.objects.get(student=student, quiz=obj)
+            query = QuizResult.objects.filter(student=student, quiz=obj).last()
             ser = QuizResultSerializer(query)
             return ser.data
         except:
-            return None
+            return 'None'
 
 class QuizQuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -264,7 +270,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
     def get_sections(self, obj):
         try:
             query = Section.objects.filter(course=obj).order_by('order')
-            return SectionSerializer(query, many=True).data
+            return SectionSerializer(query, many=True, context=self.context).data
         except:
             return []
 

@@ -13,11 +13,9 @@ from api.paginator import pagination_json
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
     MyStudentSerializer, TeacherProfileSerializer, CoursePostSerializer, CourseCommentGetSerializer, \
-    CourseCommentPostSerializer, DetailCourseSerializer, CourseSerializer
+    CourseCommentPostSerializer, DetailCourseSerializer, CourseSerializer, SectionQuizSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
     CourseAttachment, WatchHistory, CourseComment
-
-
 
 
 @api_view(['GET', 'POST'])
@@ -77,6 +75,25 @@ def detailCourseView(request, pk):
 
     return Response(data)
 
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizSectionView(request, pk):
+    try:
+        course = Section.objects.filter(course_id=pk)
+        ser = SectionQuizSerializer(course, many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
 
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -120,6 +137,30 @@ def changeTeacherImageView(request):
         image = request.data.get('image')
         if image is not None:
             student.image = image
+            student.save()
+
+        ser = TeacherProfileSerializer(student)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['POST'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def changeTeacherVideoView(request):
+    try:
+        student = request.user
+
+        video = request.data.get('video')
+        if video is not None:
+            student.video = video
             student.save()
 
         ser = TeacherProfileSerializer(student)
@@ -347,18 +388,20 @@ def courseAttachmentView(request, pk=None):
             }
         elif request.method == 'POST':
             payload = request.data
-            ser = CourseAttachmentSerializer(data=payload)
-            if ser.is_valid():
-                ser.save()
-                data = {
-                    "success": True,
-                    "data": ser.data
-                }
-            else:
-                data = {
-                    "success": False,
-                    "error": "Something is wrong!"
-                }
+            title = payload.get('title')
+            course = payload.get('course')
+            order = payload.get('order')
+            file = payload.get('file')
+            query = CourseAttachment.objects.create(
+                course_id=course, title=title, order=order,
+                file=file
+            )
+            ser = CourseAttachmentSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
+
         elif request.method == 'PUT':
             payload = request.data
             title = payload.get('title')
@@ -420,7 +463,7 @@ def questionView(request, pk=None):
             else:
                 data = {
                     "success": False,
-                    "error": "Something is wrong!"
+                    "error": f"{ser.errors}"
                 }
         elif request.method == 'PUT':
             payload = request.data
@@ -477,7 +520,7 @@ def quizView(request, pk=None):
             else:
                 data = {
                     "success": False,
-                    "error": "Something is wrong"
+                    "error": f"{ser.errors}"
                 }
 
         elif request.method == 'PUT':
@@ -493,7 +536,7 @@ def quizView(request, pk=None):
             else:
                 data = {
                     "success": False,
-                    "error": "Something is wrong"
+                    "error": f"{ser.errors}"
                 }
         else:
             query = Quiz.objects.get(id=pk)
@@ -537,7 +580,7 @@ def lessonView(request, pk=None):
 
             query = Lesson.objects.create(
                 title=title, section_id=section, video_type=video_type,
-                video=video, summary=summary, time=time,video_link=video_link,
+                video=video, summary=summary, time=time, video_link=video_link,
                 order=order
             )
 
@@ -556,8 +599,6 @@ def lessonView(request, pk=None):
             summary = request.data['summary']
             time = request.data['time']
             order = request.data['order']
-            if video_type != "Video":
-                video = None
             query = Lesson.objects.get(id=pk)
             query.title = title
             query.order = order
@@ -567,6 +608,8 @@ def lessonView(request, pk=None):
             query.video_link = video_link
             query.summary = summary
             query.time = time
+            if video != "null" and video != "":
+                query.video = video
             query.save()
             ser = LessonSerializer(query)
             data = {
@@ -586,6 +629,7 @@ def lessonView(request, pk=None):
             "error": f"{err}"
         }
     return Response(data)
+
 
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
