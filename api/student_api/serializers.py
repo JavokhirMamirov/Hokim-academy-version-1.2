@@ -11,10 +11,12 @@ class QuizSectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = ['id', 'title']
 
+
 class QuizResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizResult
         fields = "__all__"
+
 
 class QuizStudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,8 +25,10 @@ class QuizStudentSerializer(serializers.ModelSerializer):
             "id", "full_name", 'image'
         ]
 
+
 class QuizALLResultSerializer(serializers.ModelSerializer):
     student = QuizStudentSerializer()
+
     class Meta:
         model = QuizResult
         fields = [
@@ -36,10 +40,12 @@ class QuizALLResultSerializer(serializers.ModelSerializer):
             "is_passed",
         ]
 
+
 class QuizSerializer(serializers.ModelSerializer):
     section = QuizSectionSerializer()
     result = serializers.SerializerMethodField()
     question_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Quiz
         fields = [
@@ -69,6 +75,7 @@ class QuizSerializer(serializers.ModelSerializer):
         except:
             return 'None'
 
+
 class QuizQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
@@ -84,13 +91,12 @@ class QuizQuestionSerializer(serializers.ModelSerializer):
         ]
 
 
-
 class MyCourseSerializer(serializers.ModelSerializer):
     course = CourseGetSerializer()
 
     class Meta:
         model = WatchHistory
-        fields = ['course']
+        fields = ['id', 'course']
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -165,6 +171,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class SectionSerializer(serializers.ModelSerializer):
     videos = serializers.SerializerMethodField()
+
     # open = serializers.SerializerMethodField()
     class Meta:
         model = Section
@@ -231,7 +238,7 @@ class DetailCourseSerializer(serializers.ModelSerializer):
 
     def get_is_saved(self, obj):
         try:
-            user = self.context['request'].user
+            user = self.context['user']
             query = WatchHistory.objects.filter(course=obj, student=user)
             if query.count() > 0:
                 return True

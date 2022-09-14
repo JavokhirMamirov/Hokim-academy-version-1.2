@@ -13,6 +13,7 @@ urlpatterns = [
     path('courses/', api_views.allCourseView),
     path('search-course/', api_views.searchCourseView),
     path('my-course/', api_views.mycourseView),
+    path('my-course/<int:pk>/', api_views.mycourseView),
     path('course/detail/<int:pk>/', api_views.detailCourseView),
     path('course/attachments/', api_views.courseAttachmentView),
 

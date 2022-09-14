@@ -186,36 +186,56 @@ def commentsView(request, pk):
     return Response(data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST', 'DELETE'])
 @authentication_classes([StudentJwtAuthentication])
 @permission_classes([IsAuthenticated])
-def mycourseView(request):
+def mycourseView(request, pk=None):
     try:
         student = request.user
-        query = WatchHistory.objects.filter(
-            student=student
-        )
-
-        search = request.GET.get('search')
-        category = request.GET.get('category')
-        page = request.GET.get('page')
-
-        if search is not None and search != "":
-            query = query.filter(
-                Q(title__icontains=search) | Q(short_description__icontains=search)
-                | Q(teacher__full_name__icontains=search)
+        if request.method == "GET":
+            query = WatchHistory.objects.filter(
+                student=student
             )
 
-        if category is not None and category != "":
-            query = query.filter(category_id=category)
+            search = request.GET.get('search')
+            category = request.GET.get('category')
+            page = request.GET.get('page')
 
-        if page == "":
-            page = None
+            if search is not None and search != "":
+                query = query.filter(
+                    Q(title__icontains=search) | Q(short_description__icontains=search)
+                    | Q(teacher__full_name__icontains=search)
+                )
 
-        data = {
-            "success": True,
-            "data": pagination_json(page, query, MyCourseSerializer, 9)
-        }
+            if category is not None and category != "":
+                query = query.filter(category_id=category)
+
+            if page == "":
+                page = None
+
+            data = {
+                "success": True,
+                "data": pagination_json(page, query, MyCourseSerializer, 9)
+            }
+        elif request.method == 'DELETE':
+            query = WatchHistory.objects.get(id=pk)
+            query.delete()
+            data = {
+                "success": True,
+                "data": {
+                    "id": pk
+                }
+            }
+        else:
+            course = request.data['course']
+            query = WatchHistory.objects.create(
+                student=student, course_id=course
+            )
+            ser = MyCourseSerializer(query)
+            data = {
+                "success": True,
+                "data": ser.data
+            }
     except Exception as err:
         data = {
             "success": False,
@@ -231,7 +251,7 @@ def mycourseView(request):
 def detailCourseView(request, pk):
     try:
         course = Course.objects.get(id=pk)
-        context = {'request': request}
+        context = {'user': request.user}
         ser = DetailCourseSerializer(course, context=context)
         data = {
             "success": True,
