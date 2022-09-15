@@ -497,7 +497,7 @@ def courseStatusView(request):
 @permission_classes([IsAuthenticated])
 def categoryView(request):
     try:
-        cats = Category.objects.filter(type=request.user.status)
+        cats = Category.objects.filter(Q(type=request.user.status) | Q(type=5))
         ser = CategorySerializer(cats, many=True)
         data = {
             "success": True,
@@ -521,7 +521,7 @@ def bestThreeAndRecomCourseView(request):
         bestThree = Course.objects.filter(best_three=True, course_type=user.status, step=7)
         recommends = Course.objects.filter(is_recommended=True, course_type=user.status, step=7)
         category = Category.objects.filter(type=user.status)[:8]
-        context = {'user':request.user}
+        context = {'user': request.user}
         data = {
             "success": True,
             "data": {
