@@ -26,7 +26,7 @@ def quizResultView(request):
     try:
         if request.method == "GET":
             quiz = request.GET.get('quiz')
-            query = QuizResult.objects.filter(is_passed=True, quiz_id=quiz).order_by("mark")
+            query = QuizResult.objects.filter(is_passed=True, quiz_id=quiz).order_by("-mark")
             ser = QuizALLResultSerializer(query, many=True)
             data = {
                 "success": True,
@@ -59,6 +59,7 @@ def quizResultView(request):
                 result = QuizResult.objects.get(student=student, quiz=quiz)
                 if is_passed == True:
                     result.mark = mark
+                    result.time = time
                     result.is_passed = is_passed
                     result.save()
             except QuizResult.DoesNotExist:
@@ -228,9 +229,15 @@ def mycourseView(request, pk=None):
             }
         else:
             course = request.data['course']
-            query = WatchHistory.objects.create(
-                student=student, course_id=course
-            )
+            try:
+                query = WatchHistory.objects.get(student=student, course_id=course)
+            except WatchHistory.DoesNotExist:
+                query = WatchHistory.objects.create(
+                    student=student, course_id=course
+                )
+            except WatchHistory.MultipleObjectsReturned:
+                query = WatchHistory.objects.filter(student=student, course_id=course).first()
+
             ser = MyCourseSerializer(query)
             data = {
                 "success": True,

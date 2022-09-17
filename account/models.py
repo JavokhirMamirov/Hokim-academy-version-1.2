@@ -154,5 +154,14 @@ class Info(models.Model):
     instagram = models.CharField(max_length=255, null=True, blank=True)
     telegram = models.CharField(max_length=255, null=True, blank=True)
     youtube = models.CharField(max_length=255, null=True, blank=True)
+    video = models.FileField(upload_to='info/video/', null=True, blank=True)
+
+class Prize(models.Model):
+    image = models.ImageField(upload_to='info/prize')
+    order = models.IntegerField(default=0)
+    show = models.BooleanField(default=True)
+
+
+
 
 

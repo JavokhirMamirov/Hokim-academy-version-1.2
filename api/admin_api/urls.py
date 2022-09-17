@@ -7,5 +7,6 @@ urlpatterns = [
     path('', include(routers.urlpatterns)),
     path('login/', api_view.admin_login_view),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('info/', api_view.infoView)
+    path('info/', api_view.infoView),
+    path('prize/', api_view.prizeView)
 ]

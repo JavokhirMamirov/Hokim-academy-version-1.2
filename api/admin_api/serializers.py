@@ -2,9 +2,13 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 
-from account.models import Info
+from account.models import Info, Prize
 from course.models import Language, CourseStatus, Level, Category, Tag
 
+class PrizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prize
+        fields = "__all__"
 
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
