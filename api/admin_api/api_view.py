@@ -60,7 +60,7 @@ def infoView(request):
 def prizeView(request):
     try:
         query = Prize.objects.filter(show=True).order_by('order')
-        ser = PrizeSerializer(query)
+        ser = PrizeSerializer(query, many=True)
         data = {
             "success": True,
             "data": ser.data
