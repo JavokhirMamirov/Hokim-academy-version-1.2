@@ -80,7 +80,7 @@
                             {% endif %}
                         </select>
                         <button type="submit" class="btn btn-primary" style="margin-left: 15px">Filterlash</button>
-                    <a href="{% url 'export-statistics' %}" class="btn btn-primary" style="margin-left: 15px">Export xlsx</a>
+                    <a href="{% url 'export-statistics' %}?city={{ city }}&percent={{ percent }}" class="btn btn-primary" style="margin-left: 15px">Export xlsx</a>
                     </form>
 
                 </div>
@@ -89,6 +89,7 @@
                         <thead>
                         <tr>
                             <th class="text-center">№</th>
+                            <th class="text-center">Shahar | tuman</th>
                             <th class="text-center">Maktab nomi</th>
                             <th class="text-center">O'quvchilar</th>
                             <th class="text-center">Faol o'quvchilar</th>
@@ -99,6 +100,7 @@
                         {% for school in schools %}
                             <tr>
                                 <td class="text-center">{{forloop.counter0|add:schools.start_index}}</td>
+                                <td class="text-center">{{ school.city.name }}</td>
                                 <td class="text-center">{{ school.name }}</td>
                                 <td class="text-center">{{ school.students }}</td>
                                 <td class="text-center">{{ school.active_student }}</td>
