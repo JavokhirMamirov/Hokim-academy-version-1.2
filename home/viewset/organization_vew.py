@@ -1,6 +1,12 @@
+import os
+
+import openpyxl
 from django.contrib.auth.decorators import login_required
 from django.db.models.functions import Coalesce
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+
+from HA.settings import BASE_DIR, MEDIA_ROOT
 from account.models import School, City, Student, Account
 from home.decarators import organ_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -120,6 +126,93 @@ def statistics_view(request):
         'percent': int(percent)
     }
     return render(request, 'oranization/statistics.html', context)
+
+@login_required(login_url='admin-login')
+@organ_required
+def export_statistics_view(request):
+    xslfile = openpyxl.Workbook()
+    sheet = xslfile['Sheet']
+    sheet['A1'] = "№"
+    sheet["B1"] = "Shahar, Tuman"
+    sheet['C1'] = "Maktab"
+    sheet['D1'] = "O'quvchilar"
+    sheet['E1'] = "Faol o'quvchilar"
+    sheet['F1'] = "Foiz"
+
+    schools = School.objects.all()
+    percent = request.GET.get('percent')
+
+    if percent is None:
+        percent = 1
+    else:
+        try:
+            percent = int(percent)
+        except:
+            percent = 1
+
+
+    city = request.GET.get('city')
+    if city is not None and city != "" and city != '0' and city != 0:
+        schools = schools.filter(city_id=city)
+
+
+    search = request.GET.get('search')
+    if search is not None:
+        schools.filter(name__icontains=search)
+
+    students = Student.objects.filter(school_id=OuterRef('pk')).values('school').annotate(
+        c=Coalesce(Count('*'), 0)).values('c')
+
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True).values(
+        'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
+
+    schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
+        percent=Case(
+            When(
+                condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
+                then=0
+            ),
+            default=ExpressionWrapper((F('active_student') * 100) / F('students'), output_field=FloatField()),
+            output_field=FloatField()
+        )
+    )
+    if percent == 1:
+        schools = schools.filter(percent__gte=0, percent__lte=100)
+    elif percent == 2:
+        schools = schools.filter(percent__gte=25, percent__lte=50)
+    elif percent == 3:
+        schools = schools.filter(percent__gte=50, percent__lte=75)
+    elif percent == 4:
+        schools = schools.filter(percent__gte=75, percent__lte=100)
+    elif percent == 5:
+        schools = schools.filter(percent=0)
+    elif percent == 6:
+        schools = schools.filter(percent=100)
+    elif percent == 7:
+        schools = schools.filter(percent__gte=0, percent__lte=10)
+    else:
+        schools = schools.filter(percent__gte=0, percent__lte=25)
+
+    schools = schools.order_by('-percent')
+    i = 2
+    for row in schools:
+        sheet[f'A{i}'] = f"{i-1}"
+        sheet[f"B{i}"] = f'{row.city.name}'
+        sheet[f'C{i}'] = f"{row.name}"
+        sheet[f'D{i}'] = f"{row.students}"
+        sheet[f'E{i}'] = f"{row.active_student}"
+        sheet[f'F{i}'] = f"{row.percent}"
+        i += 1
+
+
+    f = xslfile.save(os.path.join(MEDIA_ROOT,'statistics.xlsx'))
+
+    f = open(os.path.join(MEDIA_ROOT,'statistics.xlsx'), 'rb')
+
+    content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response = HttpResponse(f.read(), content_type=content_type)
+    response['Content-Disposition'] = "attachment; filename=statistics.xlsx"
+    return response
 
 
 @login_required(login_url='admin-login')

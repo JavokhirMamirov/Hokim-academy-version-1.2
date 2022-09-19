@@ -70,17 +70,19 @@
                                 {% endfor %}
                             {% else %}
                                 <option value="0">Barchasi</option>
-                                {% for city in citys %}
-                                    {% if city.id == req %}
-                                        <option value="{{ city.id }}" selected>{{ city.name }}</option>
+                                {% for ct in citys %}
+                                    {% if ct.id == city %}
+                                        <option value="{{ ct.id }}" selected>{{ ct.name }}</option>
                                     {% else %}
-                                        <option value="{{ city.id }}">{{ city.name }}</option>
+                                        <option value="{{ ct.id }}">{{ ct.name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
                         </select>
                         <button type="submit" class="btn btn-primary" style="margin-left: 15px">Filterlash</button>
+                    <a href="{% url 'export-statistics' %}" class="btn btn-primary" style="margin-left: 15px">Export xlsx</a>
                     </form>
+
                 </div>
                 <div class="card-body">
                     <table class="table mb-0 table-striped">
