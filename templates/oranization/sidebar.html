@@ -43,6 +43,23 @@
                 </a>
             </li>
         {% endif %}
+        {% if request.path == '/school/statistics/'%}
+            <li class="active">
+                <a href="{% url 'school-statistics' %}">
+                    <div class="parent-icon"><i class="bx bx-home"></i>
+                    </div>
+                    <div class="menu-title">Statistika</div>
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'school-statistics' %}">
+                    <div class="parent-icon"><i class="bx bx-home"></i>
+                    </div>
+                    <div class="menu-title">Statistika</div>
+                </a>
+            </li>
+        {% endif %}
         </ul>
     <!--end navigation-->
 </div>

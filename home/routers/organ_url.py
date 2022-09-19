@@ -15,4 +15,5 @@ organization_url = [
     path('user/update/<int:pk>/', organization_vew.user_update_view, name='user-update'),
     path('user/password/set/<int:pk>/', organization_vew.user_set_password, name='user-change-password'),
     path('school/delete/<int:pk>/', organization_vew.school_delete_view, name='delete-school'),
+    path('statistics/', organization_vew.statistics_view, name='school-statistics'),
 ]

@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block sidebar_header %}
+    {% include 'oranization/sidebar.html' %}
+{% endblock sidebar_header %}
+{% block style %}
+
+
+    <link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet"/>
+{% endblock style %}
+{% block content %}
+    <!--start page wrapper -->
+    <div class="page-wrapper">
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3"><a href="{% url 'organ-dashboard' %}">Dashboard</a></div>
+                <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Statistika</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <hr/>
+            <div class="card">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center m-2">
+                        <form method="get">
+                            <div class="input-group ">
+                                <input type="text" class="form-control" placeholder="Qidiruv"
+                                       aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
+                                <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;"
+                          method="get">
+                        <label class="form-label"></label>
+                        <select class="form-select" id="inputGroupSelect02" name="show_count"
+                                style="margin-right: 15px; width: 100px ">
+                            {% for page in pages %}
+                                {% if page == show_count %}
+                                    <option value="{{ page }}" selected>{{ page }}</option>
+                                {% else %}
+                                    <option value="{{ page }}">{{ page }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <select class="form-select" id="inputGroupSelect02" name="percent"
+                                    style="margin-right: 15px; width: 120px">
+                                {% for percent_f in percent_filter %}
+                                    {% if percent_f.value == percent %}
+                                        <option value="{{ percent_f.value }}" selected>{{ percent_f.label }}</option>
+                                    {% else %}
+                                        <option value="{{ percent_f.value }}">{{ percent_f.label }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                        </select>
+                        <select class="single-select" name="city" style="margin-right: 15px">
+                            {% if req == 0 %}
+                                <option value="0" selected>Shahar tanlash</option>
+                                {% for city in citys %}
+                                    <option value="{{ city.id }}">{{ city }}</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="0">Barchasi</option>
+                                {% for city in citys %}
+                                    {% if city.id == req %}
+                                        <option value="{{ city.id }}" selected>{{ city.name }}</option>
+                                    {% else %}
+                                        <option value="{{ city.id }}">{{ city.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                        <button type="submit" class="btn btn-primary" style="margin-left: 15px">Filterlash</button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <table class="table mb-0 table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-center">№</th>
+                            <th class="text-center">Maktab nomi</th>
+                            <th class="text-center">O'quvchilar</th>
+                            <th class="text-center">Faol o'quvchilar</th>
+                            <th class="text-center">Foizi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for school in schools %}
+                            <tr>
+                                <td class="text-center">{{forloop.counter0|add:schools.start_index}}</td>
+                                <td class="text-center">{{ school.name }}</td>
+                                <td class="text-center">{{ school.students }}</td>
+                                <td class="text-center">{{ school.active_student }}</td>
+                                <td class="text-center">
+                                    <div>
+                                        <span style="font-size: 10px">{{ school.percent }}%</span>
+                                    <div class="progress mb-3" style="height:7px;">
+									<div class="progress-bar progress-bar-striped" role="progressbar" style="width: {{ school.percent }}%" aria-valuenow="{{ school.percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+                                        </div>
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end">
+                    {% if schools.paginator.num_pages > 1 %}
+                        <nav aria-label="Page navigation" class="m-3">
+                            <ul class="pagination">
+                                {% if schools.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ schools.previous_page_number }}&show_count={{ show_count }}&city={{ city }} "><i
+                                                class="bx bx-left-arrow-alt"></i></a>
+                                    </li>
+                                {% endif %}
+                                {% for num in schools.paginator.page_range %}
+                                    {% if num == schools.number %}
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#" tabindex="-1">{{ num }}</a>
+                                        </li>
+                                    {% elif num > schools.number|add:'-3' and num < schools.number|add:'3' %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="?page={{ num }}&show_count={{ show_count }}&city={{ city }} ">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if schools.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link"
+                                           href="?page={{ schools.next_page_number }}&show_count={{ show_count }}&city={{ city }} "
+                                           aria-label="Next">
+                                            <i class="bx bx-right-arrow-alt"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end page wrapper -->
+    {% block script %}
+
+        <script src=" {% static 'plugins/select2/js/select2.min.js' %}"></script>
+        <script>
+            $('.single-select').select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
+            $('.multiple-select').select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
+        </script>
+    {% endblock script %}
+
+    <link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet"/>
+{% endblock %}
