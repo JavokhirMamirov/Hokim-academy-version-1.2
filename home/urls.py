@@ -2,7 +2,7 @@ from django.urls import path, include
 from home.viewset.auth_view import admin_login, admin_logout, page_404
 from home.routers.organ_url import organization_url
 from home.routers.school_url import school_url
-from home.routers.student_url import student_url
+from home.routers.admin_url import admin_urlpattern
 
 auth_url = [
     path('', admin_login, name='admin-login'),
@@ -13,7 +13,7 @@ auth_url = [
 urlpatterns = [
     path('school/', include(school_url)),
     path('organ/', include(organization_url)),
-    path('student/', include(student_url)),
+    path('superadmin/', include(admin_urlpattern)),
     path('', include(auth_url))
 
   ]

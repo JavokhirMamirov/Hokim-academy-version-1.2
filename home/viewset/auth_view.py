@@ -9,7 +9,10 @@ def admin_login(request):
         password = request.POST.get('password')
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.status == 2:
+            if user.status == 1:
+                login(request, user)
+                return redirect('admin-dashboard')
+            elif user.status == 2:
                 login(request, user)
                 return redirect('organ-dashboard')
             elif user.status == 3:

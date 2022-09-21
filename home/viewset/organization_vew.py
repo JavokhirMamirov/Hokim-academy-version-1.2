@@ -68,10 +68,10 @@ def statistics_view(request):
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk')).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -160,10 +160,10 @@ def export_statistics_view(request):
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk')).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -220,12 +220,12 @@ def export_statistics_view(request):
 def organ_dashboard_view(request):
     schools = School.objects.all().count()
     city = City.objects.all().count()
-    students = Student.objects.all().count()
+    students = Student.objects.filter(active=True).count()
     staff = Account.objects.filter(status=3).count()
-    abiturent = Student.objects.filter(status=2).count()
-    chet_tili = Student.objects.filter(status=3).count()
-    prez_maktab = Student.objects.filter(status=1).count()
-    teachers = Student.objects.filter(status=4).count()
+    abiturent = Student.objects.filter(status=2, active=True).count()
+    chet_tili = Student.objects.filter(status=3, active=True).count()
+    prez_maktab = Student.objects.filter(status=1, active=True).count()
+    teachers = Student.objects.filter(status=4, active=True).count()
     context = {
         'schools': schools,
         'city': city,
@@ -263,7 +263,7 @@ def schools_list_view(request):
     else:
         pagination = 10
 
-    students = Student.objects.filter(school_id=OuterRef('pk')).values('school').annotate(c=Count('*')).values('c')
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(c=Count('*')).values('c')
 
     schools = schools.annotate(students=Subquery(students))
 
