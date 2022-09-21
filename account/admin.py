@@ -11,6 +11,7 @@ admin.site.register(Skill)
 admin.site.register(City)
 admin.site.register(Info)
 admin.site.register(Prize)
+admin.site.register(Region)
 
 
 @admin.register(Account)
