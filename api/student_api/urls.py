@@ -29,5 +29,6 @@ urlpatterns = [
 
     path('profile/', api_views.studentView),
     path('change-image/', api_views.changeStudentImageView),
-    path('check-username/', api_views.checkUsernameView)
+    path('check-username/', api_views.checkUsernameView),
+    path('last-login/', api_views.lastLoginView),
 ]

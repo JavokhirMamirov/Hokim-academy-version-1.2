@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -18,6 +20,25 @@ from api.teacher_api.serializers import CourseGetSerializer, CourseCommentGetSer
 from course.models import Course, Category, Level, CourseStatus, WatchHistory, CourseComment, Quiz, Question, \
     QuizResult, CourseAttachment
 
+
+@api_view(['GET'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def lastLoginView(request):
+    try:
+        student = request.user
+        date = datetime.datetime.now()
+        student.last_login = date
+        student.save()
+        data = {
+            "success": True,
+        }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 @api_view(['GET', 'POST'])
 @authentication_classes([StudentJwtAuthentication])

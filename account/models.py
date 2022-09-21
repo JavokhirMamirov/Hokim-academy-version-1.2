@@ -71,7 +71,7 @@ class Student(models.Model):
     facebook = models.CharField(max_length=255, null=True, blank=True)
     instagram = models.CharField(max_length=255, null=True, blank=True)
     website = models.CharField(max_length=255, null=True, blank=True)
-
+    last_login = models.DateTimeField(default=None, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
     is_used_promocode = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
