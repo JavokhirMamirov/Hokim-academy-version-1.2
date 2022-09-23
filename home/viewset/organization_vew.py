@@ -68,10 +68,10 @@ def statistics_view(request):
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True, status__in=[1,2,3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -160,10 +160,10 @@ def export_statistics_view(request):
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True, status__in=[1,2,3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -263,7 +263,7 @@ def schools_list_view(request):
     else:
         pagination = 10
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True).values('school').annotate(c=Count('*')).values('c')
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(c=Count('*')).values('c')
 
     schools = schools.annotate(students=Subquery(students))
 
