@@ -162,6 +162,7 @@ class Info(models.Model):
     telegram = models.CharField(max_length=255, null=True, blank=True)
     youtube = models.CharField(max_length=255, null=True, blank=True)
     video = models.FileField(upload_to='info/video/', null=True, blank=True)
+    phone = models.CharField(max_length=255, null=True, blank=True)
 
 class Prize(models.Model):
     image = models.ImageField(upload_to='info/prize')

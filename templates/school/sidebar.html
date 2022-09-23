@@ -6,42 +6,42 @@
         </div>
     </div>
     <!--navigation-->
-        <ul class="metismenu" id="menu">
-            {% if request.path == '/school/school-dashboard/'%}
+    <ul class="metismenu" id="menu">
+        {% if request.path == '/school/school-dashboard/' %}
             <li class="active">
-                <a href="{% url 'school-dashboard' %}" >
+                <a href="{% url 'school-dashboard' %}">
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
-                <a href="{% url 'school-dashboard' %}" >
+                <a href="{% url 'school-dashboard' %}">
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
-            {% endif %}
-{#            {% if request.path == '/school/add-student/'%}#}
-{#            <li class="active">#}
-{#                <a href="{% url 'add-student' %}">#}
-{#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
-{#                    </div>#}
-{#                    <div class="menu-title">O'quvchi qo'shish</div>#}
-{#                </a>#}
-{#            </li>#}
-{#            {% else %}#}
-{#            <li>#}
-{#                <a href="{% url 'add-student' %}">#}
-{#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
-{#                    </div>#}
-{#                    <div class="menu-title">O'quvchi qo'shish</div>#}
-{#                </a>#}
-{#            </li>#}
-{#            {% endif %}#}
-            {% if request.path == '/school/teachers/'%}
+        {% endif %}
+        {#            {% if request.path == '/school/add-student/'%}#}
+        {#            <li class="active">#}
+        {#                <a href="{% url 'add-student' %}">#}
+        {#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
+        {#                    </div>#}
+        {#                    <div class="menu-title">O'quvchi qo'shish</div>#}
+        {#                </a>#}
+        {#            </li>#}
+        {#            {% else %}#}
+        {#            <li>#}
+        {#                <a href="{% url 'add-student' %}">#}
+        {#                    <div class="parent-icon"><i class="bx bx-user-plus"></i>#}
+        {#                    </div>#}
+        {#                    <div class="menu-title">O'quvchi qo'shish</div>#}
+        {#                </a>#}
+        {#            </li>#}
+        {#            {% endif %}#}
+        {% if request.path == '/school/teachers/' %}
             <li class="active">
                 <a href="{% url 'teachers' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -49,7 +49,7 @@
                     <div class="menu-title">O'qituvchilar</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'teachers' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -57,8 +57,8 @@
                     <div class="menu-title">O'qituvchilar</div>
                 </a>
             </li>
-            {% endif %}
-            {% if request.path == '/school/abuturient/'%}
+        {% endif %}
+        {% if request.path == '/school/abuturient/' %}
             <li class="active">
                 <a href="{% url 'abuturient' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -66,7 +66,7 @@
                     <div class="menu-title">Abuturient</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'abuturient' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -74,8 +74,8 @@
                     <div class="menu-title">Abuturient</div>
                 </a>
             </li>
-            {% endif %}
-            {% if request.path == '/school/president-student/'%}
+        {% endif %}
+        {% if request.path == '/school/president-student/' %}
             <li class="active">
                 <a href="{% url 'president-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -83,7 +83,7 @@
                     <div class="menu-title">Prezident Maktabiga</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'president-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -91,9 +91,9 @@
                     <div class="menu-title">Prezident Maktabiga</div>
                 </a>
             </li>
-            {% endif %}
+        {% endif %}
 
-            {% if request.path == '/school/foreign-student/'%}
+        {% if request.path == '/school/foreign-student/' %}
             <li class="active">
                 <a href="{% url 'foreign-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -101,7 +101,7 @@
                     <div class="menu-title">Horijiy til o'rganuvchilari</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'foreign-student' %}">
                     <div class="parent-icon"><i class="bx bx-user"></i>
@@ -109,26 +109,32 @@
                     <div class="menu-title">Horijiy til o'rganuvchilari</div>
                 </a>
             </li>
-            {% endif %}
-
-{#            {% if request.path == '/school/deleted-students/'%}#}
-{#            <li class="active">#}
-{#                <a href="{% url 'deleted-students' %}">#}
-{#                    <div class="parent-icon"><i class="bx bx-user-minus"></i>#}
-{#                    </div>#}
-{#                    <div class="menu-title">O'chirilgan studentlar</div>#}
-{#                </a>#}
-{#            </li>#}
-{#            {% else %}#}
-{#            <li>#}
-{#                <a href="{% url 'deleted-students' %}">#}
-{#                    <div class="parent-icon"><i class="bx bx-user-minus"></i>#}
-{#                    </div>#}
-{#                    <div class="menu-title">O'chirilgan studentlar</div>#}
-{#                </a>#}
-{#            </li>#}
-{#            {% endif %}#}
-        </ul>
+        {% endif %}
+        <li>
+            <a href="tel:552014074">
+                <div class="parent-icon"><i class="bx bx-phone"></i>
+                </div>
+                <div class="menu-title">A'loqa (552014047)</div>
+            </a>
+        </li>
+        {#            {% if request.path == '/school/deleted-students/'%}#}
+        {#            <li class="active">#}
+        {#                <a href="{% url 'deleted-students' %}">#}
+        {#                    <div class="parent-icon"><i class="bx bx-user-minus"></i>#}
+        {#                    </div>#}
+        {#                    <div class="menu-title">O'chirilgan studentlar</div>#}
+        {#                </a>#}
+        {#            </li>#}
+        {#            {% else %}#}
+        {#            <li>#}
+        {#                <a href="{% url 'deleted-students' %}">#}
+        {#                    <div class="parent-icon"><i class="bx bx-user-minus"></i>#}
+        {#                    </div>#}
+        {#                    <div class="menu-title">O'chirilgan studentlar</div>#}
+        {#                </a>#}
+        {#            </li>#}
+        {#            {% endif %}#}
+    </ul>
     <!--end navigation-->
 </div>
 <!--end sidebar wrapper -->
@@ -138,26 +144,29 @@
         <nav class="navbar navbar-expand">
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
-{#            <div class="search-bar flex-grow-1">#}
-{#                <div class="position-relative search-bar-box">#}
-{#                    <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>#}
-{#                    <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span>#}
-{#                </div>#}
-{#            </div>#}
+            {#            <div class="search-bar flex-grow-1">#}
+            {#                <div class="position-relative search-bar-box">#}
+            {#                    <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>#}
+            {#                    <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span>#}
+            {#                </div>#}
+            {#            </div>#}
             <div class="top-menu ms-auto">
                 <ul class="navbar-nav align-items-center d-none">
                     <li class="nav-item mobile-search-icon">
-                        <a class="nav-link" href="#">	<i class='bx bx-search'></i>
+                        <a class="nav-link" href="#"> <i class='bx bx-search'></i>
                         </a>
                     </li>
                     <li class="nav-item dropdown dropdown-large">
-                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">	<i class='bx bx-category'></i>
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false"> <i class='bx bx-category'></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                         </div>
                     </li>
                     <li class="nav-item dropdown dropdown-large">
-                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">1</span>
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
+                                class="alert-count">1</span>
                             <i class='bx bx-bell'></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
@@ -186,7 +195,9 @@
                         </div>
                     </li>
                     <li class="nav-item dropdown dropdown-large">
-                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">1</span>
+                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span
+                                class="alert-count">1</span>
                             <i class='bx bx-comment'></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
@@ -200,7 +211,8 @@
                                 <a class="dropdown-item" href="javascript:;">
                                     <div class="d-flex align-items-center">
                                         <div class="user-online">
-                                            <img src="{% static 'images/avatars/avatar-1.png' %}" class="msg-avatar" alt="user avatar">
+                                            <img src="{% static 'images/avatars/avatar-1.png' %}" class="msg-avatar"
+                                                 alt="user avatar">
                                         </div>
                                         <div class="flex-grow-1">
                                             <h6 class="msg-name">Daisy Anderson <span class="msg-time float-end">5 sec
@@ -218,7 +230,8 @@
                 </ul>
             </div>
             <div class="user-box dropdown">
-                <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{% static 'img/user-profile.png' %}" class="user-img" alt="user avatar">
                     <div class="user-info ps-3">
                         <p class="user-name mb-0 text-center">{{ user.school.name }}</p>
@@ -226,16 +239,19 @@
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-{#                    <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>#}
-{#                    </li>#}
-                    <li><a class="dropdown-item" href="{% url 'settings' %}"><i class="bx bx-cog"></i><span>Ma'lumotlar</span></a>
+                    {#                    <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>#}
+                    {#                    </li>#}
+                    <li><a class="dropdown-item" href="{% url 'settings' %}"><i
+                            class="bx bx-cog"></i><span>Ma'lumotlar</span></a>
                     </li>
-                    <li><a class="dropdown-item" href="{% url 'account' %}"><i class="bx bx-user-check"></i><span>Profil</span></a>
+                    <li><a class="dropdown-item" href="{% url 'account' %}"><i
+                            class="bx bx-user-check"></i><span>Profil</span></a>
                     </li>
                     <li>
                         <div class="dropdown-divider mb-0"></div>
                     </li>
-                    <li><a class="dropdown-item" href="{% url 'admin-logout' %}"><i class='bx bx-log-out-circle'></i><span>Chiqish</span></a>
+                    <li><a class="dropdown-item" href="{% url 'admin-logout' %}"><i
+                            class='bx bx-log-out-circle'></i><span>Chiqish</span></a>
                     </li>
                 </ul>
             </div>
