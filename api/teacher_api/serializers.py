@@ -19,10 +19,17 @@ class CourseCommentPostSerializer(serializers.ModelSerializer):
         model = CourseComment
         fields = "__all__"
 
+class CourseCommentRepSerializer(serializers.ModelSerializer):
+    student = CommentStudentSerializer()
+    teacher = CommentTeacherSerializer()
+    class Meta:
+        model = CourseComment
+        fields = "__all__"
 
 class CourseCommentGetSerializer(serializers.ModelSerializer):
     student = CommentStudentSerializer()
     teacher = CommentTeacherSerializer()
+    parent = CourseCommentRepSerializer()
     class Meta:
         model = CourseComment
         fields = "__all__"

@@ -176,7 +176,7 @@ def commentsView(request, pk):
     try:
         if request.method == "GET":
             page = request.GET.get('page')
-            query = CourseComment.objects.filter(course_id=pk).order_by('-date_added')
+            query = CourseComment.objects.filter(course_id=pk).order_by('-id')
             ser = CourseCommentGetSerializer(query, many=True)
             data = {
                 "success": True,
