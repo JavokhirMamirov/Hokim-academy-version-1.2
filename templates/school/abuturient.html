@@ -13,19 +13,19 @@
 			<div class="page-content">
 				<!--breadcrumb-->
 				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-					<div class="breadcrumb-title pe-3">Abuturient</div>
+					<div class="breadcrumb-title pe-3">Abituriyent</div>
 					<div class="ps-3">
 						<nav aria-label="breadcrumb">
 							<ol class="breadcrumb mb-0 p-0">
 								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
 								</li>
-								<li class="breadcrumb-item active" aria-current="page">Abuturient</li>
+								<li class="breadcrumb-item active" aria-current="page">Abituriyent</li>
 							</ol>
 						</nav>
 					</div>
 					<div class="ms-auto">
 						<div class="btn-group">
-							<a href="{% url 'add-student' %}" class="btn btn-primary">Yangi O'quvchi qo'shish</a>
+							<a href="{% url 'add-student' %}" class="btn btn-primary">Yangi o'quvchi qo'shish</a>
 						</div>
 					</div>
 				</div>
@@ -44,12 +44,12 @@
                                 <tr>
                                     <th class="text-center">To'liq ism</th>
                                     <th class="text-center">Username</th>
-                                    <th class="text-center">Tugilgan kun</th>
+                                    <th class="text-center">Tug'ilgan kun</th>
                                     <th class="text-center">Manzil</th>
                                     <th class="text-center">Rasm</th>
                                     <th class="text-center">Sertifikat</th>
                                     <th class="text-center">Ko'proq</th>
-                                    <th class="text-center">Parol ozgartirish</th>
+                                    <th class="text-center">Parol o'zgartirish</th>
                                     <th class="text-center">O'chirish</th>
                                 </tr>
                             </thead>
@@ -84,7 +84,7 @@
                                                     <form action="{% url 'change-student-password' t.id %}" method="post">
                                                         {% csrf_token %}
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Parol O'gartirish</h5>
+                                                            <h5 class="modal-title">Parol o'gartirish</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
