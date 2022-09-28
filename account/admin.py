@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import *
 
 # Register your models here.
-admin.site.register(Student)
+# admin.site.register(Student)
 admin.site.register(Teacher)
 admin.site.register(School)
 admin.site.register(Skill)
@@ -12,6 +12,12 @@ admin.site.register(City)
 admin.site.register(Info)
 admin.site.register(Prize)
 admin.site.register(Region)
+
+
+@admin.register(Student)
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'full_name', 'school']
+    row_id_fields = ('school',)
 
 
 @admin.register(Account)
