@@ -33,6 +33,7 @@ def commentsView(request, pk):
             }
         else:
             payload = request.data
+            payload._mutable = True
             payload['teacher'] = request.user.id
             payload['course'] = pk
             ser = CourseCommentPostSerializer(data=payload)
