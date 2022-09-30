@@ -18,6 +18,7 @@ urlpatterns = [
     path('lesson/', api_views.lessonView),
     path('lesson/<int:pk>/', api_views.lessonView),
     path('quiz/', api_views.quizView),
+    path('quiz/result/', api_views.quizResultView),
     path('quiz/<int:pk>/', api_views.quizView),
     path('question/', api_views.questionView),
     path('question/<int:pk>/', api_views.questionView),

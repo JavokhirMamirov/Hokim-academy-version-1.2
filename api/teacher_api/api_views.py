@@ -10,12 +10,13 @@ from api.admin_api.serializers import LanguageSerializer, CourseStatusSerializer
     TagSerializer
 from api.auth.TeacherJWT import TeacherJwtAuthentication
 from api.paginator import pagination_json
+from api.student_api.serializers import QuizALLResultSerializer
 from api.teacher_api.serializers import CourseGetSerializer, CourseLessonsSerializer, LessonSerializer, \
     QuizGETSerializer, QuizPOSTSerializer, QuestionSerializer, CourseAttachmentSerializer, MyCourseSerializer, \
     MyStudentSerializer, TeacherProfileSerializer, CoursePostSerializer, CourseCommentGetSerializer, \
     CourseCommentPostSerializer, DetailCourseSerializer, CourseSerializer, SectionQuizSerializer
 from course.models import Language, CourseStatus, Level, Category, Tag, Course, Section, Lesson, Quiz, Question, \
-    CourseAttachment, WatchHistory, CourseComment
+    CourseAttachment, WatchHistory, CourseComment, QuizResult
 
 
 @api_view(['GET', 'POST'])
@@ -29,7 +30,7 @@ def commentsView(request, pk):
             ser = CourseCommentGetSerializer(query, many=True)
             data = {
                 "success": True,
-                "data": pagination_json(page, query, CourseCommentGetSerializer, 10)
+                "data": pagination_json(page, query.order_by('-id'), CourseCommentGetSerializer, 10)
             }
         else:
             payload = request.data
@@ -48,6 +49,26 @@ def commentsView(request, pk):
                     "success": False,
                     "error": f"{ser.errors}"
                 }
+
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
+
+@api_view(['GET'])
+@authentication_classes([TeacherJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def quizResultView(request):
+    try:
+        quiz = request.GET.get('quiz')
+        query = QuizResult.objects.filter(is_passed=True, quiz_id=quiz).order_by("-mark")
+        ser = QuizALLResultSerializer(query[:300], many=True)
+        data = {
+            "success": True,
+            "data": ser.data
+        }
 
     except Exception as err:
         data = {
@@ -822,7 +843,11 @@ def levelView(request):
 @permission_classes([IsAuthenticated])
 def categoryView(request):
     try:
-        queries = Category.objects.all()
+        type = request.GET.get('type')
+        if type is None:
+            queries = Category.objects.all()
+        else:
+            queries = Category.objects.filter(type=type)
         ser = CategorySerializer(queries, many=True)
         data = {
             "success": True,
