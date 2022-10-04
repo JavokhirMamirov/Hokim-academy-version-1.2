@@ -17,4 +17,6 @@ organization_url = [
     path('school/delete/<int:pk>/', organization_vew.school_delete_view, name='delete-school'),
     path('statistics/', organization_vew.statistics_view, name='school-statistics'),
     path('export-statistics/', organization_vew.export_statistics_view, name='export-statistics'),
+    path('day-statistics/', organization_vew.day_statistics_view, name='school-day-statistics'),
+    path('export-day-statistics/', organization_vew.export_day_statistics_view, name='export-day-statistics'),
 ]

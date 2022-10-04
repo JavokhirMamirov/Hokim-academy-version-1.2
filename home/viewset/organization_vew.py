@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import openpyxl
 from django.contrib.auth.decorators import login_required
@@ -54,7 +55,6 @@ def statistics_view(request):
         except:
             percent = 1
 
-
     city = request.GET.get('city')
     if city is not None and city != "" and city != '0' and city != 0:
         schools = schools.filter(city_id=city)
@@ -68,10 +68,12 @@ def statistics_view(request):
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+        'school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True, status__in=[1,2,3]).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True,
+                                             status__in=[1, 2, 3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -127,6 +129,7 @@ def statistics_view(request):
     }
     return render(request, 'oranization/statistics.html', context)
 
+
 @login_required(login_url='admin-login')
 @organ_required
 def export_statistics_view(request):
@@ -150,20 +153,20 @@ def export_statistics_view(request):
         except:
             percent = 1
 
-
     city = request.GET.get('city')
     if city is not None and city != "" and city != '0' and city != 0:
         schools = schools.filter(city_id=city)
-
 
     search = request.GET.get('search')
     if search is not None:
         schools.filter(name__icontains=search)
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+        'school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
-    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True, status__in=[1,2,3]).values(
+    students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True,
+                                             status__in=[1, 2, 3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active)).annotate(
@@ -196,7 +199,7 @@ def export_statistics_view(request):
     schools = schools.order_by('-percent')
     i = 2
     for row in schools:
-        sheet[f'A{i}'] = f"{i-1}"
+        sheet[f'A{i}'] = f"{i - 1}"
         sheet[f"B{i}"] = f'{row.city.name}'
         sheet[f'C{i}'] = f"{row.name}"
         sheet[f'D{i}'] = f"{row.students}"
@@ -204,14 +207,207 @@ def export_statistics_view(request):
         sheet[f'F{i}'] = f"{row.percent}"
         i += 1
 
+    f = xslfile.save(os.path.join(MEDIA_ROOT, 'statistics.xlsx'))
 
-    f = xslfile.save(os.path.join(MEDIA_ROOT,'statistics.xlsx'))
-
-    f = open(os.path.join(MEDIA_ROOT,'statistics.xlsx'), 'rb')
+    f = open(os.path.join(MEDIA_ROOT, 'statistics.xlsx'), 'rb')
 
     content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     response = HttpResponse(f.read(), content_type=content_type)
     response['Content-Disposition'] = "attachment; filename=statistics.xlsx"
+    return response
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def day_statistics_view(request):
+    pages = [20, 50, 100, 200, 500]
+
+    percent_filter = [
+        {'value': 1, 'label': "0%-100%"},
+        {'value': 2, 'label': "25%-50%"},
+        {'value': 3, 'label': "50%-75%"},
+        {'value': 4, 'label': "75%-100%"},
+        {'value': 5, 'label': "0%"},
+        {'value': 6, 'label': "100%"},
+        {'value': 7, 'label': "0%-10%"},
+        {'value': 8, 'label': "0%-25%"},
+    ]
+    citys = City.objects.all()
+    schools = School.objects.all()
+    percent = request.GET.get('percent')
+
+    if percent is None:
+        percent = 1
+    else:
+        try:
+            percent = int(percent)
+        except:
+            percent = 1
+
+    city = request.GET.get('city')
+    if city is not None and city != "" and city != '0' and city != 0:
+        schools = schools.filter(city_id=city)
+
+    show_count = request.GET.get('show_count')
+
+    if show_count is None or show_count == "" or show_count == '0':
+        show_count = 20
+
+    search = request.GET.get('search')
+    if search is not None:
+        schools.filter(name__icontains=search)
+    date = datetime.now()
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+        'school').annotate(
+        c=Coalesce(Count('*'), 0)).values('c')
+
+    students_active = Student.objects.filter(school_id=OuterRef('id'), last_login__day=date.day, last_login__month=date.month,
+                                             last_login__year=date.year, active=True,
+                                             status__in=[1, 2, 3]).order_by().values(
+        'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
+
+    schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
+        percent=Case(
+            When(
+                condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
+                then=0
+            ),
+            default=ExpressionWrapper((F('active_student') * 100) / F('students'), output_field=FloatField()),
+            output_field=FloatField()
+        )
+    )
+    if percent == 1:
+        schools = schools.filter(percent__gte=0, percent__lte=100)
+    elif percent == 2:
+        schools = schools.filter(percent__gte=25, percent__lte=50)
+    elif percent == 3:
+        schools = schools.filter(percent__gte=50, percent__lte=75)
+    elif percent == 4:
+        schools = schools.filter(percent__gte=75, percent__lte=100)
+    elif percent == 5:
+        schools = schools.filter(percent=0)
+    elif percent == 6:
+        schools = schools.filter(percent=100)
+    elif percent == 7:
+        schools = schools.filter(percent__gte=0, percent__lte=10)
+    else:
+        schools = schools.filter(percent__gte=0, percent__lte=25)
+
+    try:
+        show_count = int(show_count)
+    except:
+        show_count = 0
+
+    try:
+        city = int(city)
+    except:
+        city = 0
+
+    try:
+        percent = int(percent)
+    except:
+        percent = 0
+
+    context = {
+        'citys': citys,
+        'pages': pages,
+        'schools': PagenatorPage(schools.order_by('-active_student'), show_count, request),
+        'percent_filter': percent_filter,
+        'show_count': int(show_count),
+        'city': int(city),
+        'percent': int(percent)
+    }
+    return render(request, 'oranization/day-statistics.html', context)
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def export_day_statistics_view(request):
+    date = datetime.today()
+    xslfile = openpyxl.Workbook()
+    sheet = xslfile['Sheet']
+    sheet['A1'] = "№"
+    sheet["B1"] = "Shahar, Tuman"
+    sheet['C1'] = "Maktab"
+    sheet['D1'] = "O'quvchilar"
+    sheet['E1'] = "Faol o'quvchilar"
+    sheet['F1'] = "Foiz"
+    sheet['G1'] = "Sana"
+
+    schools = School.objects.all()
+    percent = request.GET.get('percent')
+
+    if percent is None:
+        percent = 1
+    else:
+        try:
+            percent = int(percent)
+        except:
+            percent = 1
+
+    city = request.GET.get('city')
+    if city is not None and city != "" and city != '0' and city != 0:
+        schools = schools.filter(city_id=city)
+
+    search = request.GET.get('search')
+    if search is not None:
+        schools.filter(name__icontains=search)
+
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+        'school').annotate(
+        c=Coalesce(Count('*'), 0)).values('c')
+
+    students_active = Student.objects.filter(school_id=OuterRef('pk'),
+                                             last_login__day=date.day, last_login__month=date.month,
+                                             last_login__year=date.year, active=True, status__in=[1, 2, 3]).order_by().values(
+        'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
+
+    schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
+        percent=Case(
+            When(
+                condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
+                then=0
+            ),
+            default=ExpressionWrapper((F('active_student') * 100) / F('students'), output_field=FloatField()),
+            output_field=FloatField()
+        )
+    )
+    if percent == 1:
+        schools = schools.filter(percent__gte=0, percent__lte=100)
+    elif percent == 2:
+        schools = schools.filter(percent__gte=25, percent__lte=50)
+    elif percent == 3:
+        schools = schools.filter(percent__gte=50, percent__lte=75)
+    elif percent == 4:
+        schools = schools.filter(percent__gte=75, percent__lte=100)
+    elif percent == 5:
+        schools = schools.filter(percent=0)
+    elif percent == 6:
+        schools = schools.filter(percent=100)
+    elif percent == 7:
+        schools = schools.filter(percent__gte=0, percent__lte=10)
+    else:
+        schools = schools.filter(percent__gte=0, percent__lte=25)
+
+    schools = schools.order_by('-active_student')
+    i = 2
+    for row in schools:
+        sheet[f'A{i}'] = f"{i - 1}"
+        sheet[f"B{i}"] = f'{row.city.name}'
+        sheet[f'C{i}'] = f"{row.name}"
+        sheet[f'D{i}'] = f"{row.students}"
+        sheet[f'E{i}'] = f"{row.active_student}"
+        sheet[f'F{i}'] = f"{row.percent}"
+        sheet[f'G{i}'] = f"{date.date()}"
+        i += 1
+
+    f = xslfile.save(os.path.join(MEDIA_ROOT, 'statistics.xlsx'))
+
+    f = open(os.path.join(MEDIA_ROOT, 'statistics.xlsx'), 'rb')
+
+    content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    response = HttpResponse(f.read(), content_type=content_type)
+    response['Content-Disposition'] = "attachment; filename=kunlik-statistika.xlsx"
     return response
 
 
@@ -263,7 +459,8 @@ def schools_list_view(request):
     else:
         pagination = 10
 
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1,2,3]).values('school').annotate(c=Count('*')).values('c')
+    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+        'school').annotate(c=Count('*')).values('c')
 
     schools = schools.annotate(students=Subquery(students))
 

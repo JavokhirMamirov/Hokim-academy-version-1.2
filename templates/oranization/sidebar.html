@@ -8,25 +8,25 @@
         </div>
     </div>
     <!--navigation-->
-        <ul class="metismenu" id="menu">
-            {% if request.path == '/organ/dashboard/'%}
+    <ul class="metismenu" id="menu">
+        {% if request.path == '/organ/dashboard/' %}
             <li class="active">
-                <a href="{% url 'organ-dashboard' %}" >
+                <a href="{% url 'organ-dashboard' %}">
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
-                <a href="{% url 'organ-dashboard' %}" >
+                <a href="{% url 'organ-dashboard' %}">
                     <div class="parent-icon"><i class='bx bx-home-circle'></i>
                     </div>
                     <div class="menu-title">Dashboard</div>
                 </a>
             </li>
-            {% endif %}
-            {% if request.path == '/school/schools/'%}
+        {% endif %}
+        {% if request.path == '/school/schools/' %}
             <li class="active">
                 <a href="{% url 'schools' %}">
                     <div class="parent-icon"><i class="bx bx-home"></i>
@@ -34,7 +34,7 @@
                     <div class="menu-title">Maktablar</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'schools' %}">
                     <div class="parent-icon"><i class="bx bx-home"></i>
@@ -43,7 +43,7 @@
                 </a>
             </li>
         {% endif %}
-        {% if request.path == '/school/statistics/'%}
+        {% if request.path == '/school/statistics/' %}
             <li class="active">
                 <a href="{% url 'school-statistics' %}">
                     <div class="parent-icon"><i class="bx bx-home"></i>
@@ -51,7 +51,7 @@
                     <div class="menu-title">Statistika</div>
                 </a>
             </li>
-            {% else %}
+        {% else %}
             <li>
                 <a href="{% url 'school-statistics' %}">
                     <div class="parent-icon"><i class="bx bx-chart"></i>
@@ -59,15 +59,33 @@
                     <div class="menu-title">Statistika</div>
                 </a>
             </li>
+        {% endif %}
+        {% if request.path == '/school/day-statistics/' %}
+            <li class="active">
+                <a href="{% url 'school-day-statistics' %}">
+                    <div class="parent-icon"><i class="bx bx-chart"></i>
+                    </div>
+                    <div class="menu-title">Kunlik Statistika</div>
+                </a>
+            </li>
+        {% else %}
             <li>
+                <a href="{% url 'school-day-statistics' %}">
+                    <div class="parent-icon"><i class="bx bx-chart"></i>
+                    </div>
+                    <div class="menu-title">Kunlik Statistika</div>
+                </a>
+            </li>
+        {% endif %}
+        <li>
+
             <a href="tel:552014074">
                 <div class="parent-icon"><i class="bx bx-phone"></i>
                 </div>
                 <div class="menu-title">Call center (552014074)</div>
             </a>
         </li>
-        {% endif %}
-        </ul>
+    </ul>
     <!--end navigation-->
 </div>
 <!--end sidebar wrapper -->
@@ -78,15 +96,16 @@
             <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
             </div>
             <div class="top-menu ms-auto">
-{#                <ul class="navbar-nav align-items-center">#}
-{#                    <li class="nav-item mobile-search-icon">#}
-{#                        <a class="nav-link" href="#">	<i class='bx bx-search'></i>#}
-{#                        </a>#}
-{#                    </li>#}
-{#                </ul>#}
+                {#                <ul class="navbar-nav align-items-center">#}
+                {#                    <li class="nav-item mobile-search-icon">#}
+                {#                        <a class="nav-link" href="#">	<i class='bx bx-search'></i>#}
+                {#                        </a>#}
+                {#                    </li>#}
+                {#                </ul>#}
             </div>
             <div class="user-box dropdown">
-                <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="{% static 'img/user-profile.png' %}" class="user-img" alt="user avatar">
                     <div class="user-info ps-3">
                         <p class="user-name mb-0 text-center">{{ user.username }}</p>
@@ -94,14 +113,16 @@
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-{#                    <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>#}
-{#                    </li>#}
-                    <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-cog"></i><span>Ma'lumotlar</span></a>
+                    {#                    <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>#}
+                    {#                    </li>#}
+                    <li><a class="dropdown-item" href="javascript:;"><i
+                            class="bx bx-cog"></i><span>Ma'lumotlar</span></a>
                     </li>
                     <li>
                         <div class="dropdown-divider mb-0"></div>
                     </li>
-                    <li><a class="dropdown-item" href="{% url 'admin-logout' %}"><i class='bx bx-log-out-circle'></i><span>Chiqish</span></a>
+                    <li><a class="dropdown-item" href="{% url 'admin-logout' %}"><i
+                            class='bx bx-log-out-circle'></i><span>Chiqish</span></a>
                     </li>
                 </ul>
             </div>
