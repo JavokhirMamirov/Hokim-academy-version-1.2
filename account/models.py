@@ -54,6 +54,7 @@ class Account(AbstractUser):
     )
     school = models.ForeignKey(School, on_delete=models.CASCADE, null=True, blank=True)
     status = models.SmallIntegerField(default=1, choices=STATUS_CHOICES)
+    staff = models.BooleanField(default=False)
 
 
 class Student(models.Model):

@@ -220,104 +220,107 @@ def export_statistics_view(request):
 @login_required(login_url='admin-login')
 @organ_required
 def day_statistics_view(request):
-    pages = [20, 50, 100, 200, 500]
+    if request.user.staff == True:
+        pages = [20, 50, 100, 200, 500]
 
-    percent_filter = [
-        {'value': 1, 'label': "0%-100%"},
-        {'value': 2, 'label': "25%-50%"},
-        {'value': 3, 'label': "50%-75%"},
-        {'value': 4, 'label': "75%-100%"},
-        {'value': 5, 'label': "0%"},
-        {'value': 6, 'label': "100%"},
-        {'value': 7, 'label': "0%-10%"},
-        {'value': 8, 'label': "0%-25%"},
-    ]
-    citys = City.objects.all()
-    schools = School.objects.all()
-    percent = request.GET.get('percent')
+        percent_filter = [
+            {'value': 1, 'label': "0%-100%"},
+            {'value': 2, 'label': "25%-50%"},
+            {'value': 3, 'label': "50%-75%"},
+            {'value': 4, 'label': "75%-100%"},
+            {'value': 5, 'label': "0%"},
+            {'value': 6, 'label': "100%"},
+            {'value': 7, 'label': "0%-10%"},
+            {'value': 8, 'label': "0%-25%"},
+        ]
+        citys = City.objects.all()
+        schools = School.objects.all()
+        percent = request.GET.get('percent')
 
-    if percent is None:
-        percent = 1
-    else:
+        if percent is None:
+            percent = 1
+        else:
+            try:
+                percent = int(percent)
+            except:
+                percent = 1
+
+        city = request.GET.get('city')
+        if city is not None and city != "" and city != '0' and city != 0:
+            schools = schools.filter(city_id=city)
+
+        show_count = request.GET.get('show_count')
+
+        if show_count is None or show_count == "" or show_count == '0':
+            show_count = 20
+
+        search = request.GET.get('search')
+        if search is not None:
+            schools.filter(name__icontains=search)
+        date = datetime.now()
+        students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
+            'school').annotate(
+            c=Coalesce(Count('*'), 0)).values('c')
+
+        students_active = Student.objects.filter(school_id=OuterRef('id'), last_login__day=date.day, last_login__month=date.month,
+                                                 last_login__year=date.year, active=True,
+                                                 status__in=[1, 2, 3]).order_by().values(
+            'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
+
+        schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
+            percent=Case(
+                When(
+                    condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
+                    then=0
+                ),
+                default=ExpressionWrapper((F('active_student') * 100) / F('students'), output_field=FloatField()),
+                output_field=FloatField()
+            )
+        )
+        if percent == 1:
+            schools = schools.filter(percent__gte=0, percent__lte=100)
+        elif percent == 2:
+            schools = schools.filter(percent__gte=25, percent__lte=50)
+        elif percent == 3:
+            schools = schools.filter(percent__gte=50, percent__lte=75)
+        elif percent == 4:
+            schools = schools.filter(percent__gte=75, percent__lte=100)
+        elif percent == 5:
+            schools = schools.filter(percent=0)
+        elif percent == 6:
+            schools = schools.filter(percent=100)
+        elif percent == 7:
+            schools = schools.filter(percent__gte=0, percent__lte=10)
+        else:
+            schools = schools.filter(percent__gte=0, percent__lte=25)
+
+        try:
+            show_count = int(show_count)
+        except:
+            show_count = 0
+
+        try:
+            city = int(city)
+        except:
+            city = 0
+
         try:
             percent = int(percent)
         except:
-            percent = 1
+            percent = 0
 
-    city = request.GET.get('city')
-    if city is not None and city != "" and city != '0' and city != 0:
-        schools = schools.filter(city_id=city)
-
-    show_count = request.GET.get('show_count')
-
-    if show_count is None or show_count == "" or show_count == '0':
-        show_count = 20
-
-    search = request.GET.get('search')
-    if search is not None:
-        schools.filter(name__icontains=search)
-    date = datetime.now()
-    students = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[1, 2, 3]).values(
-        'school').annotate(
-        c=Coalesce(Count('*'), 0)).values('c')
-
-    students_active = Student.objects.filter(school_id=OuterRef('id'), last_login__day=date.day, last_login__month=date.month,
-                                             last_login__year=date.year, active=True,
-                                             status__in=[1, 2, 3]).order_by().values(
-        'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
-
-    schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
-        percent=Case(
-            When(
-                condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
-                then=0
-            ),
-            default=ExpressionWrapper((F('active_student') * 100) / F('students'), output_field=FloatField()),
-            output_field=FloatField()
-        )
-    )
-    if percent == 1:
-        schools = schools.filter(percent__gte=0, percent__lte=100)
-    elif percent == 2:
-        schools = schools.filter(percent__gte=25, percent__lte=50)
-    elif percent == 3:
-        schools = schools.filter(percent__gte=50, percent__lte=75)
-    elif percent == 4:
-        schools = schools.filter(percent__gte=75, percent__lte=100)
-    elif percent == 5:
-        schools = schools.filter(percent=0)
-    elif percent == 6:
-        schools = schools.filter(percent=100)
-    elif percent == 7:
-        schools = schools.filter(percent__gte=0, percent__lte=10)
+        context = {
+            'citys': citys,
+            'pages': pages,
+            'schools': PagenatorPage(schools.order_by('-active_student'), show_count, request),
+            'percent_filter': percent_filter,
+            'show_count': int(show_count),
+            'city': int(city),
+            'percent': int(percent)
+        }
+        return render(request, 'oranization/day-statistics.html', context)
     else:
-        schools = schools.filter(percent__gte=0, percent__lte=25)
-
-    try:
-        show_count = int(show_count)
-    except:
-        show_count = 0
-
-    try:
-        city = int(city)
-    except:
-        city = 0
-
-    try:
-        percent = int(percent)
-    except:
-        percent = 0
-
-    context = {
-        'citys': citys,
-        'pages': pages,
-        'schools': PagenatorPage(schools.order_by('-active_student'), show_count, request),
-        'percent_filter': percent_filter,
-        'show_count': int(show_count),
-        'city': int(city),
-        'percent': int(percent)
-    }
-    return render(request, 'oranization/day-statistics.html', context)
+        return redirect('organ-dashboard')
 
 
 @login_required(login_url='admin-login')

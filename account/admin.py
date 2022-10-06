@@ -35,6 +35,7 @@ class AccountAdmin(UserAdmin):
                     "status",
                     'school',
                     "groups",
+                    "staff",
                     "user_permissions",
                 ),
             },

@@ -60,6 +60,7 @@
                 </a>
             </li>
         {% endif %}
+    {% if user.staff == True %}
         {% if request.path == '/school/day-statistics/' %}
             <li class="active">
                 <a href="{% url 'school-day-statistics' %}">
@@ -77,6 +78,7 @@
                 </a>
             </li>
         {% endif %}
+    {% endif %}
         <li>
 
             <a href="tel:552014074">
