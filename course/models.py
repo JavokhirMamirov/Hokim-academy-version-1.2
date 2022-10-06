@@ -151,11 +151,11 @@ class Quiz(models.Model):
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     query = models.TextField()
-    optionA = models.CharField(max_length=255)
-    optionB = models.CharField(max_length=255)
-    optionC = models.CharField(max_length=255)
-    optionD = models.CharField(max_length=255)
-    correct_answer = models.CharField(max_length=255)
+    optionA = models.TextField(max_length=900)
+    optionB = models.TextField(max_length=900)
+    optionC = models.TextField(max_length=900)
+    optionD = models.TextField(max_length=900)
+    correct_answer = models.TextField(max_length=900)
     order = models.IntegerField(default=0)
 
     def __str__(self):
