@@ -51,8 +51,10 @@ class Category(models.Model):
     type = models.SmallIntegerField(choices=COURSE_TYPES, default=1)
 
     def __str__(self):
-        return self.name
-
+        try:
+            return f"{self.name} ({self.get_type_display()})"
+        except:
+            return self.name
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)

@@ -57,6 +57,7 @@ def commentsView(request, pk):
         }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -96,6 +97,7 @@ def detailCourseView(request, pk):
         }
 
     return Response(data)
+
 
 @api_view(['GET'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -172,6 +174,7 @@ def changeTeacherImageView(request):
             "error": f"{err}"
         }
     return Response(data)
+
 
 @api_view(['POST'])
 @authentication_classes([TeacherJwtAuthentication])
@@ -630,7 +633,7 @@ def lessonView(request, pk=None):
             query.video_link = video_link
             query.summary = summary
             query.time = time
-            if video != "null" and video != "":
+            if video != "null" and video != "" and video is not None:
                 query.video = video
             query.save()
             ser = LessonSerializer(query)
@@ -651,7 +654,6 @@ def lessonView(request, pk=None):
             "error": f"{err}"
         }
     return Response(data)
-
 
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
