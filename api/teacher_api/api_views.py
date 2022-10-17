@@ -535,6 +535,8 @@ def quizView(request, pk=None):
             }
         elif request.method == 'POST':
             payload = request.data
+            payload._mutable = True
+            payload['is_active'] = True
             ser = QuizPOSTSerializer(data=payload)
             if ser.is_valid():
                 ser.save()
@@ -550,6 +552,8 @@ def quizView(request, pk=None):
 
         elif request.method == 'PUT':
             payload = request.data
+            payload._mutable = True
+            payload['is_active'] = True
             quiz = Quiz.objects.get(id=pk)
             ser = QuizPOSTSerializer(instance=quiz, data=payload)
             if ser.is_valid():
