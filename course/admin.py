@@ -11,6 +11,7 @@ class LanguageAdmin(admin.ModelAdmin):
 @admin.register(CourseStatus)
 class CourseStatusAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
+    search_fields = ['name']
 
 
 @admin.register(Level)
@@ -21,8 +22,8 @@ class LevelAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'type']
-
-
+    search_fields = ['name']
+    list_filter = ['type']
 
 
 @admin.register(Tag)
@@ -45,24 +46,28 @@ class CourseAdmin(admin.ModelAdmin):
         "best_three",
         "is_active",
     ]
+    list_filter = ['language', 'category', 'teacher', 'step', 'best_three']
+    search_fields = ['title']
 
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'order']
-
-
-
+    search_fields = ['title']
+    list_filter = ['course']
 
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'section', 'video_type', 'summary',  'date_added']
+    search_fields = ['title']
+    list_filter = ['section']
 
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'level', 'order', 'passed_percent', 'is_active', 'time']
+    list_filter = ['course', 'section', 'is_active']
 
 
 @admin.register(Question)
@@ -77,6 +82,7 @@ class QuestionAdmin(admin.ModelAdmin):
                     'correct_answer',
                     'order',
                     ]
+    list_filter = ['quiz']
 
 
 @admin.register(QuizResult)
@@ -90,6 +96,7 @@ class QuizResultAdmin(admin.ModelAdmin):
                     "is_passed",
                     'time'
                     ]
+    list_filter = ['quiz']
 
 
 @admin.register(QuizAnswer)
@@ -123,3 +130,4 @@ class CourseCommentAdmin(admin.ModelAdmin):
                     'comment',
                     'date_added',
                     ]
+    list_filter = ['course']
