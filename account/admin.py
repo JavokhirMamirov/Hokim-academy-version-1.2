@@ -5,19 +5,47 @@ from .models import *
 
 # Register your models here.
 # admin.site.register(Student)
-admin.site.register(Teacher)
-admin.site.register(School)
+# admin.site.register(School)
 admin.site.register(Skill)
-admin.site.register(City)
+# admin.site.register(City)
 admin.site.register(Info)
 admin.site.register(Prize)
-admin.site.register(Region)
+# admin.site.register(Region)
+
+
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ['id', 'full_name', 'username']
+    search_fields = ['full_name']
+    list_filter = ['is_active']
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'director', 'address']
+    search_fields = ['name']
+    list_filter = ['city']
+
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
+    list_filter = ['region']
+
+
+@admin.register(Region)
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
 
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     list_display = ['id', 'full_name', 'school']
     row_id_fields = ('school',)
+    search_fields = ['full_name']
+    list_filter = ['active', 'status']
 
 
 @admin.register(Account)
