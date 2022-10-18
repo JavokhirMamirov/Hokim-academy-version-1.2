@@ -548,7 +548,7 @@ def bestThreeAndRecomCourseView(request):
         user = request.user
         bestThree = Course.objects.filter(best_three=True, course_type=user.status, step=7)
         recommends = Course.objects.filter(is_recommended=True, course_type=user.status, step=7)
-        category = Category.objects.filter(type=user.status)[:8]
+        category = Category.objects.filter(type=user.status)
         context = {'user': request.user}
         data = {
             "success": True,
