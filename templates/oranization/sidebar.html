@@ -79,6 +79,25 @@
             </li>
         {% endif %}
     {% endif %}
+    {% if user.staff == True %}
+        {% if request.path == '/organ/student-rating/' %}
+            <li class="active">
+                <a href="{% url 'organ-student-rating' %}">
+                    <div class="parent-icon"><i class="bx bx-chart"></i>
+                    </div>
+                    <div class="menu-title">O'quvchilar reytingi</div>
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{% url 'organ-student-rating' %}">
+                    <div class="parent-icon"><i class="bx bx-chart"></i>
+                    </div>
+                    <div class="menu-title">O'quvchilar reytingi</div>
+                </a>
+            </li>
+        {% endif %}
+    {% endif %}
         <li>
 
             <a href="tel:552014074">

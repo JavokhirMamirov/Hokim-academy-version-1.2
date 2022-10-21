@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block sidebar_header %}
+    {% include 'oranization/sidebar.html' %}
+{% endblock sidebar_header %}
+{% block style %}
+
+    
+<link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
+{% endblock style %}
+{% block content %}
+	<!--start page wrapper -->
+    <div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3"><a href="{% url 'organ-dashboard' %}">Dashboard</a> </div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">Student Reyting</li>
+							</ol>
+						</nav>
+					</div>
+					<div class="ms-auto">
+{#						<div class="btn-group">#}
+{#							<a href="{% url 'add-school' %}" class="btn btn-primary">Maktab qo`shish</a>#}
+{#						</div>#}
+					</div>
+				</div>
+				<!--end breadcrumb-->
+				<hr/>
+            	<div class="card">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center m-2">
+                            <form method="get">
+                                <div class="input-group ">
+                                    <input type="text" class="form-control" placeholder="Qidiruv" aria-label="Recipient's username" aria-describedby="button-addon2" name="q">
+                                    <button type="submit" class="btn btn-primary"><i class="bx bx-search"></i></button>
+                                </div>
+                            </form>   
+                        </div>                                        
+                        <form class="d-flex align-items-center justify-content-between" style="margin-right: 10px;" method="get">
+                            <label class="form-label"></label>
+                            <select class="form-select" id="inputGroupSelect02" name="pagination" style="margin-right: 15px">
+                                {% for page in pages %}
+                                    {% if page == pagination %}
+                                    <option value="{{ page }}" selected>{{ page }}</option>
+                                    {% else %}
+                                    <option value="{{ page }}">{{ page }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+{#                            <select class="single-select" name="city" style="margin-right: 15px">#}
+{#                                {% if req == 0 %}#}
+{#                                <option value="0" selected>Shahar tanlash</option>#}
+{#                                {% for city in citys %}#}
+{#                                <option value="{{city.id}}">{{city}}</option>#}
+{#                                {% endfor %}#}
+{#                                {% else %}#}
+{#                                <option value="0">Barchasi</option>#}
+{#                                {% for city in citys %}#}
+{#                                    {% if city.id == req %}#}
+{#                                    <option value="{{city.id}}" selected>{{city.name}}</option>#}
+{#                                    {% else %}#}
+{#                                    <option value="{{city.id}}">{{city.name}}</option>#}
+{#                                    {% endif %}#}
+{#                                {% endfor %}#}
+{#                                {% endif %}#}
+{#                            </select>#}
+                            <button type="submit" class="btn btn-primary" style="margin-left: 15px">Filterlash</button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <table class="table mb-0 table-striped">
+                            <thead>
+                            <tr>
+                                <th class="text-center">№</th>
+                                <th class="text-center">O'quvchi</th>
+                                <th class="text-center">Turi</th>
+								<th class="text-center">Maktab</th>
+								<th class="text-center">Kurslar soni</th>
+								<th class="text-center">Testlar soni</th>
+								<th class="text-center">O'rtacha bali</th>
+{#								<th class="text-center">Batafsil</th>#}
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                    <tr>
+										<td class="text-center">{{forloop.counter0|add:students.start_index}}</td>
+										<td class="text-center">{{ student.full_name }}</td>
+										<td class="text-center">{{ student.get_status_display}}</td>
+										<td class="text-center">{{ student.school.name }} ({{ student.school.city.name }})</td>
+										<td class="text-center">{{ student.course }}</td>
+										<td class="text-center">{{ student.quiz }}</td>
+										<td class="text-center">{{ student.mark|floatformat }}</td>
+{#                                        <td class="text-center"><a href="{% url 'school-detail' student.id %}" class="btn btn-primary">Detail</a></td>#}
+									</tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                    {% if students.paginator.num_pages > 1 %}
+                        <nav aria-label="Page navigation" class="m-3">
+                            <ul class="pagination">
+                            {% if students.has_previous %}
+                              <li class="page-item">
+                                    <a class="page-link" href="?page={{students.previous_page_number }}&pagination={{pagination}}"><i class="bx bx-left-arrow-alt"></i></a>
+                                </li>
+                            {% endif %}
+                                {% for num in students.paginator.page_range %}
+                                    {% if num == students.number %}
+                                        <li class="page-item active">
+                                            <a class="page-link" href="#" tabindex="-1">{{ num }}</a>
+                                        </li>
+                                    {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}&pagination={{pagination}} ">{{ num }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% if student.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ students.next_page_number }}&pagination={{pagination}} " aria-label="Next">
+                                        <i class="bx bx-right-arrow-alt"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+		<!--end page wrapper -->
+{% block script %}
+
+<script src=" {% static 'plugins/select2/js/select2.min.js' %}"></script>
+	<script>
+		$('.single-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+		$('.multiple-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+	</script>
+{% endblock script %}
+
+<link href="{% static 'plugins/select2/css/select2-bootstrap4.css' %}" rel="stylesheet" />
+{% endblock %}

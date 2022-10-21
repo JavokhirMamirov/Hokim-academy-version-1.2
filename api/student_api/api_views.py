@@ -21,6 +21,24 @@ from course.models import Course, Category, Level, CourseStatus, WatchHistory, C
     QuizResult, CourseAttachment
 
 
+@api_view(['GET', 'POST'])
+@authentication_classes([StudentJwtAuthentication])
+@permission_classes([IsAuthenticated])
+def watchingHistory(request):
+    try:
+        student = request.user
+        lesson = request.data['lesson']
+        done_lesson = request.data['done_lesson']
+
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+
+    return Response(data)
+
+
 @api_view(['GET'])
 @authentication_classes([StudentJwtAuthentication])
 @permission_classes([IsAuthenticated])
@@ -39,6 +57,7 @@ def lastLoginView(request):
             "error": f"{err}"
         }
     return Response(data)
+
 
 @api_view(['GET', 'POST'])
 @authentication_classes([StudentJwtAuthentication])
@@ -75,6 +94,9 @@ def quizResultView(request):
                 is_passed = True
             else:
                 is_passed = False
+
+            if mark > 100:
+                mark = 100
 
             try:
                 result = QuizResult.objects.get(student=student, quiz=quiz)

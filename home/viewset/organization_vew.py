@@ -9,16 +9,21 @@ from django.shortcuts import render, redirect
 
 from HA.settings import BASE_DIR, MEDIA_ROOT
 from account.models import School, City, Student, Account
+from course.models import WatchHistory, Course, QuizResult
 from home.decarators import organ_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 from django.db.models import OuterRef, Subquery, Count, Q, IntegerField, Value, Case, When, F, FloatField, \
-    ExpressionWrapper
+    ExpressionWrapper, Sum, DecimalField
 
 
 def PagenatorPage(List, num, request):
     paginator = Paginator(List, num)
     pages = request.GET.get('page')
+    if pages is not None:
+        pages = int(pages)
+    else:
+        pages = 1
     try:
         list = paginator.page(pages)
     except PageNotAnInteger:
@@ -26,6 +31,57 @@ def PagenatorPage(List, num, request):
     except EmptyPage:
         list = paginator.page(paginator.num_pages)
     return list
+
+
+@login_required(login_url='admin-login')
+@organ_required
+def student_rating_view(request):
+    if request.user.staff == True:
+        pages = [20, 50, 100, 200, 500]
+        q = request.GET.get('q')
+        pagination = request.GET.get('pagination')
+        students = Student.objects.filter(active=True, school__isnull=False)
+        if q is not None:
+            students = students.filter(Q(full_name__icontains=q))
+
+        courses_subquery = WatchHistory.objects.filter(student_id=OuterRef('pk')).values(
+            'student').annotate(
+            c=Coalesce(Count('*'), Value(0), output_field=IntegerField())).values('c')
+
+        quiz_subquery = QuizResult.objects.filter(student_id=OuterRef('pk'), is_passed=True).values(
+            'student').annotate(
+            c=Coalesce(Count('*'), Value(0), output_field=IntegerField())).values('c')
+
+        result_subquery = QuizResult.objects.filter(student_id=OuterRef('pk'), is_passed=True).values(
+            'student').annotate(
+            c=Coalesce(Sum('mark'), Value(0), output_field=FloatField())).values('c')
+        students = students.annotate(course=Subquery(courses_subquery), quiz=Subquery(quiz_subquery),
+                                     result=Subquery(result_subquery)).annotate(
+            mark=Case(
+                When(
+                    condition=Q(quiz=0) | Q(quiz=None) | Q(course=None),
+                    then=0
+                ),
+                default=ExpressionWrapper(F('result') / F('quiz'),
+                                          output_field=DecimalField(max_digits=5, decimal_places=2)),
+                output_field=DecimalField(max_digits=5, decimal_places=2)
+            )
+        )
+
+        students = students.order_by('-mark', '-quiz', '-course')
+        if pagination is not None:
+            pagination = int(pagination)
+        else:
+            pagination = 20
+
+        context = {
+            "pages": pages,
+            "pagination": pagination,
+            "students": PagenatorPage(students, pagination, request)
+        }
+        return render(request, 'oranization/studentRating.html', context)
+    else:
+        return redirect('organ-dashboard')
 
 
 @login_required(login_url='admin-login')
@@ -262,12 +318,14 @@ def day_statistics_view(request):
             'school').annotate(
             c=Coalesce(Count('*'), 0)).values('c')
 
-        students_active = Student.objects.filter(school_id=OuterRef('id'), last_login__day=date.day, last_login__month=date.month,
+        students_active = Student.objects.filter(school_id=OuterRef('id'), last_login__day=date.day,
+                                                 last_login__month=date.month,
                                                  last_login__year=date.year, active=True,
                                                  status__in=[1, 2, 3]).order_by().values(
             'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
-        schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
+        schools = schools.annotate(students=Coalesce(Subquery(students), 0),
+                                   active_student=Coalesce(Subquery(students_active), 0)).annotate(
             percent=Case(
                 When(
                     condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
@@ -362,10 +420,12 @@ def export_day_statistics_view(request):
 
     students_active = Student.objects.filter(school_id=OuterRef('pk'),
                                              last_login__day=date.day, last_login__month=date.month,
-                                             last_login__year=date.year, active=True, status__in=[1, 2, 3]).order_by().values(
+                                             last_login__year=date.year, active=True,
+                                             status__in=[1, 2, 3]).order_by().values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
-    schools = schools.annotate(students=Coalesce(Subquery(students),0), active_student=Coalesce(Subquery(students_active),0)).annotate(
+    schools = schools.annotate(students=Coalesce(Subquery(students), 0),
+                               active_student=Coalesce(Subquery(students_active), 0)).annotate(
         percent=Case(
             When(
                 condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),

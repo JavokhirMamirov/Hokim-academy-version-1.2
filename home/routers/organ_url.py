@@ -19,4 +19,5 @@ organization_url = [
     path('export-statistics/', organization_vew.export_statistics_view, name='export-statistics'),
     path('day-statistics/', organization_vew.day_statistics_view, name='school-day-statistics'),
     path('export-day-statistics/', organization_vew.export_day_statistics_view, name='export-day-statistics'),
+    path('student-rating/', organization_vew.student_rating_view, name="organ-student-rating")
 ]
