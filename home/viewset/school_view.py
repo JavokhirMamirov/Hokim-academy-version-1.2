@@ -281,8 +281,8 @@ def change_student_password(request, pk):
 @school_required
 def delete_student_view(request, pk):
     st = Student.objects.get(id=pk)
-    st.active = False
-    st.save()
+    # st.active = False
+    # st.save()
     if int(st.status) == 1:
         return redirect("president-student")
     elif int(st.status) == 2:
