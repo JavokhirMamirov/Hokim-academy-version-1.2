@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.admin_api.serializers import CategorySerializer, LevelSerializer, CourseStatusSerializer
 from api.auth.StudentJWT import StudentJwtAuthentication
 
-from account.models import Student
+from account.models import Student, Attendance
 from api.paginator import pagination_json
 from api.student_api.serializers import CourseHomeWithCategorySerializer, StudentSerializer, SearchCourseSerializer, \
     DetailCourseSerializer, MyCourseSerializer, QuizSerializer, QuizQuestionSerializer, QuizResultSerializer, \
@@ -46,6 +46,11 @@ def lastLoginView(request):
     try:
         student = request.user
         date = datetime.datetime.now()
+        att = Attendance.objects.filter(student=student, date=date.date())
+        if att.count() == 0:
+            Attendance.objects.create(
+                student=student
+            )
         student.last_login = date
         student.save()
         data = {
@@ -665,26 +670,32 @@ def studentLoginView(request):
         password = request.data.get('password')
         user = authenticate(model=Student, username=username, password=password)
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-            try:
-                img = user.image.url
-            except:
-                img = None
-            data = {
-                'success': True,
-                'token': {
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token),
-                },
-                'user': {
-                    "id": user.id,
-                    "full_name": user.full_name,
-                    "username": user.username,
-                    "status": user.status,
-                    "image": img,
-                    "is_used_promocode": user.is_used_promocode
+            if user.active == True:
+                refresh = RefreshToken.for_user(user)
+                try:
+                    img = user.image.url
+                except:
+                    img = None
+                data = {
+                    'success': True,
+                    'token': {
+                        'refresh': str(refresh),
+                        'access': str(refresh.access_token),
+                    },
+                    'user': {
+                        "id": user.id,
+                        "full_name": user.full_name,
+                        "username": user.username,
+                        "status": user.status,
+                        "image": img,
+                        "is_used_promocode": user.is_used_promocode
+                    }
                 }
-            }
+            else:
+                data = {
+                    "success": False,
+                    "error": "Username or password error!"
+                }
         else:
             data = {
                 "success": False,
@@ -696,7 +707,6 @@ def studentLoginView(request):
             "success": False,
             "error": err
         }
-    print(data)
     return Response(data)
 
 

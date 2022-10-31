@@ -22,6 +22,7 @@ class Region(models.Model):
     def __str__(self):
         return self.name
 
+
 class City(models.Model):
     name = models.CharField(max_length=255)
     region = models.ForeignKey(Region, on_delete=models.CASCADE, null=True)
@@ -81,6 +82,7 @@ class Student(models.Model):
     website = models.CharField(max_length=255, null=True, blank=True)
     last_login = models.DateTimeField(default=None, null=True, blank=True)
     school = models.ForeignKey(School, on_delete=models.SET_NULL, null=True, blank=True)
+    chat_id = models.IntegerField(null=True, default=None, unique=True)
     is_used_promocode = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
 
@@ -115,6 +117,11 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Attendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
 
 
 class Teacher(models.Model):
@@ -165,12 +172,8 @@ class Info(models.Model):
     video = models.FileField(upload_to='info/video/', null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
 
+
 class Prize(models.Model):
     image = models.ImageField(upload_to='info/prize')
     order = models.IntegerField(default=0)
     show = models.BooleanField(default=True)
-
-
-
-
-
