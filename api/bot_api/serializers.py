@@ -9,6 +9,19 @@ class QuizSerializer(serializers.ModelSerializer):
         model = Quiz
         fields = ['id', 'title']
 
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = [
+            'id',
+            'quiz',
+            'query',
+            'optionA',
+            'optionB',
+            'optionC',
+            'optionD',
+            'order',
+        ]
 
 class QuizGetResultSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
@@ -16,7 +29,7 @@ class QuizGetResultSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuizResult
-        fields = ['id', "student", 'quiz']
+        fields = ['id', "student", 'quiz', 'mark']
 
     def get_student(self, obj):
         return obj.student.full_name

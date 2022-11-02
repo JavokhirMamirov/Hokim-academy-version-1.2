@@ -3,27 +3,67 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from account.models import Student
-from api.bot_api.serializers import MyCourseSerializer, QuizSerializer, QuizDetailSerializer
-from course.models import WatchHistory, Quiz, QuizResult
+from api.bot_api.serializers import MyCourseSerializer, QuizSerializer, QuizDetailSerializer, QuizGetResultSerializer, \
+    QuizQuestionSerializer
+from course.models import WatchHistory, Quiz, QuizResult, Question
 
 
 @api_view(['GET'])
-def get_quiz_result_view(request):
+def question_view(request):
     try:
-        quiz_id = request.GET('quiz_id')
-        chat_id = request.GET.get('chat_id')
-        student = Student.objects.get(chat_id=chat_id)
-        query = QuizResult.objects.filter(quiz_id=quiz_id, is_passed=True).order_by('-mark')
-        my_res = QuizResult.objects.filter(quiz_id=quiz_id, student=student, is_passed=True).last()
-        order = list(query).index(my_res)
+        quiz_id = request.GET.get('quiz_id')
+        query = Question.objects.filter(quiz_id=quiz_id).order_by('order')
+        ser = QuizQuestionSerializer(query, many=True)
         data = {
-            "order": order
+            "success": True,
+            "data": ser.data
         }
     except Exception as err:
         data = {
             "success": False,
             "error": f"{err}"
         }
+    return Response(data)
+
+
+@api_view(['GET'])
+def get_quiz_result_view(request):
+    try:
+        quiz_id = request.GET.get('quiz_id')
+        chat_id = request.GET.get('chat_id')
+        student = Student.objects.get(chat_id=chat_id)
+        query = QuizResult.objects.filter(quiz_id=quiz_id, is_passed=True).order_by('-mark', 'time')
+        my_res = QuizResult.objects.filter(quiz_id=quiz_id, student=student, is_passed=True).last()
+        ser = QuizGetResultSerializer(query[0:25], many=True)
+        if my_res is not None:
+            order = list(query).index(my_res)
+            data = {
+                "success": True,
+                "data": {
+                    "student": {
+                        "order": order,
+                        "name": student.full_name,
+                        "mark": my_res.mark
+                    },
+                    "result": ser.data,
+                    "quiz_id": quiz_id,
+                }
+            }
+        else:
+            data = {
+                "success": True,
+                "data": {
+                    "student": None,
+                    "result": ser.data,
+                    "quiz_id": quiz_id,
+                }
+            }
+    except Exception as err:
+        data = {
+            "success": False,
+            "error": f"{err}"
+        }
+    return Response(data)
 
 
 @api_view(['GET'])

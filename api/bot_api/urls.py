@@ -6,4 +6,6 @@ urlpatterns = [
     path('courses/', api_view.myCoursesView),
     path('quiz/', api_view.quizView),
     path('quiz/<int:pk>/', api_view.quizView),
+    path('quiz/result/', api_view.get_quiz_result_view),
+    path('quiz/question/', api_view.question_view),
 ]
