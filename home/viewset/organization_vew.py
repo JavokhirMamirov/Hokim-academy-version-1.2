@@ -294,7 +294,8 @@ def export_statistics_view(request):
     else:
         schools = schools.filter(percent__gte=0, percent__lte=25)
 
-    schools = schools.order_by('-percent')
+    schools = schools.order_by('city', '-percent')
+    # schools = schools.order_by('-percent')
     i = 2
     for row in schools:
         sheet[f'A{i}'] = f"{i - 1}"
