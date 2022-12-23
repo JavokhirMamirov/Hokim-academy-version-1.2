@@ -140,12 +140,17 @@ def statistics_view(request):
         'school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
 
+    teachers = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[4]).values(
+        'school').annotate(
+        c=Coalesce(Count('*'), 0)).values('c')
+
     students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True,
                                              status__in=[1, 2, 3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active),
-        student_abt=Subquery(student_abt), student_pr=Subquery(student_pr), student_cht=Subquery(student_cht)
+        student_abt=Subquery(student_abt), student_pr=Subquery(student_pr), student_cht=Subquery(student_cht),
+        teachers=Subquery(teachers)
     ).annotate(
         percent=Case(
             When(
@@ -213,7 +218,8 @@ def export_statistics_view(request):
     sheet['F1'] = "Abuturiyent"
     sheet['G1'] = "Prezident maktabi"
     sheet['H1'] = "Xorijiy til"
-    sheet['K1'] = "Foiz"
+    sheet['I1'] = "O'qituvchilar"
+    sheet['J1'] = "Foiz"
 
     schools = School.objects.all()
     percent = request.GET.get('percent')
@@ -249,13 +255,19 @@ def export_statistics_view(request):
     student_cht = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[3]).values(
         'school').annotate(
         c=Coalesce(Count('*'), 0)).values('c')
+    
+    teachers = Student.objects.filter(school_id=OuterRef('pk'), active=True, status__in=[4]).values(
+        'school').annotate(
+        c=Coalesce(Count('*'), 0)).values('c')
 
     students_active = Student.objects.filter(school_id=OuterRef('pk'), is_used_promocode=True, active=True,
                                              status__in=[1, 2, 3]).values(
         'school').annotate(c=Coalesce(Count('*'), Value(0))).values('c')
 
     schools = schools.annotate(students=Subquery(students), active_student=Subquery(students_active),
-        student_abt=Subquery(student_abt), student_pr=Subquery(student_pr), student_cht=Subquery(student_cht)).annotate(
+        student_abt=Subquery(student_abt), student_pr=Subquery(student_pr), student_cht=Subquery(student_cht),
+            teachers=Subquery(teachers)
+        ).annotate(
         percent=Case(
             When(
                 condition=Q(students__isnull=True) | Q(active_student__isnull=True) | Q(students=0),
@@ -293,7 +305,8 @@ def export_statistics_view(request):
         sheet[f'F{i}'] = f"{row.student_abt}"
         sheet[f'G{i}'] = f"{row.student_pr}"
         sheet[f'H{i}'] = f"{row.student_cht}"
-        sheet[f'K{i}'] = f"{row.percent}"
+        sheet[f'I{i}'] = f"{row.teachers}"
+        sheet[f'J{i}'] = f"{row.percent}"
         i += 1
 
     f = xslfile.save(os.path.join(MEDIA_ROOT, 'statistics.xlsx'))
